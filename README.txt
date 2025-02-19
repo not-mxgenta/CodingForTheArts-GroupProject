@@ -13,13 +13,18 @@ A copy of this can be found on notion here: https://hughdeleuzer.notion.site/Rea
 
 PROJECT NAME: insert your project name here
 
-BY (team name)
-MEMBERS: (List of Members + Candidate Numbers) 
+BY Scream Queens
+MEMBERS: 
+Emily Benn 2503081
+Freddie Thomas 2503851
 
 LINK TO GITHUB REPO: [insert link here]
 LINK TO GITHUB PAGES: [insert link here]
 
 OVERVIEW OF PROJECT
+
+80s-style analogue horror game about home invasion, featuring mixture of point-and-click investigation and chase sequences
+
 Describe your project in a few sentences. What is it about? What are its key technical features? 
 What are its key themes, aesthetics, etc.
 
