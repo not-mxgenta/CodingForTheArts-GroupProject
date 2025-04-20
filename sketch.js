@@ -5,6 +5,9 @@ let currentGameState = 0;
 let newMouseX;
 let newMouseY;
 
+let adjustmentX;
+let adjustmentY;
+
 //defining the tile map
 //a 2D array containing each instance of the Tile Class we create
 let BGtileMap = [];
@@ -45,6 +48,9 @@ class backgroundTile {
 //preload assets here to speed up programe running
 function preload() {
 
+  //overlay video
+  VHSoverlay = createVideo("assets/vhsOverlay.mp4")
+
   //background tiles
   BGwallpaper = loadImage("assets/BG_Wallpaper.png")
   BGpanellingLower = loadImage("assets/BG_PanellingLower.png")
@@ -55,12 +61,17 @@ function preload() {
 //general set up
 function setup() {
   //dynamically resizing window (see also windowResized())
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(windowWidth, windowHeight, WEBGL);
   //working in degrees because, and I'll say it 100 times again, radians SUCK
   angleMode(DEGREES)
   //draw images and shapes from their center
   imageMode(CENTER)
   rectMode(CENTER)
+
+  VHSoverlay.hide();
+  VHSoverlay.loop();
+  VHSoverlay.volume(0);
+  VHSoverlay.play()
 
   BGinside()
 
@@ -108,8 +119,11 @@ function draw() {
   background('black')
   currentGameState = 2 //inside
   //Calculates new mouse coordinates based on center of screen instead of default top left corner, thus allowing coordinates to remain same regardless of window resizing - crucial when calculating mouse click position across different window sizes
-  newMouseX = mouseX - (windowWidth/2)
-  newMouseY = mouseY - (windowHeight/2)
+  // newMouseX = mouseX - (windowWidth/2)
+  // newMouseY = mouseY - (windowHeight/2)
+
+  push()
+  translate(-BGtilesX * BGtileSize/2 + BGtileSize/2, -BGtilesY * BGtileSize/2 + BGtileSize/2, 0);
 
   for (let tileX = 0; tileX < BGtilesX; tileX++) {
 
@@ -119,7 +133,13 @@ function draw() {
     }
   }
 
-  fill('white')
-  text(newMouseX, mouseX+50, mouseY)
-  text(newMouseY, mouseX+50, mouseY + 10)
+  pop()
+
+  // fill('white')
+  // text(newMouseX, mouseX+50, mouseY)
+  // text(newMouseY, mouseX+50, mouseY + 10)
+
+  tint(255, 150);
+  //blendMode(SCREEN);
+  image(VHSoverlay, 0, 0, 1280, 768);
 }
