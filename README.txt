@@ -11,7 +11,7 @@ A copy of this can be found on notion here: https://hughdeleuzer.notion.site/Rea
 
 ---------------------------------------------------------------------------------------------------------
 
-PROJECT NAME: insert your project name here
+PROJECT NAME: STALK
 
 BY Scream Queens
 MEMBERS: 
