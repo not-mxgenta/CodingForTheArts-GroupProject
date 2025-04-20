@@ -108,30 +108,6 @@ let navPosMap1 = [
   [0, 0, -1, 0, 0]
 ]
 
-//Layout of different objects in the living room
-let LR_OBJarrangement_L1_1 = [
-  [0, 0, 1],
-  [0, 0, 0],
-  [0, 0, 0],
-  [0, 0, 0],
-  [0, 0, 0]
-]
-
-let LR_OBJarrangement_L2_1 = [
-  [0, 0, 2],
-  [0, 0, 0],
-  [0, 0, 0],
-  [0, 0, 0],
-  [0, 0, 0]
-]
-
-let LR_OBJarrangement_L3_1 = [
-  [0, 0, 3],
-  [0, 0, 0],
-  [0, 0, 0],
-  [0, 0, 0],
-  [0, 0, 0]
-]
 
 
 
@@ -150,24 +126,6 @@ class BGtileClass {
 
   displayTile() {
     image(this.tileImage, this.xPos, this.yPos, this.tileSize, this.tileSize)
-  }
-}
-
-class OBJtileClass {
-  //defining the aspects that each instance of the class will contain
-  constructor(tileX, tileY, tileSizeX, tileSizeY, tileID, tileImage) {
-    this.tileX = tileX;
-    this.tileY = tileY;
-    this.tileSizeX = tileSizeX;
-    this.tileSizeY = tileSizeY;
-    this.tileID = tileID;
-    this.xPos = this.tileX * 256 + this.tileSizeX/4;
-    this.yPos = (this.tileY - 1) * 256 + this.tileSizeY/4;
-    this.tileImage = tileImage
-  }
-
-  displayTile() {
-    image(this.tileImage, this.xPos, this.yPos, this.tileSizeX, this.tileSizeY)
   }
 }
 
@@ -197,9 +155,17 @@ function preload() {
   BGbathroom = loadImage("assets/BG_BathroomTiles.png")
 
   //objects
+  //living room
   OBJcabinet = loadImage("assets/OBJ_Cabinet.png")
   OBJdrawers = loadImage("assets/OBJ_Drawers.png")
   OBJradio = loadImage("assets/OBJ_Radio.png")
+  //bathroom
+  OBJbathroomCabinet = loadImage("assets/OBJ_Cabinet_Bathroom.png")
+  OBJcircleWindow = loadImage("assets/OBJ_CircleWindow.png")
+  OBJmirror = loadImage("assets/OBJ_Mirror.png")
+  OBJbathroomSink = loadImage("assets/OBJ_Sink_Bathroom.png")
+  OBJtoilet = loadImage("assets/OBJ_Toilet.png")
+  OBJtowelRail = loadImage("assets/OBJ_TowelRail.png")
 
   //icons
   ICONnavigation = loadImage("assets/ICON_NavigationArrow.png")
@@ -243,9 +209,6 @@ function setup() {
   VHSoverlay.volume(0);
   VHSoverlay.play()
 
-  //object arrays populated only once, at setup
-  populateOBJarrays();
-
 }
 
 //Update if window is resized
@@ -257,22 +220,6 @@ function windowResized() {
 //anything to do with clicking the mouse - tracking it's position, recording interaction, playing noise etc
 function mouseClicked() {
 //nothing here yet
-}
-
-//store details of each object in their respective arrays (based on room)
-function populateOBJarrays() {
-
-  OBJlivingRoomArray = [
-    [1, OBJcabinet, 512, 512],
-    [2, OBJdrawers, 512, 512],
-    [3, OBJradio, 512, 512]
-  ];
-  OBJkitchenArray = [];
-  OBJhallArray = [];
-  OBJbedroomArray = [];
-  OBJbathroomArray = [];
-
-
 }
 
 
@@ -367,130 +314,13 @@ function NAVtiles() {
   }
 }
 
-function OBJtiles() {
- 
-  let OBJtileID = 0
-  let OBJindex = 0
-  
-  //resets existing tile map to clean/empty map for new environment to be added
-  OBJtileMapLayer1 = []
-  OBJtileMapLayer2 = []
-  OBJtileMapLayer3 = []
-  OBJhighlightMap = []
-
-  LR_OBJarrangement_L1_1
-
-  //Fill object map for each layer of objects
-
-  //iterate through each row of tiles
-  for (let tileX = 0; tileX < BGtilesX; tileX++) {
-
-    //create a new array within the tileMap array, corresponding to each row in the on-screen tileMap
-    //clears any previously stored array in that row
-    OBJtileMapLayer1[tileX] = []
-
-    //iterate through each column of tiles within a row
-    for (let tileY = 0; tileY < BGtilesY; tileY++) {
-
-      //which object is displayed and where
-      if (currentLocation == 2) {
-        OBJindex = (LR_OBJarrangement_L1_1[tileX][tileY]) - 1
-      }
-
-        if (OBJindex < 0) {
-          tileImage = BLANKtile
-          OBJsizeX = BGtileSize
-          OBJsizeY = BGtileSize
-        } else {
-          tileImage = OBJlivingRoomArray[OBJindex][1]
-          OBJsizeX = OBJlivingRoomArray[OBJindex][2]
-          OBJsizeY = OBJlivingRoomArray[OBJindex][3]
-        }
-
-
-      //adds new tile to tile map!
-      OBJtileMapLayer1[tileX][tileY] = new OBJtileClass(tileX, tileY, OBJsizeX, OBJsizeY, OBJtileID, tileImage)
-      OBJtileID++
-
-    }
-  }
-
-  //iterate through each row of tiles
-  for (let tileX = 0; tileX < BGtilesX; tileX++) {
-
-    //create a new array within the tileMap array, corresponding to each row in the on-screen tileMap
-    //clears any previously stored array in that row
-    OBJtileMapLayer2[tileX] = []
-
-    //iterate through each column of tiles within a row
-    for (let tileY = 0; tileY < BGtilesY; tileY++) {
-
-      //which object is displayed and where
-      if (currentLocation == 2) {
-        OBJindex = (LR_OBJarrangement_L2_1[tileX][tileY]) - 1
-      }
-
-        if (OBJindex < 0) {
-          tileImage = BLANKtile
-          OBJsizeX = BGtileSize
-          OBJsizeY = BGtileSize
-        } else {
-          tileImage = OBJlivingRoomArray[OBJindex][1]
-          OBJsizeX = OBJlivingRoomArray[OBJindex][2]
-          OBJsizeY = OBJlivingRoomArray[OBJindex][3]
-        }
-
-
-      //adds new tile to tile map!
-      OBJtileMapLayer2[tileX][tileY] = new OBJtileClass(tileX, tileY, OBJsizeX, OBJsizeY, OBJtileID, tileImage)
-      OBJtileID++
-
-    }
-  }
-
-  //iterate through each row of tiles
-  for (let tileX = 0; tileX < BGtilesX; tileX++) {
-
-    //create a new array within the tileMap array, corresponding to each row in the on-screen tileMap
-    //clears any previously stored array in that row
-    OBJtileMapLayer3[tileX] = []
-
-    //iterate through each column of tiles within a row
-    for (let tileY = 0; tileY < BGtilesY; tileY++) {
-
-      //which object is displayed and where
-      if (currentLocation == 2) {
-        OBJindex = (LR_OBJarrangement_L3_1[tileX][tileY]) - 1
-      }
-
-        if (OBJindex < 0) {
-          tileImage = BLANKtile
-          OBJsizeX = BGtileSize
-          OBJsizeY = BGtileSize
-        } else {
-          tileImage = OBJlivingRoomArray[OBJindex][1]
-          OBJsizeX = OBJlivingRoomArray[OBJindex][2]
-          OBJsizeY = OBJlivingRoomArray[OBJindex][3]
-        }
-
-
-      //adds new tile to tile map!
-      OBJtileMapLayer3[tileX][tileY] = new OBJtileClass(tileX, tileY, OBJsizeX, OBJsizeY, OBJtileID, tileImage)
-      OBJtileID++
-
-    }
-  }
-
-
-}
-
 
 function draw() {
   background('black')
   
   //for debug only
   currentGameState = 2
-  currentLocation = 2
+  currentLocation = 1
 
   //Calculates new mouse coordinates based on center of screen instead of default top left corner, thus allowing coordinates to remain same regardless of window resizing - crucial when calculating mouse click position across different window sizes
   newMouseX = mouseX - (windowWidth/2)
@@ -499,8 +329,27 @@ function draw() {
 
   BGtilesInside()
   NAVtiles()
-  OBJtiles()
- 
+
+  push()
+
+  //apply VHS effects
+  drawFlicker()
+  frameJitter()
+  applyVHSdistortion()
+  
+  fill(0, 0, 0,)
+  strokeWeight(30)
+  stroke(50, 50, 50)
+  rect(0, 256/4, 1550, 1024)
+  strokeWeight(20)
+  stroke(100, 100, 100)
+  rect(0, 256/4, 1550, 1024)
+  strokeWeight(10)
+  stroke(150, 150, 150)
+  rect(0, 256/4, 1550, 1024)
+
+  pop()
+
 
   push()
 
@@ -521,18 +370,6 @@ function draw() {
     }
   }
 
-
-   //draw each object stored in OBJ map
-   for (let tileX = 0; tileX < BGtilesX; tileX++) {
-
-    for (let tileY = 0; tileY < BGtilesY; tileY++) {
-
-      OBJtileMapLayer1[tileX][tileY].displayTile()
-      OBJtileMapLayer2[tileX][tileY].displayTile()
-      OBJtileMapLayer3[tileX][tileY].displayTile()
-    }
-  }
-
   //sorts the orientation and position of navigation arrows
   for (let tileX = 0; tileX < OVERLAYtilesX; tileX++) {
 
@@ -540,12 +377,12 @@ function draw() {
 
       if (navPosMap1[tileX][tileY] == 1) {
         push()
-        translate(-30, -30)
+        translate(-NAVtileSize + 1 -30, -30)
         NAVtileMap[tileX][tileY].displayTile()
         pop()
       } else if (navPosMap1[tileX][tileY] == -1) {
         push()
-        translate((NAVtileSize * 17 + 30), -30)
+        translate((NAVtileSize * 18 + 30), -30)
         scale(-1, 1)
         NAVtileMap[tileX][tileY].displayTile()
         pop()
@@ -558,9 +395,12 @@ function draw() {
   //reset translations (so they don't just accumulate with every run of the draw function)
   pop()
 
+  push()
+  translate(0, 256/4)
   //semi-transparent VHS-style overlay
   tint(255, 100);
-  image(VHSoverlay, 0, 0, 1280, 768);
+  image(VHSoverlay, 0, 0, 1550, 1024);
+  pop()
 
   //track mouse coordinates (useful for tracking click position later)
   fill('white')
