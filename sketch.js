@@ -14,7 +14,11 @@ let newMouseY;
 //2D arrays containing each instance of the Tile Class we create
 let BGtileMap = [];
 let NAVtileMap = [];
-let OBJtileMap = [];
+let OBJtileMapLayer1 = [];
+let OBJtileMapLayer2 = [];
+let OBJtileMapLayer3 = [];
+let OBJhighlightMap = [];
+
 //How many BG tiles there are in a row
 let BGtilesX = 5;
 //How many BG tiles there are in a column
@@ -34,6 +38,13 @@ let OBJsizeY;
 //Image asset used for each tile (self-explanatory?)
 let tileImage;
 
+//initialises arrays to store objects for each room
+let OBJlivingRoomArray = [];
+let OBJkitchenArray = [];
+let OBJhallArray = [];
+let OBJbedroomArray = [];
+let OBJbathroomArray = [];
+
 
 //Graphics maps for each environment, dictating placement of tiles for background
 //Oriented weirdly for some reason? Wasn't harming anyone so just left it lol
@@ -47,6 +58,7 @@ let BGlivingRoomMap = [
   [1, 2, 3]
 ]
 
+//Layout of different tile types for the background of the kitchen
 let BGkitchenMap = [
   [1, 1, 1],
   [1, 1, 1],
@@ -55,6 +67,7 @@ let BGkitchenMap = [
   [1, 1, 1]
 ]
 
+//Layout of different tile types for the background of the bedroom
 let BGbedroomMap = [
   [1, 1, 1],
   [1, 1, 1],
@@ -63,6 +76,7 @@ let BGbedroomMap = [
   [1, 1, 1]
 ]
 
+//Layout of different tile types for the background of the bathroom
 let BGbathroomMap = [
   [1, 1, 1],
   [1, 1, 1],
@@ -71,6 +85,7 @@ let BGbathroomMap = [
   [1, 1, 1]
 ]
 
+//Layout of different tile types for the background of the hallway
 let BGhallwayMap = [
   [1, 1, 2],
   [1, 1, 2],
@@ -92,6 +107,32 @@ let navPosMap1 = [
   [0, 0, 0, 0, 0],
   [0, 0, -1, 0, 0]
 ]
+
+//Layout of different objects in the living room
+let LR_OBJarrangement_L1_1 = [
+  [0, 0, 1],
+  [0, 0, 0],
+  [0, 0, 0],
+  [0, 0, 0],
+  [0, 0, 0]
+]
+
+let LR_OBJarrangement_L2_1 = [
+  [0, 0, 2],
+  [0, 0, 0],
+  [0, 0, 0],
+  [0, 0, 0],
+  [0, 0, 0]
+]
+
+let LR_OBJarrangement_L3_1 = [
+  [0, 0, 3],
+  [0, 0, 0],
+  [0, 0, 0],
+  [0, 0, 0],
+  [0, 0, 0]
+]
+
 
 
 //Used for background tiles of any given scene
@@ -120,13 +161,13 @@ class OBJtileClass {
     this.tileSizeX = tileSizeX;
     this.tileSizeY = tileSizeY;
     this.tileID = tileID;
-    this.xPos = this.tileX * this.tileSizeX;
-    this.yPos = this.tileY * this.tileSizeY;
+    this.xPos = this.tileX * 256 + this.tileSizeX/4;
+    this.yPos = (this.tileY - 1) * 256 + this.tileSizeY/4;
     this.tileImage = tileImage
   }
 
   displayTile() {
-    image(this.tileImage, this.xPos, this.yPos, this.tileSize, this.tileSize)
+    image(this.tileImage, this.xPos, this.yPos, this.tileSizeX, this.tileSizeY)
   }
 }
 
@@ -156,7 +197,9 @@ function preload() {
   BGbathroom = loadImage("assets/BG_BathroomTiles.png")
 
   //objects
-  OBJCabinet = loadImage("assets/OBJ_Cabinet.png")
+  OBJcabinet = loadImage("assets/OBJ_Cabinet.png")
+  OBJdrawers = loadImage("assets/OBJ_Drawers.png")
+  OBJradio = loadImage("assets/OBJ_Radio.png")
 
   //icons
   ICONnavigation = loadImage("assets/ICON_NavigationArrow.png")
@@ -200,8 +243,8 @@ function setup() {
   VHSoverlay.volume(0);
   VHSoverlay.play()
 
-  // BGtilesInside()
-  // NAVtiles()
+  //object arrays populated only once, at setup
+  populateOBJarrays();
 
 }
 
@@ -214,6 +257,22 @@ function windowResized() {
 //anything to do with clicking the mouse - tracking it's position, recording interaction, playing noise etc
 function mouseClicked() {
 //nothing here yet
+}
+
+//store details of each object in their respective arrays (based on room)
+function populateOBJarrays() {
+
+  OBJlivingRoomArray = [
+    [1, OBJcabinet, 512, 512],
+    [2, OBJdrawers, 512, 512],
+    [3, OBJradio, 512, 512]
+  ];
+  OBJkitchenArray = [];
+  OBJhallArray = [];
+  OBJbedroomArray = [];
+  OBJbathroomArray = [];
+
+
 }
 
 
@@ -311,36 +370,118 @@ function NAVtiles() {
 function OBJtiles() {
  
   let OBJtileID = 0
+  let OBJindex = 0
   
   //resets existing tile map to clean/empty map for new environment to be added
-  OBJtileMap = []
+  OBJtileMapLayer1 = []
+  OBJtileMapLayer2 = []
+  OBJtileMapLayer3 = []
+  OBJhighlightMap = []
+
+  LR_OBJarrangement_L1_1
+
+  //Fill object map for each layer of objects
 
   //iterate through each row of tiles
-  for (let tileX = 0; tileX < OBJtilesX; tileX++) {
+  for (let tileX = 0; tileX < BGtilesX; tileX++) {
 
     //create a new array within the tileMap array, corresponding to each row in the on-screen tileMap
     //clears any previously stored array in that row
-    OBJtileMap[tileX] = []
-
+    OBJtileMapLayer1[tileX] = []
 
     //iterate through each column of tiles within a row
-    for (let tileY = 0; tileY < OBJtilesY; tileY++) {
+    for (let tileY = 0; tileY < BGtilesY; tileY++) {
 
-      //dictates whether the tile is displayed
-      if (navPosMap1[tileX][tileY] == 1) {
-        tileImage = ICONnavigation
-      } else if (navPosMap1[tileX][tileY] == -1) {
-        tileImage = ICONnavigation
-      } else {
-        tileImage = BLANKtile
+      //which object is displayed and where
+      if (currentLocation == 2) {
+        OBJindex = (LR_OBJarrangement_L1_1[tileX][tileY]) - 1
       }
 
+        if (OBJindex < 0) {
+          tileImage = BLANKtile
+          OBJsizeX = BGtileSize
+          OBJsizeY = BGtileSize
+        } else {
+          tileImage = OBJlivingRoomArray[OBJindex][1]
+          OBJsizeX = OBJlivingRoomArray[OBJindex][2]
+          OBJsizeY = OBJlivingRoomArray[OBJindex][3]
+        }
+
+
       //adds new tile to tile map!
-      OBJtileMap[tileX][tileY] = new OBJtileClass(tileX, tileY, OBJsizeX, OBJsizeY, OBJtileID, tileImage)
+      OBJtileMapLayer1[tileX][tileY] = new OBJtileClass(tileX, tileY, OBJsizeX, OBJsizeY, OBJtileID, tileImage)
       OBJtileID++
 
     }
   }
+
+  //iterate through each row of tiles
+  for (let tileX = 0; tileX < BGtilesX; tileX++) {
+
+    //create a new array within the tileMap array, corresponding to each row in the on-screen tileMap
+    //clears any previously stored array in that row
+    OBJtileMapLayer2[tileX] = []
+
+    //iterate through each column of tiles within a row
+    for (let tileY = 0; tileY < BGtilesY; tileY++) {
+
+      //which object is displayed and where
+      if (currentLocation == 2) {
+        OBJindex = (LR_OBJarrangement_L2_1[tileX][tileY]) - 1
+      }
+
+        if (OBJindex < 0) {
+          tileImage = BLANKtile
+          OBJsizeX = BGtileSize
+          OBJsizeY = BGtileSize
+        } else {
+          tileImage = OBJlivingRoomArray[OBJindex][1]
+          OBJsizeX = OBJlivingRoomArray[OBJindex][2]
+          OBJsizeY = OBJlivingRoomArray[OBJindex][3]
+        }
+
+
+      //adds new tile to tile map!
+      OBJtileMapLayer2[tileX][tileY] = new OBJtileClass(tileX, tileY, OBJsizeX, OBJsizeY, OBJtileID, tileImage)
+      OBJtileID++
+
+    }
+  }
+
+  //iterate through each row of tiles
+  for (let tileX = 0; tileX < BGtilesX; tileX++) {
+
+    //create a new array within the tileMap array, corresponding to each row in the on-screen tileMap
+    //clears any previously stored array in that row
+    OBJtileMapLayer3[tileX] = []
+
+    //iterate through each column of tiles within a row
+    for (let tileY = 0; tileY < BGtilesY; tileY++) {
+
+      //which object is displayed and where
+      if (currentLocation == 2) {
+        OBJindex = (LR_OBJarrangement_L3_1[tileX][tileY]) - 1
+      }
+
+        if (OBJindex < 0) {
+          tileImage = BLANKtile
+          OBJsizeX = BGtileSize
+          OBJsizeY = BGtileSize
+        } else {
+          tileImage = OBJlivingRoomArray[OBJindex][1]
+          OBJsizeX = OBJlivingRoomArray[OBJindex][2]
+          OBJsizeY = OBJlivingRoomArray[OBJindex][3]
+        }
+
+
+      //adds new tile to tile map!
+      OBJtileMapLayer3[tileX][tileY] = new OBJtileClass(tileX, tileY, OBJsizeX, OBJsizeY, OBJtileID, tileImage)
+      OBJtileID++
+
+    }
+  }
+
+
 }
 
 
@@ -356,12 +497,11 @@ function draw() {
   newMouseY = mouseY - (windowHeight/2)
 
 
-  if (currentGameState == 2) {
-    BGtilesInside()
-    NAVtiles()
-  }
+  BGtilesInside()
+  NAVtiles()
+  OBJtiles()
+ 
 
-  
   push()
 
   //centre tile maps in window
@@ -381,6 +521,18 @@ function draw() {
     }
   }
 
+
+   //draw each object stored in OBJ map
+   for (let tileX = 0; tileX < BGtilesX; tileX++) {
+
+    for (let tileY = 0; tileY < BGtilesY; tileY++) {
+
+      OBJtileMapLayer1[tileX][tileY].displayTile()
+      OBJtileMapLayer2[tileX][tileY].displayTile()
+      OBJtileMapLayer3[tileX][tileY].displayTile()
+    }
+  }
+
   //sorts the orientation and position of navigation arrows
   for (let tileX = 0; tileX < OVERLAYtilesX; tileX++) {
 
@@ -388,12 +540,12 @@ function draw() {
 
       if (navPosMap1[tileX][tileY] == 1) {
         push()
-        translate(-30, 0)
+        translate(-30, -30)
         NAVtileMap[tileX][tileY].displayTile()
         pop()
       } else if (navPosMap1[tileX][tileY] == -1) {
         push()
-        translate((NAVtileSize * 17 + 30), 0)
+        translate((NAVtileSize * 17 + 30), -30)
         scale(-1, 1)
         NAVtileMap[tileX][tileY].displayTile()
         pop()
@@ -401,6 +553,7 @@ function draw() {
 
     }
   }
+
 
   //reset translations (so they don't just accumulate with every run of the draw function)
   pop()
