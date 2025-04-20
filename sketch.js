@@ -11,11 +11,18 @@ let BGtileMap = [];
 //How many tiles there are in a row
 let BGtilesX = 5;
 //How many tiles there are in a column
-let BGtilesY = 5;
+let BGtilesY = 3;
 //The pixel height and width of a single tile (they are the same as it is a square) - we have chosen a 16x16 tile style for our game
 let BGtileSize = 256;
 let tileImage;
 
+let BGlivingRoomMap = [
+  [0, 1, 2],
+  [0, 1, 2],
+  [0, 1, 2],
+  [0, 1, 2],
+  [0, 1, 2]
+]
 
 class backgroundTile {
   //defining the aspects that each instance of the class will contain
@@ -39,9 +46,9 @@ class backgroundTile {
 function preload() {
 
   //background tiles
-  // BGPanellingLower = loadImage("assets/BG_PanellingLower.png")
-  // BGPannellingUpper = loadImage("assets/BG_PannellingUpper.png")
-  BGWallpaper = loadImage("assets/BG_Wallpaper.png")
+  BGwallpaper = loadImage("assets/BG_Wallpaper.png")
+  BGpanellingLower = loadImage("assets/BG_PanellingLower.png")
+  BGpanellingUpper = loadImage("assets/BG_PanellingUpper.png")
 
 }
 
@@ -55,22 +62,8 @@ function setup() {
   imageMode(CENTER)
   rectMode(CENTER)
 
-  let tileID = 0
-  //iterate through each row of tiles
-  for (let tileX = 0; tileX < BGtilesX; tileX++) {
+  BGinside()
 
-    //create a new array within the tileMap array, corresponding to each row in the on-screen tileMap
-    BGtileMap[tileX] = []
-
-    //iterate through each column of tiles within a row
-    for (let tileY = 0; tileY < BGtilesY; tileY++) {
-      tileImage = BGWallpaper
-
-      BGtileMap[tileX][tileY] = new backgroundTile(tileX, tileY, BGtileSize, tileID, tileImage)
-      tileID++
-
-    }
-  }
 }
 
 function windowResized() {
@@ -84,7 +77,31 @@ function mouseClicked() {
 }
 
 function BGinside() {
-  
+
+
+  let tileID = 0
+  //iterate through each row of tiles
+  for (let tileX = 0; tileX < BGtilesX; tileX++) {
+
+    //create a new array within the tileMap array, corresponding to each row in the on-screen tileMap
+    BGtileMap[tileX] = []
+
+    //iterate through each column of tiles within a row
+    for (let tileY = 0; tileY < BGtilesY; tileY++) {
+
+      if (BGlivingRoomMap[tileX][tileY] == 0) {
+        tileImage = BGwallpaper
+      } else if (BGlivingRoomMap[tileX][tileY] == 1) {
+        tileImage = BGpanellingUpper
+      } else if (BGlivingRoomMap[tileX][tileY] == 2) {
+        tileImage = BGpanellingLower
+      }
+
+      BGtileMap[tileX][tileY] = new backgroundTile(tileX, tileY, BGtileSize, tileID, tileImage)
+      tileID++
+
+    }
+  }
 }
 
 function draw() {
