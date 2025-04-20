@@ -1,7 +1,7 @@
 //dictating which 'stage' of the game we are in, changes the background tilemaps and any events
 let currentGameState = 0;
 //more specific, works within each game state i.e. may be in state 2 (inside), dictates whether in location 0 (bathroom) or location 1 (bedroom) etc.
-let currentLocation = 1;
+let currentLocation = 0;
 //even more specific, specifies which part of a location is the player's current focus i.e. left wall
 let currentFocus = 0;
 
@@ -13,7 +13,8 @@ let newMouseY;
 //defining the tile map
 //2D arrays containing each instance of the Tile Class we create
 let BGtileMap = [];
-let ARROWtileMap = [];
+let NAVtileMap = [];
+let OBJtileMap = [];
 //How many BG tiles there are in a row
 let BGtilesX = 5;
 //How many BG tiles there are in a column
@@ -25,7 +26,11 @@ let OVERLAYtilesX = 10;
 //How many overlay tiles there are in a column
 let OVERLAYtilesY = 6;
 //The pixel height and width of a single overlay tile
-let OVERLAYtileSize = 128;
+let NAVtileSize = 128;
+//Objects use the same amount of X and Y tiles as the BG, so reuse those variables
+//Objects don't all have uniform size, so need separate variables for X and Y
+let OBJsizeX;
+let OBJsizeY;
 //Image asset used for each tile (self-explanatory?)
 let tileImage;
 
@@ -90,7 +95,7 @@ let navPosMap1 = [
 
 
 //Used for background tiles of any given scene
-class standardTile {
+class BGtileClass {
   //defining the aspects that each instance of the class will contain
   constructor(tileX, tileY, tileSize, tileID, tileImage) {
     this.tileX = tileX;
@@ -99,6 +104,24 @@ class standardTile {
     this.tileID = tileID;
     this.xPos = this.tileX * this.tileSize;
     this.yPos = this.tileY * this.tileSize;
+    this.tileImage = tileImage
+  }
+
+  displayTile() {
+    image(this.tileImage, this.xPos, this.yPos, this.tileSize, this.tileSize)
+  }
+}
+
+class OBJtileClass {
+  //defining the aspects that each instance of the class will contain
+  constructor(tileX, tileY, tileSizeX, tileSizeY, tileID, tileImage) {
+    this.tileX = tileX;
+    this.tileY = tileY;
+    this.tileSizeX = tileSizeX;
+    this.tileSizeY = tileSizeY;
+    this.tileID = tileID;
+    this.xPos = this.tileX * this.tileSizeX;
+    this.yPos = this.tileY * this.tileSizeY;
     this.tileImage = tileImage
   }
 
@@ -133,6 +156,7 @@ function preload() {
   BGbathroom = loadImage("assets/BG_BathroomTiles.png")
 
   //objects
+  OBJCabinet = loadImage("assets/OBJ_Cabinet.png")
 
   //icons
   ICONnavigation = loadImage("assets/ICON_NavigationArrow.png")
@@ -176,8 +200,8 @@ function setup() {
   VHSoverlay.volume(0);
   VHSoverlay.play()
 
-  BGtilesInside()
-  arrowOverlayTiles()
+  // BGtilesInside()
+  // NAVtiles()
 
 }
 
@@ -242,26 +266,26 @@ function BGtilesInside() {
       }
 
       //adds new tile to tile map!
-      BGtileMap[tileX][tileY] = new standardTile(tileX, tileY, BGtileSize, BGtileID, tileImage)
+      BGtileMap[tileX][tileY] = new BGtileClass(tileX, tileY, BGtileSize, BGtileID, tileImage)
       BGtileID++
 
     }
   }
 }
 
-function arrowOverlayTiles() {
+function NAVtiles() {
  
-  let ARROWtileID = 0
+  let NAVtileID = 0
   
   //resets existing tile map to clean/empty map for new environment to be added
-  ARROWtileMap = []
+  NAVtileMap = []
 
   //iterate through each row of tiles
   for (let tileX = 0; tileX < OVERLAYtilesX; tileX++) {
 
     //create a new array within the tileMap array, corresponding to each row in the on-screen tileMap
     //clears any previously stored array in that row
-    ARROWtileMap[tileX] = []
+    NAVtileMap[tileX] = []
 
 
     //iterate through each column of tiles within a row
@@ -277,8 +301,43 @@ function arrowOverlayTiles() {
       }
 
       //adds new tile to tile map!
-      ARROWtileMap[tileX][tileY] = new standardTile(tileX, tileY, OVERLAYtileSize, ARROWtileID, tileImage)
-      ARROWtileID++
+      NAVtileMap[tileX][tileY] = new BGtileClass(tileX, tileY, NAVtileSize, NAVtileID, tileImage)
+      NAVtileID++
+
+    }
+  }
+}
+
+function OBJtiles() {
+ 
+  let OBJtileID = 0
+  
+  //resets existing tile map to clean/empty map for new environment to be added
+  OBJtileMap = []
+
+  //iterate through each row of tiles
+  for (let tileX = 0; tileX < OBJtilesX; tileX++) {
+
+    //create a new array within the tileMap array, corresponding to each row in the on-screen tileMap
+    //clears any previously stored array in that row
+    OBJtileMap[tileX] = []
+
+
+    //iterate through each column of tiles within a row
+    for (let tileY = 0; tileY < OBJtilesY; tileY++) {
+
+      //dictates whether the tile is displayed
+      if (navPosMap1[tileX][tileY] == 1) {
+        tileImage = ICONnavigation
+      } else if (navPosMap1[tileX][tileY] == -1) {
+        tileImage = ICONnavigation
+      } else {
+        tileImage = BLANKtile
+      }
+
+      //adds new tile to tile map!
+      OBJtileMap[tileX][tileY] = new OBJtileClass(tileX, tileY, OBJsizeX, OBJsizeY, OBJtileID, tileImage)
+      OBJtileID++
 
     }
   }
@@ -287,12 +346,20 @@ function arrowOverlayTiles() {
 
 function draw() {
   background('black')
-  currentGameState = 0
+  
+  //for debug only
+  currentGameState = 2
   currentLocation = 2
 
   //Calculates new mouse coordinates based on center of screen instead of default top left corner, thus allowing coordinates to remain same regardless of window resizing - crucial when calculating mouse click position across different window sizes
   newMouseX = mouseX - (windowWidth/2)
   newMouseY = mouseY - (windowHeight/2)
+
+
+  if (currentGameState == 2) {
+    BGtilesInside()
+    NAVtiles()
+  }
 
   
   push()
@@ -314,6 +381,7 @@ function draw() {
     }
   }
 
+  //sorts the orientation and position of navigation arrows
   for (let tileX = 0; tileX < OVERLAYtilesX; tileX++) {
 
     for (let tileY = 0; tileY < OVERLAYtilesY; tileY++) {
@@ -321,13 +389,13 @@ function draw() {
       if (navPosMap1[tileX][tileY] == 1) {
         push()
         translate(-30, 0)
-        ARROWtileMap[tileX][tileY].displayTile()
+        NAVtileMap[tileX][tileY].displayTile()
         pop()
       } else if (navPosMap1[tileX][tileY] == -1) {
         push()
-        translate((BGtileSize * 8.5 + 30), 0)
+        translate((NAVtileSize * 17 + 30), 0)
         scale(-1, 1)
-        ARROWtileMap[tileX][tileY].displayTile()
+        NAVtileMap[tileX][tileY].displayTile()
         pop()
       }
 
