@@ -1,7 +1,7 @@
 //dictating which 'stage' of the game we are in, changes the background tilemaps and any events
 let currentGameState = 0;
 //more specific, works within each game state i.e. may be in state 2 (inside), dictates whether in location 0 (bathroom) or location 1 (bedroom) etc.
-let currentLocation = 1;
+let currentLocation = 3;
 
 //essential to centre all activity on the screen, regardless of screen size
 let newMouseX;
@@ -170,6 +170,10 @@ function BGtilesInside() {
         }
       } else if (currentLocation == 2) {
         if (BGkitchenMap[tileX][tileY] == 1) {
+          tileImage = BGkitchen
+        }
+      } else if (currentLocation == 3) {
+        if (BGbedroomMap[tileX][tileY] == 1) {
           tileImage = BGbedroom
         }
       }
@@ -215,7 +219,7 @@ function draw() {
   pop()
 
   //semi-transparent VHS-style overlay
-  tint(255, 150);
+  tint(255, 100);
   image(VHSoverlay, 0, 0, 1280, 768);
 
   //track mouse coordinates (useful for tracking click position later)
