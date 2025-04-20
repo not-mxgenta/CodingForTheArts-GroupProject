@@ -1,7 +1,9 @@
 //dictating which 'stage' of the game we are in, changes the background tilemaps and any events
 let currentGameState = 0;
 //more specific, works within each game state i.e. may be in state 2 (inside), dictates whether in location 0 (bathroom) or location 1 (bedroom) etc.
-let currentLocation = 3;
+let currentLocation = 1;
+//even more specific, specifies which part of a location is the player's current focus i.e. left wall
+let currentFocus = 0;
 
 //essential to centre all activity on the screen, regardless of screen size
 let newMouseX;
@@ -9,14 +11,21 @@ let newMouseY;
 
 
 //defining the tile map
-//a 2D array containing each instance of the Tile Class we create
+//2D arrays containing each instance of the Tile Class we create
 let BGtileMap = [];
-//How many tiles there are in a row
+let ARROWtileMap = [];
+//How many BG tiles there are in a row
 let BGtilesX = 5;
-//How many tiles there are in a column
+//How many BG tiles there are in a column
 let BGtilesY = 3;
-//The pixel height and width of a single tile (they are the same as it is a square) - we have chosen a 16x16 tile style for our game
+//The pixel height and width of a single BG tile (they are the same as it is a square) - we have chosen a 16x16 tile style for our game
 let BGtileSize = 256;
+//How many overlay tiles there are in a row
+let OVERLAYtilesX = 10;
+//How many overlay tiles there are in a column
+let OVERLAYtilesY = 6;
+//The pixel height and width of a single overlay tile
+let OVERLAYtileSize = 128;
 //Image asset used for each tile (self-explanatory?)
 let tileImage;
 
@@ -49,11 +58,41 @@ let BGbedroomMap = [
   [1, 1, 1]
 ]
 
+let BGbathroomMap = [
+  [1, 1, 1],
+  [1, 1, 1],
+  [1, 1, 1],
+  [1, 1, 1],
+  [1, 1, 1]
+]
+
+let BGhallwayMap = [
+  [1, 1, 2],
+  [1, 1, 2],
+  [1, 1, 2],
+  [1, 1, 2],
+  [1, 1, 2]
+]
+
+//potential positions and orientations for navigation arrows
+let navPosMap1 = [
+  [0, 0, 1, 0, 0],
+  [0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0],
+  [0, 0, -1, 0, 0]
+]
+
 
 //Used for background tiles of any given scene
-class backgroundTile {
+class standardTile {
   //defining the aspects that each instance of the class will contain
-  constructor(tileX, tileY, tileSize, tileID, TileImage) {
+  constructor(tileX, tileY, tileSize, tileID, tileImage) {
     this.tileX = tileX;
     this.tileY = tileY;
     this.tileSize = tileSize;
@@ -78,7 +117,7 @@ function preload() {
   //font
   VT323Font = loadFont("assets/fonts/VT323-Regular.ttf")
 
-  //background tiles
+  //background tiles (inside)
   //living room
   BGwallpaper = loadImage("assets/BG_Wallpaper.png")
   BGpanellingLower = loadImage("assets/BG_PanellingLower.png")
@@ -87,6 +126,19 @@ function preload() {
   BGkitchen = loadImage("assets/BG_KitchenTiles.png")
   //bedroom
   BGbedroom = loadImage("assets/BG_BedroomWall.png")
+  //hallway
+  BGhallwayWallpaper = loadImage("assets/BG_HallWallpaper.png")
+  BGhallwayPanelling = loadImage("assets/BG_HallPanelling.png")
+  //bathroom
+  BGbathroom = loadImage("assets/BG_BathroomTiles.png")
+
+  //objects
+
+  //icons
+  ICONnavigation = loadImage("assets/ICON_NavigationArrow.png")
+
+  //other
+  BLANKtile = loadImage("assets/BLANKtile.png")
 
 }
 
@@ -125,6 +177,7 @@ function setup() {
   VHSoverlay.play()
 
   BGtilesInside()
+  arrowOverlayTiles()
 
 }
 
@@ -142,7 +195,7 @@ function mouseClicked() {
 
 function BGtilesInside() {
 
-  let tileID = 0
+  let BGtileID = 0
   
   //resets existing tile map to clean/empty map for new environment to be added
   BGtileMap = []
@@ -161,6 +214,12 @@ function BGtilesInside() {
       //changes the image asset to use for the tile based on its value in the graphics map declared at the beginning
       //each environment uses a different graphics map, dictated by the current game state and location
       if (currentLocation == 1) {
+        if (BGhallwayMap[tileX][tileY] == 1) {
+          tileImage = BGhallwayWallpaper
+        } else if (BGhallwayMap[tileX][tileY] == 2) {
+          tileImage = BGhallwayPanelling
+        }
+      } else if (currentLocation == 2) {
         if (BGlivingRoomMap[tileX][tileY] == 1) {
           tileImage = BGwallpaper
         } else if (BGlivingRoomMap[tileX][tileY] == 2) {
@@ -168,28 +227,68 @@ function BGtilesInside() {
         } else if (BGlivingRoomMap[tileX][tileY] == 3) {
           tileImage = BGpanellingLower
         }
-      } else if (currentLocation == 2) {
+      } else if (currentLocation == 3) {
         if (BGkitchenMap[tileX][tileY] == 1) {
           tileImage = BGkitchen
         }
-      } else if (currentLocation == 3) {
+      } else if (currentLocation == 4) {
+        if (BGbathroomMap[tileX][tileY] == 1) {
+          tileImage = BGbathroom
+        }
+      } else if (currentLocation == 5) {
         if (BGbedroomMap[tileX][tileY] == 1) {
           tileImage = BGbedroom
         }
       }
 
       //adds new tile to tile map!
-      BGtileMap[tileX][tileY] = new backgroundTile(tileX, tileY, BGtileSize, tileID, tileImage)
-      tileID++
+      BGtileMap[tileX][tileY] = new standardTile(tileX, tileY, BGtileSize, BGtileID, tileImage)
+      BGtileID++
 
     }
   }
 }
 
+function arrowOverlayTiles() {
+ 
+  let ARROWtileID = 0
+  
+  //resets existing tile map to clean/empty map for new environment to be added
+  ARROWtileMap = []
+
+  //iterate through each row of tiles
+  for (let tileX = 0; tileX < OVERLAYtilesX; tileX++) {
+
+    //create a new array within the tileMap array, corresponding to each row in the on-screen tileMap
+    //clears any previously stored array in that row
+    ARROWtileMap[tileX] = []
+
+
+    //iterate through each column of tiles within a row
+    for (let tileY = 0; tileY < OVERLAYtilesY; tileY++) {
+
+      //dictates whether the tile is displayed
+      if (navPosMap1[tileX][tileY] == 1) {
+        tileImage = ICONnavigation
+      } else if (navPosMap1[tileX][tileY] == -1) {
+        tileImage = ICONnavigation
+      } else {
+        tileImage = BLANKtile
+      }
+
+      //adds new tile to tile map!
+      ARROWtileMap[tileX][tileY] = new standardTile(tileX, tileY, OVERLAYtileSize, ARROWtileID, tileImage)
+      ARROWtileID++
+
+    }
+  }
+}
+
+
 function draw() {
   background('black')
   currentGameState = 0
-  currentLocation = 1
+  currentLocation = 2
 
   //Calculates new mouse coordinates based on center of screen instead of default top left corner, thus allowing coordinates to remain same regardless of window resizing - crucial when calculating mouse click position across different window sizes
   newMouseX = mouseX - (windowWidth/2)
@@ -212,6 +311,26 @@ function draw() {
     for (let tileY = 0; tileY < BGtilesY; tileY++) {
 
       BGtileMap[tileX][tileY].displayTile()
+    }
+  }
+
+  for (let tileX = 0; tileX < OVERLAYtilesX; tileX++) {
+
+    for (let tileY = 0; tileY < OVERLAYtilesY; tileY++) {
+
+      if (navPosMap1[tileX][tileY] == 1) {
+        push()
+        translate(-30, 0)
+        ARROWtileMap[tileX][tileY].displayTile()
+        pop()
+      } else if (navPosMap1[tileX][tileY] == -1) {
+        push()
+        translate((BGtileSize * 8.5 + 30), 0)
+        scale(-1, 1)
+        ARROWtileMap[tileX][tileY].displayTile()
+        pop()
+      }
+
     }
   }
 
