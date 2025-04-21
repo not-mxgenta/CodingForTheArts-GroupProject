@@ -18,6 +18,7 @@ let rightNavHovered = true;
 //2D arrays containing each instance of the Tile Class we create
 let BGtileMap = [];
 let NAVtileMap = [];
+
 //containing all base object sheet images
 let OBJsheetArray = [];
 
@@ -88,6 +89,15 @@ let BGbathroomMap = [
   [1, 1, 1],
   [1, 1, 1],
   [1, 1, 1]
+]
+
+//Layout of different tile types for the background of the bathroom
+let BGbathroomCubbyMap = [
+  [0, 0, 0],
+  [1, 1, 1],
+  [1, 1, 1],
+  [1, 1, 1],
+  [0, 0, 0]
 ]
 
 //Layout of different tile types for the background of the hallway
@@ -177,11 +187,14 @@ function preload() {
 
   //objects
   OBJbedroom1 = loadImage("assets/OBJsheet_Bedroom1.png")
+  OBJstudy1 = loadImage("assets/OBJsheet_Study1.png")
   OBJkitchen1 = loadImage("assets/OBJsheet_Kitchen1.png")
   OBJkitchen2 = loadImage("assets/OBJsheet_Kitchen2.png")
   OBJdining1 = loadImage("assets/OBJsheet_DiningTable.png")
   OBJhallway1 = loadImage("assets/OBJsheet_Hallway1.png")
   OBJbathroom1 = loadImage("assets/OBJsheet_Bathroom1.png")
+  OBJbathroom2 = loadImage("assets/OBJsheet_Bathroom2.png")
+  OBJlivingroom1 = loadImage("assets/OBJsheet_LivingRoom1.png")
 
   //icons
   ICONnavigation = loadImage("assets/ICON_NavigationArrow.png")
@@ -287,13 +300,21 @@ function BGtilesInside() {
           tileImage = BLANKtile
         }
       } else if (currentLocation == 4) {
-        if (BGbathroomMap[tileX][tileY] == 1) {
-          tileImage = BGbathroom
+        if (currentFocus == 2) {
+          if (BGbathroomCubbyMap[tileX][tileY] == 1) {
+            tileImage = BGbathroom
+          } else {
+            tileImage = BLANKtile
+          }
         } else {
-          tileImage = BLANKtile
+          if (BGbathroomMap[tileX][tileY] == 1) {
+            tileImage = BGbathroom
+          } else {
+            tileImage = BLANKtile
+          }
         }
       } else if (currentLocation == 5) {
-        if (currentFocus == 3) {
+        if (currentFocus == 2) {
           if (BGbedroomStudyMap[tileX][tileY] == 1) {
             tileImage = BGbedroom
           } else {
@@ -365,7 +386,7 @@ function placeObjectsInside () {
     }
   } else if (currentLocation == 2) {
     if (currentFocus == 1) {
-      currentObjectArrangement = BLANKtile
+      currentObjectArrangement = OBJlivingroom1
     } else if (currentFocus == 2) {
       currentObjectArrangement = BLANKtile
     } else {
@@ -383,7 +404,7 @@ function placeObjectsInside () {
     if (currentFocus == 1) {
       currentObjectArrangement = OBJbathroom1
     } else if (currentFocus == 2) {
-      currentObjectArrangement = BLANKtile
+      currentObjectArrangement = OBJbathroom2
     } else {
       currentObjectArrangement = BLANKtile
     }
@@ -391,7 +412,7 @@ function placeObjectsInside () {
     if (currentFocus == 1) {
       currentObjectArrangement = OBJbedroom1
     } else if (currentFocus == 2) {
-      currentObjectArrangement = BLANKtile
+      currentObjectArrangement = OBJstudy1
     } else {
       currentObjectArrangement = BLANKtile
     }
