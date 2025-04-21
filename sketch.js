@@ -38,6 +38,7 @@ let OBJsizeY;
 //Image asset used for each tile (self-explanatory?)
 let tileImage;
 
+
 //initialises arrays to store objects for each room
 let OBJlivingRoomArray = [];
 let OBJkitchenArray = [];
@@ -76,6 +77,14 @@ let BGbedroomMap = [
   [1, 1, 1]
 ]
 
+let BGbedroomStudyMap = [
+  [0, 0, 0],
+  [1, 1, 1],
+  [1, 1, 1],
+  [1, 1, 1],
+  [0, 0, 0]
+]
+
 //Layout of different tile types for the background of the bathroom
 let BGbathroomMap = [
   [1, 1, 1],
@@ -109,8 +118,6 @@ let navPosMap1 = [
 ]
 
 
-
-
 //Used for background tiles of any given scene
 class BGtileClass {
   //defining the aspects that each instance of the class will contain
@@ -126,6 +133,24 @@ class BGtileClass {
 
   displayTile() {
     image(this.tileImage, this.xPos, this.yPos, this.tileSize, this.tileSize)
+  }
+}
+
+class interactTextClass {
+  constructor(xPos, yPos, INTtextSize, INTtextID, INTtextContent, isDisplayed) {
+    this.xPos = xPos;
+    this.yPos = yPos;
+    this.INTtextSize = INTtextSize;
+    this.INTtextID = INTtextID;
+    this.INTtextContent = INTtextContent;
+    this.isDisplayed = isDisplayed
+  }
+
+  displayText() {
+    fill('white')
+    textFont(VT323Font, this.INTtextSize)
+    textAlign(CENTER, CENTER)
+    text(this.INTtextContent, this.xPos, this.yPos)
   }
 }
 
@@ -248,6 +273,8 @@ function BGtilesInside() {
           tileImage = BGhallwayWallpaper
         } else if (BGhallwayMap[tileX][tileY] == 2) {
           tileImage = BGhallwayPanelling
+        } else {
+          tileImage = BLANKtile
         }
       } else if (currentLocation == 2) {
         if (BGlivingRoomMap[tileX][tileY] == 1) {
@@ -256,19 +283,36 @@ function BGtilesInside() {
           tileImage = BGpanellingUpper
         } else if (BGlivingRoomMap[tileX][tileY] == 3) {
           tileImage = BGpanellingLower
+        } else {
+          tileImage = BLANKtile
         }
       } else if (currentLocation == 3) {
         if (BGkitchenMap[tileX][tileY] == 1) {
           tileImage = BGkitchen
+        } else {
+          tileImage = BLANKtile
         }
       } else if (currentLocation == 4) {
         if (BGbathroomMap[tileX][tileY] == 1) {
           tileImage = BGbathroom
+        } else {
+          tileImage = BLANKtile
         }
       } else if (currentLocation == 5) {
-        if (BGbedroomMap[tileX][tileY] == 1) {
-          tileImage = BGbedroom
+        if (currentFocus == 3) {
+          if (BGbedroomStudyMap[tileX][tileY] == 1) {
+            tileImage = BGbedroom
+          } else {
+            tileImage = BLANKtile
+          }
+        } else {
+          if (BGbedroomMap[tileX][tileY] == 1) {
+            tileImage = BGbedroom
+          } else {
+            tileImage = BLANKtile
+          }
         }
+        
       }
 
       //adds new tile to tile map!
@@ -314,18 +358,27 @@ function NAVtiles() {
   }
 }
 
+function checkMouseHover() {
+  //Calculates new mouse coordinates based on center of screen instead of default top left corner, thus allowing coordinates to remain same regardless of window resizing - crucial when calculating mouse click position across different window sizes
+  newMouseX = mouseX - (windowWidth/2)
+  newMouseY = mouseY - (windowHeight/2)
+
+  //track mouse coordinates (useful for tracking click position later)
+  fill('white')
+  textFont(VT323Font, 30)
+  textAlign(CENTER, CENTER)
+  text(newMouseX, newMouseX+50, newMouseY)
+  text(newMouseY, newMouseX+50, newMouseY + 30)
+}
+
 
 function draw() {
   background('black')
   
   //for debug only
   currentGameState = 2
-  currentLocation = 1
-
-  //Calculates new mouse coordinates based on center of screen instead of default top left corner, thus allowing coordinates to remain same regardless of window resizing - crucial when calculating mouse click position across different window sizes
-  newMouseX = mouseX - (windowWidth/2)
-  newMouseY = mouseY - (windowHeight/2)
-
+  currentLocation = 5
+  currentFocus = 1
 
   BGtilesInside()
   NAVtiles()
@@ -402,11 +455,6 @@ function draw() {
   image(VHSoverlay, 0, 0, 1550, 1024);
   pop()
 
-  //track mouse coordinates (useful for tracking click position later)
-  fill('white')
-  textFont(VT323Font, 30)
-  textAlign(CENTER, CENTER)
-  text(newMouseX, newMouseX+50, newMouseY)
-  text(newMouseY, newMouseX+50, newMouseY + 30)
+  checkMouseHover()
   
 }
