@@ -9,15 +9,17 @@ let currentFocus = 0;
 let newMouseX;
 let newMouseY;
 
+//tracking whether nav buttons are hovered
+let leftNavHovered = false;
+let rightNavHovered = true;
+
 
 //defining the tile map
 //2D arrays containing each instance of the Tile Class we create
 let BGtileMap = [];
 let NAVtileMap = [];
-let OBJtileMapLayer1 = [];
-let OBJtileMapLayer2 = [];
-let OBJtileMapLayer3 = [];
-let OBJhighlightMap = [];
+//containing all base object sheet images
+let OBJsheetArray = [];
 
 //How many BG tiles there are in a row
 let BGtilesX = 5;
@@ -38,13 +40,6 @@ let OBJsizeY;
 //Image asset used for each tile (self-explanatory?)
 let tileImage;
 
-
-//initialises arrays to store objects for each room
-let OBJlivingRoomArray = [];
-let OBJkitchenArray = [];
-let OBJhallArray = [];
-let OBJbedroomArray = [];
-let OBJbathroomArray = [];
 
 
 //Graphics maps for each environment, dictating placement of tiles for background
@@ -77,6 +72,7 @@ let BGbedroomMap = [
   [1, 1, 1]
 ]
 
+//slimmer section of bedroom - 0s equal 'blank' tile
 let BGbedroomStudyMap = [
   [0, 0, 0],
   [1, 1, 1],
@@ -180,17 +176,12 @@ function preload() {
   BGbathroom = loadImage("assets/BG_BathroomTiles.png")
 
   //objects
-  //living room
-  OBJcabinet = loadImage("assets/OBJ_Cabinet.png")
-  OBJdrawers = loadImage("assets/OBJ_Drawers.png")
-  OBJradio = loadImage("assets/OBJ_Radio.png")
-  //bathroom
-  OBJbathroomCabinet = loadImage("assets/OBJ_Cabinet_Bathroom.png")
-  OBJcircleWindow = loadImage("assets/OBJ_CircleWindow.png")
-  OBJmirror = loadImage("assets/OBJ_Mirror.png")
-  OBJbathroomSink = loadImage("assets/OBJ_Sink_Bathroom.png")
-  OBJtoilet = loadImage("assets/OBJ_Toilet.png")
-  OBJtowelRail = loadImage("assets/OBJ_TowelRail.png")
+  OBJbedroom1 = loadImage("assets/OBJsheet_Bedroom1.png")
+  OBJkitchen1 = loadImage("assets/OBJsheet_Kitchen1.png")
+  OBJkitchen2 = loadImage("assets/OBJsheet_Kitchen2.png")
+  OBJdining1 = loadImage("assets/OBJsheet_DiningTable.png")
+  OBJhallway1 = loadImage("assets/OBJsheet_Hallway1.png")
+  OBJbathroom1 = loadImage("assets/OBJsheet_Bathroom1.png")
 
   //icons
   ICONnavigation = loadImage("assets/ICON_NavigationArrow.png")
@@ -218,6 +209,7 @@ function drawFlicker() {
 
 
 
+
 //general set up
 function setup() {
   //dynamically resizing window (see also windowResized())
@@ -233,6 +225,8 @@ function setup() {
   VHSoverlay.loop();
   VHSoverlay.volume(0);
   VHSoverlay.play()
+
+  OBJsheetArray = [OBJbedroom1, OBJbathroom1, OBJhallway1, OBJkitchen1, OBJkitchen2, OBJdining1]
 
 }
 
@@ -358,17 +352,69 @@ function NAVtiles() {
   }
 }
 
-function checkMouseHover() {
-  //Calculates new mouse coordinates based on center of screen instead of default top left corner, thus allowing coordinates to remain same regardless of window resizing - crucial when calculating mouse click position across different window sizes
-  newMouseX = mouseX - (windowWidth/2)
-  newMouseY = mouseY - (windowHeight/2)
+function placeObjectsInside () {
+  let currentObjectArrangement = BLANKtile
 
-  //track mouse coordinates (useful for tracking click position later)
-  fill('white')
-  textFont(VT323Font, 30)
-  textAlign(CENTER, CENTER)
-  text(newMouseX, newMouseX+50, newMouseY)
-  text(newMouseY, newMouseX+50, newMouseY + 30)
+  if (currentLocation == 1) {
+    if (currentFocus == 1) {
+      currentObjectArrangement = OBJhallway1
+    } else if (currentFocus == 2) {
+      currentObjectArrangement = BLANKtile
+    } else {
+      currentObjectArrangement = BLANKtile
+    }
+  } else if (currentLocation == 2) {
+    if (currentFocus == 1) {
+      currentObjectArrangement = BLANKtile
+    } else if (currentFocus == 2) {
+      currentObjectArrangement = BLANKtile
+    } else {
+      currentObjectArrangement = BLANKtile
+    }
+  } else if (currentLocation == 3) {
+    if (currentFocus == 1) {
+      currentObjectArrangement = OBJdining1
+    } else if (currentFocus == 2) {
+      currentObjectArrangement = OBJkitchen2
+    } else {
+      currentObjectArrangement = OBJkitchen1
+    }
+  } else if (currentLocation == 4) {
+    if (currentFocus == 1) {
+      currentObjectArrangement = OBJbathroom1
+    } else if (currentFocus == 2) {
+      currentObjectArrangement = BLANKtile
+    } else {
+      currentObjectArrangement = BLANKtile
+    }
+  } else if (currentLocation == 5) {
+    if (currentFocus == 1) {
+      currentObjectArrangement = OBJbedroom1
+    } else if (currentFocus == 2) {
+      currentObjectArrangement = BLANKtile
+    } else {
+      currentObjectArrangement = BLANKtile
+    }
+  }
+
+  image(currentObjectArrangement, 0, 0, 1280, 768)
+
+}
+
+function checkMouseHover() {
+
+//check, based on current mouse position, whether the player is hovering over the left or right nav arrows
+if (-740 < newMouseX && newMouseX < -670 && -80 < newMouseY && newMouseY < 10) {
+  leftNavHovered = true;
+  rightNavHovered = false;
+} else if (670 < newMouseX && newMouseX < 740 && -80 < newMouseY && newMouseY < 10) {
+  rightNavHovered = true;
+  leftNavHovered = false;
+} else {
+  rightNavHovered = false;
+  leftNavHovered = false;
+}
+
 }
 
 
@@ -377,18 +423,25 @@ function draw() {
   
   //for debug only
   currentGameState = 2
-  currentLocation = 5
+  currentLocation = 1
   currentFocus = 1
+
+  //Calculates new mouse coordinates based on center of screen instead of default top left corner, thus allowing coordinates to remain same regardless of window resizing - crucial when calculating mouse click position across different window sizes
+  newMouseX = mouseX - (windowWidth/2)
+  newMouseY = mouseY - (windowHeight/2)
 
   BGtilesInside()
   NAVtiles()
-
-  push()
 
   //apply VHS effects
   drawFlicker()
   frameJitter()
   applyVHSdistortion()
+
+  //check whether the mouse is hovering over anything interactable before drawing
+  checkMouseHover()
+
+  push()
   
   fill(0, 0, 0,)
   strokeWeight(30)
@@ -409,10 +462,6 @@ function draw() {
   //centre tile maps in window
   translate(-BGtilesX * BGtileSize/2 + BGtileSize/2, -BGtilesY * BGtileSize/2 + BGtileSize/2, 0);
 
-  //apply VHS effects
-  drawFlicker()
-  frameJitter()
-  applyVHSdistortion()
 
   //draw each tile in current tile map
   for (let tileX = 0; tileX < BGtilesX; tileX++) {
@@ -423,6 +472,7 @@ function draw() {
     }
   }
 
+
   //sorts the orientation and position of navigation arrows
   for (let tileX = 0; tileX < OVERLAYtilesX; tileX++) {
 
@@ -430,13 +480,19 @@ function draw() {
 
       if (navPosMap1[tileX][tileY] == 1) {
         push()
-        translate(-NAVtileSize + 1 -30, -30)
+        translate(-NAVtileSize - 30, -30)
+        if (leftNavHovered == true) {
+          scale(1.04, 1.04)
+        }
         NAVtileMap[tileX][tileY].displayTile()
         pop()
       } else if (navPosMap1[tileX][tileY] == -1) {
         push()
         translate((NAVtileSize * 18 + 30), -30)
         scale(-1, 1)
+        if (rightNavHovered == true) {
+          scale(1.02, 1.02)
+        }
         NAVtileMap[tileX][tileY].displayTile()
         pop()
       }
@@ -444,9 +500,15 @@ function draw() {
     }
   }
 
-
   //reset translations (so they don't just accumulate with every run of the draw function)
   pop()
+
+
+  push()
+  //draw objects based on current location and focus
+  placeObjectsInside()
+  pop()
+
 
   push()
   translate(0, 256/4)
@@ -455,6 +517,11 @@ function draw() {
   image(VHSoverlay, 0, 0, 1550, 1024);
   pop()
 
-  checkMouseHover()
-  
+  //track mouse coordinates on screen (useful for tracking click position later, remove when submitting final game)
+  fill('white')
+  textFont(VT323Font, 30)
+  textAlign(CENTER, CENTER)
+  text(newMouseX, newMouseX+50, newMouseY)
+  text(newMouseY, newMouseX+50, newMouseY + 30)
+
 }
