@@ -482,7 +482,7 @@ function draw() {
         push()
         translate(-NAVtileSize - 30, -30)
         if (leftNavHovered == true) {
-          scale(1.04, 1.04)
+          translate(10, 10)
         }
         NAVtileMap[tileX][tileY].displayTile()
         pop()
@@ -491,7 +491,7 @@ function draw() {
         translate((NAVtileSize * 18 + 30), -30)
         scale(-1, 1)
         if (rightNavHovered == true) {
-          scale(1.02, 1.02)
+          translate(10, 10)
         }
         NAVtileMap[tileX][tileY].displayTile()
         pop()
