@@ -57,46 +57,46 @@ let BGlivingRoomMap = [
 
 //Layout of different tile types for the background of the kitchen
 let BGkitchenMap = [
-  [1, 1, 1],
-  [1, 1, 1],
-  [1, 1, 1],
-  [1, 1, 1],
-  [1, 1, 1]
+  [1, 2, 3],
+  [1, 2, 3],
+  [1, 2, 3],
+  [1, 2, 3],
+  [1, 2, 3]
 ]
 
 //Layout of different tile types for the background of the bedroom
 let BGbedroomMap = [
-  [1, 1, 1],
-  [1, 1, 1],
-  [1, 1, 1],
-  [1, 1, 1],
-  [1, 1, 1]
+  [3, 2, 1],
+  [3, 2, 1],
+  [3, 2, 1],
+  [3, 2, 1],
+  [3, 2, 1]
 ]
 
 //slimmer section of bedroom - 0s equal 'blank' tile
 let BGbedroomStudyMap = [
   [0, 0, 0],
-  [1, 1, 1],
-  [1, 1, 1],
-  [1, 1, 1],
+  [3, 2, 1],
+  [3, 2, 1],
+  [3, 2, 1],
   [0, 0, 0]
 ]
 
 //Layout of different tile types for the background of the bathroom
 let BGbathroomMap = [
-  [1, 1, 1],
-  [1, 1, 1],
-  [1, 1, 1],
-  [1, 1, 1],
-  [1, 1, 1]
+  [1, 2, 3],
+  [1, 2, 3],
+  [1, 2, 3],
+  [1, 2, 3],
+  [1, 2, 3]
 ]
 
 //Layout of different tile types for the background of the bathroom
 let BGbathroomCubbyMap = [
   [0, 0, 0],
-  [1, 1, 1],
-  [1, 1, 1],
-  [1, 1, 1],
+  [1, 2, 3],
+  [1, 2, 3],
+  [1, 2, 3],
   [0, 0, 0]
 ]
 
@@ -176,14 +176,20 @@ function preload() {
   BGpanellingLower = loadImage("assets/BG_PanellingLower.png")
   BGpanellingUpper = loadImage("assets/BG_PanellingUpper.png")
   //kitchen
-  BGkitchen = loadImage("assets/BG_KitchenTiles.png")
+  BGkitchenUpper = loadImage("assets/BG_KitchenTiles.png")
+  BGkitchenLower = loadImage("assets/BG_KitchenTilesLower.png")
+  BGkitchenWall = loadImage("assets/BG_KitchenWall.png")
   //bedroom
-  BGbedroom = loadImage("assets/BG_BedroomWall.png")
+  BGbedroomLower = loadImage("assets/BG_BedroomWall.png")
+  BGbedroomMiddle = loadImage("assets/BG_BedroomWallMid.png")
+  BGbedroomUpper = loadImage("assets/BG_BedroomWallUpper.png")
   //hallway
   BGhallwayWallpaper = loadImage("assets/BG_HallWallpaper.png")
   BGhallwayPanelling = loadImage("assets/BG_HallPanelling.png")
   //bathroom
   BGbathroom = loadImage("assets/BG_BathroomTiles.png")
+  BGbathroomLower = loadImage("assets/BG_BathroomTilesLower.png")
+  BGbathroomWall = loadImage("assets/BG_BathroomWall.png")
 
   //objects
   OBJbedroom1 = loadImage("assets/OBJsheet_Bedroom1.png")
@@ -295,7 +301,11 @@ function BGtilesInside() {
         }
       } else if (currentLocation == 3) {
         if (BGkitchenMap[tileX][tileY] == 1) {
-          tileImage = BGkitchen
+          tileImage = BGkitchenUpper
+        } else if (BGkitchenMap[tileX][tileY] == 2) {
+          tileImage = BGkitchenLower
+        } else if (BGkitchenMap[tileX][tileY] == 3) {
+          tileImage = BGkitchenWall
         } else {
           tileImage = BLANKtile
         }
@@ -303,12 +313,20 @@ function BGtilesInside() {
         if (currentFocus == 2) {
           if (BGbathroomCubbyMap[tileX][tileY] == 1) {
             tileImage = BGbathroom
+          } else if (BGbathroomCubbyMap[tileX][tileY] == 2) {
+            tileImage = BGbathroomLower
+          } else  if (BGbathroomCubbyMap[tileX][tileY] == 3) {
+            tileImage = BGbathroomWall
           } else {
             tileImage = BLANKtile
           }
         } else {
           if (BGbathroomMap[tileX][tileY] == 1) {
             tileImage = BGbathroom
+          } else if (BGbathroomMap[tileX][tileY] == 2) {
+            tileImage = BGbathroomLower
+          } else  if (BGbathroomMap[tileX][tileY] == 3) {
+            tileImage = BGbathroomWall
           } else {
             tileImage = BLANKtile
           }
@@ -316,13 +334,21 @@ function BGtilesInside() {
       } else if (currentLocation == 5) {
         if (currentFocus == 2) {
           if (BGbedroomStudyMap[tileX][tileY] == 1) {
-            tileImage = BGbedroom
+            tileImage = BGbedroomLower
+          } else if (BGbedroomStudyMap[tileX][tileY] == 2) {
+            tileImage = BGbedroomMiddle
+          } else if (BGbedroomStudyMap[tileX][tileY] == 3) {
+            tileImage = BGbedroomUpper
           } else {
             tileImage = BLANKtile
           }
         } else {
           if (BGbedroomMap[tileX][tileY] == 1) {
-            tileImage = BGbedroom
+            tileImage = BGbedroomLower
+          } else if (BGbedroomMap[tileX][tileY] == 2) {
+            tileImage = BGbedroomMiddle
+          } else if (BGbedroomMap[tileX][tileY] == 3) {
+            tileImage = BGbedroomUpper
           } else {
             tileImage = BLANKtile
           }
@@ -444,7 +470,7 @@ function draw() {
   
   //for debug only
   currentGameState = 2
-  currentLocation = 1
+  currentLocation = 4
   currentFocus = 1
 
   //Calculates new mouse coordinates based on center of screen instead of default top left corner, thus allowing coordinates to remain same regardless of window resizing - crucial when calculating mouse click position across different window sizes
