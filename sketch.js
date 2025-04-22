@@ -45,6 +45,8 @@ let OBJsizeY;
 let tileImage;
 
 
+let interactID = 0;
+
 
 //Graphics maps for each environment, dictating placement of tiles for background
 //Oriented weirdly for some reason? Wasn't harming anyone so just left it lol
@@ -560,7 +562,7 @@ function rightNavClicked() {
 
 function checkMouseHover() {
 
-  let interactID = 0
+  interactID = 0
 
   //check, based on current mouse position, whether the player is hovering over the left or right nav arrows
   if (-740 < newMouseX && newMouseX < -670 && -80 < newMouseY && newMouseY < 10) {
@@ -685,6 +687,8 @@ function checkMouseHover() {
       } else if (-580 < newMouseX && newMouseX < -180 && -370 < newMouseY && newMouseY < 65) {
         interactID = 42
       }
+    } else {
+      interactID = 0
     }
 }
 
@@ -701,7 +705,31 @@ function mouseClicked() {
   } else if (670 < newMouseX && newMouseX < 740 && -80 < newMouseY && newMouseY < 10) {
     rightNavClicked()
   } else {
-    //nothing
+    if (interactID == 6) {
+      currentLocation = 2
+      currentFocus = 2
+    } else if (interactID == 9) {
+      currentLocation = 4
+      currentFocus = 1
+    } else if (interactID == 10) {
+      currentLocation = 3
+      currentFocus = 2
+    } else if (interactID == 17) {
+      currentLocation = 1
+      currentFocus = 2
+    } else if (interactID == 18) {
+      currentLocation = 5
+      currentFocus = 3
+    } else if (interactID == 24) {
+      currentLocation = 1
+      currentFocus = 3
+    } else if (interactID == 30) {
+      currentLocation = 1
+      currentFocus = 3
+    } else if (interactID == 40) {
+      currentLocation = 2
+      currentFocus = 3
+    }
   }
 }
 
