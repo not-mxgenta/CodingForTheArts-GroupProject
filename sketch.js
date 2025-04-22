@@ -1,7 +1,7 @@
 //dictating which 'stage' of the game we are in, changes the background tilemaps and any events
 let currentGameState = 2;
 //more specific, works within each game state i.e. may be in state 2 (inside), dictates whether in location 0 (bathroom) or location 1 (bedroom) etc.
-let currentLocation = 2;
+let currentLocation = 5;
 //even more specific, specifies which part of a location is the player's current focus i.e. left wall
 let currentFocus = 1;
 
@@ -602,6 +602,88 @@ function checkMouseHover() {
         interactID = 11
       } else if (100 < newMouseX && newMouseX < 330 && -80 < newMouseY && newMouseY < 80) {
         interactID = 12
+      }
+    } else if (currentLocation == 2 && currentFocus == 1) {
+      if (-311 < newMouseX && newMouseX < 311 && -340 < newMouseY && newMouseY < 75) {
+        interactID = 13
+      }
+    } else if (currentLocation == 2 && currentFocus == 2) {
+      if (-80 < newMouseX && newMouseX < 310 && 90 < newMouseY && newMouseY < 190) {
+        interactID = 14
+      } else if (-80 < newMouseX && newMouseX < 310 && 200 < newMouseY && newMouseY < 330) {
+        interactID = 15
+      } else if (-65 < newMouseX && newMouseX < 95 && -120 < newMouseY && newMouseY < 30) {
+        interactID = 16
+      } else if (370 < newMouseX && newMouseX < 630 && -120 < newMouseY && newMouseY < 380) {
+        interactID = 17
+      }
+    } else if (currentLocation == 2 && currentFocus == 3) {
+      if (-150 < newMouseX && newMouseX < 100 && -110 < newMouseY && newMouseY < 390) {
+        interactID = 18
+      } else if (-120 < newMouseX && newMouseX < 70 && -320 < newMouseY && newMouseY < -130) {
+        interactID = 19
+      } else if (-500 < newMouseX && newMouseX < -280 && -5 < newMouseY && newMouseY < 210) {
+        interactID = 20
+      }
+    } else if (currentLocation == 3 && currentFocus == 1) {
+      if (-600 < newMouseX && newMouseX < -380 && 190 < newMouseY && newMouseY < 240) {
+        interactID = 21
+      }
+    } else if (currentLocation == 3 && currentFocus == 2) {
+      if (280 < newMouseX && newMouseX < 340 && -70 < newMouseY && newMouseY < 80) {
+        interactID = 22
+      } else if (400 < newMouseX && newMouseX < 610 && 140 < newMouseY && newMouseY < 340) {
+        interactID = 23
+      } else if (-620 < newMouseX && newMouseX < -380 && -112 < newMouseY && newMouseY < 380) {
+        interactID = 24
+      }
+    } else if (currentLocation == 3 && currentFocus == 3) {
+      if (-390 < newMouseX && newMouseX < -130 && -260 < newMouseY && newMouseY < 390) {
+        interactID = 25
+      } else if (30 < newMouseX && newMouseX < 220 && 0 < newMouseY && newMouseY < 100) {
+        interactID = 26
+      }
+    } else if (currentLocation == 4 && currentFocus == 1) {
+      if (-300 < newMouseX && newMouseX < -75 && 110 < newMouseY && newMouseY < 240) {
+        interactID = 27
+      } else if (-400 < newMouseX && newMouseX < 20 && -170 < newMouseY && newMouseY < 55) {
+        interactID = 28
+      } else if (400 < newMouseX && newMouseX < 590 && 190 < newMouseY && newMouseY < 335) {
+        interactID = 29
+      } else if (65 < newMouseX && newMouseX < 320 && -112 < newMouseY && newMouseY < 380) {
+        interactID = 30
+      }
+    } else if (currentLocation == 4 && currentFocus == 2) {
+      if (-130 < newMouseX && newMouseX < 380 && 170 < newMouseY && newMouseY < 350) {
+        interactID = 31
+      } else if (140 < newMouseX && newMouseX < 370 && -80 < newMouseY && newMouseY < 175) {
+        interactID = 32
+      } else if (-340 < newMouseX && newMouseX < -165 && 120 < newMouseY && newMouseY < 330) {
+        interactID = 33
+      }
+    } else if (currentLocation == 5 && currentFocus == 1) {
+      if (140 < newMouseX && newMouseX < 630 && 190 < newMouseY && newMouseY < 330) {
+        interactID = 34
+      } else if (190 < newMouseX && newMouseX < 600 && 330 < newMouseY && newMouseY < 380) {
+        interactID = 35
+      } else if (-115 < newMouseX && newMouseX < 360 && -160 < newMouseY && newMouseY < 60) {
+        interactID = 36
+      }
+    } else if (currentLocation == 5 && currentFocus == 2) {
+      if (-115 < newMouseX && newMouseX < 110 && -70 < newMouseY && newMouseY < 130) {
+        interactID = 37
+      }
+    } else if (currentLocation == 5 && currentFocus == 3) {
+      if (-255 < newMouseX && newMouseX < -130 && 80 < newMouseY && newMouseY < 130) {
+        interactID = 38
+      } else if (110 < newMouseX && newMouseX < 350 && -250 < newMouseY && newMouseY < 330) {
+        interactID = 39
+      } else if (380 < newMouseX && newMouseX < 640 && -112 < newMouseY && newMouseY < 380) {
+        interactID = 40
+      } else if (-240 < newMouseX && newMouseX < -35 && 190 < newMouseY && newMouseY < 340) {
+        interactID = 41
+      } else if (-580 < newMouseX && newMouseX < -180 && -370 < newMouseY && newMouseY < 65) {
+        interactID = 42
       }
     }
 }
