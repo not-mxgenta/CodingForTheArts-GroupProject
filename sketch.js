@@ -1,9 +1,9 @@
 //dictating which 'stage' of the game we are in, changes the background tilemaps and any events
-let currentGameState = 0;
+let currentGameState = 2;
 //more specific, works within each game state i.e. may be in state 2 (inside), dictates whether in location 0 (bathroom) or location 1 (bedroom) etc.
-let currentLocation = 0;
+let currentLocation = 5;
 //even more specific, specifies which part of a location is the player's current focus i.e. left wall
-let currentFocus = 0;
+let currentFocus = 1;
 
 //essential to centre all activity on the screen, regardless of screen size
 let newMouseX;
@@ -12,7 +12,6 @@ let newMouseY;
 //tracking whether nav buttons are hovered
 let leftNavHovered = false;
 let rightNavHovered = true;
-
 
 //defining the tile map
 //2D arrays containing each instance of the Tile Class we create
@@ -255,11 +254,6 @@ function windowResized() {
   background('black')
 }
 
-//anything to do with clicking the mouse - tracking it's position, recording interaction, playing noise etc
-function mouseClicked() {
-//nothing here yet
-}
-
 
 function BGtilesInside() {
 
@@ -448,6 +442,90 @@ function placeObjectsInside () {
 
 }
 
+function leftNavClicked() {
+  if (currentLocation == 1) {
+    if (currentFocus == 1) {
+      currentFocus = 3
+    } else if (currentFocus == 2) {
+      currentFocus = 1
+    } else if (currentFocus == 3) {
+      currentFocus = 2
+    }
+  } else if (currentLocation == 2) {
+    if (currentFocus == 1) {
+      currentFocus = 2
+    } else if (currentFocus == 2) {
+      currentFocus = 3
+    } else if (currentFocus == 3) {
+      currentFocus = 1
+    }
+  } else if (currentLocation == 3) {
+    if (currentFocus == 1) {
+      currentFocus = 3
+    } else if (currentFocus == 2) {
+      currentFocus = 1
+    } else if (currentFocus == 3) {
+      currentFocus = 2
+    }
+  } else if (currentLocation == 4) {
+    if (currentFocus == 1) {
+      currentFocus = 2
+    } else if (currentFocus == 2) {
+      currentFocus = 1
+    }
+  } else if (currentLocation == 5) {
+    if (currentFocus == 1) {
+      currentFocus = 2
+    } else if (currentFocus == 2) {
+      currentFocus = 3
+    } else if (currentFocus == 3) {
+      currentFocus = 1
+    }
+  }
+}
+
+function rightNavClicked() {
+  if (currentLocation == 1) {
+    if (currentFocus == 1) {
+      currentFocus = 2
+    } else if (currentFocus == 2) {
+      currentFocus = 3
+    } else if (currentFocus == 3) {
+      currentFocus = 1
+    }
+  } else if (currentLocation == 2) {
+    if (currentFocus == 1) {
+      currentFocus = 3
+    } else if (currentFocus == 2) {
+      currentFocus = 1
+    } else if (currentFocus == 3) {
+      currentFocus = 2
+    }
+  } else if (currentLocation == 3) {
+    if (currentFocus == 1) {
+      currentFocus = 2
+    } else if (currentFocus == 2) {
+      currentFocus = 3
+    } else if (currentFocus == 3) {
+      currentFocus = 1
+    }
+  } else if (currentLocation == 4) {
+    if (currentFocus == 1) {
+      currentFocus = 2
+    } else if (currentFocus == 2) {
+      currentFocus = 1
+    }
+  } else if (currentLocation == 5) {
+    if (currentFocus == 1) {
+      currentFocus = 3
+    } else if (currentFocus == 2) {
+      currentFocus = 1
+    } else if (currentFocus == 3) {
+      currentFocus = 2
+    }
+  }
+}
+
 function checkMouseHover() {
 
 //check, based on current mouse position, whether the player is hovering over the left or right nav arrows
@@ -461,7 +539,17 @@ if (-740 < newMouseX && newMouseX < -670 && -80 < newMouseY && newMouseY < 10) {
   rightNavHovered = false;
   leftNavHovered = false;
 }
+}
 
+//anything to do with clicking the mouse - tracking it's position, recording interaction, playing noise etc
+function mouseClicked() {
+  if (-740 < newMouseX && newMouseX < -670 && -80 < newMouseY && newMouseY < 10) {
+    leftNavClicked()
+  } else if (670 < newMouseX && newMouseX < 740 && -80 < newMouseY && newMouseY < 10) {
+    rightNavClicked()
+  } else {
+    //nothing
+  }
 }
 
 
@@ -469,9 +557,9 @@ function draw() {
   background('black')
   
   //for debug only
-  currentGameState = 2
-  currentLocation = 4
-  currentFocus = 1
+  // currentGameState = 2
+  // currentLocation = 1
+  // currentFocus = 1
 
   //Calculates new mouse coordinates based on center of screen instead of default top left corner, thus allowing coordinates to remain same regardless of window resizing - crucial when calculating mouse click position across different window sizes
   newMouseX = mouseX - (windowWidth/2)
