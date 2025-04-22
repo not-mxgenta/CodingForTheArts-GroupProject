@@ -1,7 +1,7 @@
 //dictating which 'stage' of the game we are in, changes the background tilemaps and any events
 let currentGameState = 2;
 //more specific, works within each game state i.e. may be in state 2 (inside), dictates whether in location 0 (bathroom) or location 1 (bedroom) etc.
-let currentLocation = 5;
+let currentLocation = 1;
 //even more specific, specifies which part of a location is the player's current focus i.e. left wall
 let currentFocus = 1;
 
