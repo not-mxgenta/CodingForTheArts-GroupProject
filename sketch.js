@@ -1,9 +1,9 @@
 //dictating which 'stage' of the game we are in, changes the background tilemaps and any events
 let currentGameState = 2;
 //more specific, works within each game state i.e. may be in state 2 (inside), dictates whether in location 0 (bathroom) or location 1 (bedroom) etc.
-let currentLocation = 5;
+let currentLocation = 3;
 //even more specific, specifies which part of a location is the player's current focus i.e. left wall
-let currentFocus = 1;
+let currentFocus = 3;
 
 //essential to centre all activity on the screen, regardless of screen size
 let newMouseX;
@@ -20,6 +20,10 @@ let NAVtileMap = [];
 
 //containing all base object sheet images
 let OBJsheetArray = [];
+//containing all object highlight overlays
+let OBJhighlightArray = [];
+//containing all middle ground objects i.e. backgrounds of windows
+let OBJsheetMGarray = [];
 
 //How many BG tiles there are in a row
 let BGtilesX = 5;
@@ -56,11 +60,11 @@ let BGlivingRoomMap = [
 
 //Layout of different tile types for the background of the kitchen
 let BGkitchenMap = [
-  [1, 2, 3],
-  [1, 2, 3],
-  [1, 2, 3],
-  [1, 2, 3],
-  [1, 2, 3]
+  [1, 1, 2],
+  [1, 1, 2],
+  [1, 1, 2],
+  [1, 1, 2],
+  [1, 1, 2]
 ]
 
 //Layout of different tile types for the background of the bedroom
@@ -108,6 +112,14 @@ let BGhallwayMap = [
   [1, 1, 2]
 ]
 
+let BGfrontDoorMap = [
+  [0, 0, 0],
+  [1, 1, 2],
+  [1, 1, 2],
+  [1, 1, 2],
+  [0, 0, 0]
+]
+
 //potential positions and orientations for navigation arrows
 let navPosMap1 = [
   [0, 0, 1, 0, 0],
@@ -142,20 +154,18 @@ class BGtileClass {
 }
 
 class interactTextClass {
-  constructor(xPos, yPos, INTtextSize, INTtextID, INTtextContent, isDisplayed) {
-    this.xPos = xPos;
-    this.yPos = yPos;
+  constructor(INTtextSize, INTtextID, INTtextContent, isDisplayed) {
     this.INTtextSize = INTtextSize;
     this.INTtextID = INTtextID;
     this.INTtextContent = INTtextContent;
     this.isDisplayed = isDisplayed
   }
 
-  displayText() {
+  displayText(textXpos, textYpos) {
     fill('white')
     textFont(VT323Font, this.INTtextSize)
-    textAlign(CENTER, CENTER)
-    text(this.INTtextContent, this.xPos, this.yPos)
+    textAlign(LEFT, CENTER)
+    text(this.INTtextContent, textXpos, textYpos)
   }
 }
 
@@ -176,7 +186,6 @@ function preload() {
   BGpanellingUpper = loadImage("assets/BG_PanellingUpper.png")
   //kitchen
   BGkitchenUpper = loadImage("assets/BG_KitchenTiles.png")
-  BGkitchenLower = loadImage("assets/BG_KitchenTilesLower.png")
   BGkitchenWall = loadImage("assets/BG_KitchenWall.png")
   //bedroom
   BGbedroomLower = loadImage("assets/BG_BedroomWall.png")
@@ -192,14 +201,19 @@ function preload() {
 
   //objects
   OBJbedroom1 = loadImage("assets/OBJsheet_Bedroom1.png")
+  OBJbedroom2 = loadImage("assets/OBJsheet_Bedroom2.png")
   OBJstudy1 = loadImage("assets/OBJsheet_Study1.png")
   OBJkitchen1 = loadImage("assets/OBJsheet_Kitchen1.png")
   OBJkitchen2 = loadImage("assets/OBJsheet_Kitchen2.png")
   OBJdining1 = loadImage("assets/OBJsheet_DiningTable.png")
   OBJhallway1 = loadImage("assets/OBJsheet_Hallway1.png")
+  OBJhallway2 = loadImage("assets/OBJsheet_Hallway2.png")
+  OBJfrontDoor = loadImage("assets/OBJsheet_FrontDoor.png")
   OBJbathroom1 = loadImage("assets/OBJsheet_Bathroom1.png")
   OBJbathroom2 = loadImage("assets/OBJsheet_Bathroom2.png")
   OBJlivingroom1 = loadImage("assets/OBJsheet_LivingRoom1.png")
+  OBJlivingroom2 = loadImage("assets/OBJsheet_LivingRoom2.png")
+  OBJlivingroom3 = loadImage("assets/OBJsheet_LivingRoom3.png")
 
   //icons
   ICONnavigation = loadImage("assets/ICON_NavigationArrow.png")
@@ -276,12 +290,22 @@ function BGtilesInside() {
       //changes the image asset to use for the tile based on its value in the graphics map declared at the beginning
       //each environment uses a different graphics map, dictated by the current game state and location
       if (currentLocation == 1) {
-        if (BGhallwayMap[tileX][tileY] == 1) {
-          tileImage = BGhallwayWallpaper
-        } else if (BGhallwayMap[tileX][tileY] == 2) {
-          tileImage = BGhallwayPanelling
+        if (currentFocus == 1) {
+          if (BGfrontDoorMap[tileX][tileY] == 1) {
+            tileImage = BGhallwayWallpaper
+          } else if (BGfrontDoorMap[tileX][tileY] == 2) {
+            tileImage = BGhallwayPanelling
+          } else {
+            tileImage = BLANKtile
+          }
         } else {
-          tileImage = BLANKtile
+          if (BGhallwayMap[tileX][tileY] == 1) {
+            tileImage = BGhallwayWallpaper
+          } else if (BGhallwayMap[tileX][tileY] == 2) {
+            tileImage = BGhallwayPanelling
+          } else {
+            tileImage = BLANKtile
+          }
         }
       } else if (currentLocation == 2) {
         if (BGlivingRoomMap[tileX][tileY] == 1) {
@@ -297,8 +321,6 @@ function BGtilesInside() {
         if (BGkitchenMap[tileX][tileY] == 1) {
           tileImage = BGkitchenUpper
         } else if (BGkitchenMap[tileX][tileY] == 2) {
-          tileImage = BGkitchenLower
-        } else if (BGkitchenMap[tileX][tileY] == 3) {
           tileImage = BGkitchenWall
         } else {
           tileImage = BLANKtile
@@ -398,19 +420,19 @@ function placeObjectsInside () {
 
   if (currentLocation == 1) {
     if (currentFocus == 1) {
-      currentObjectArrangement = OBJhallway1
+      currentObjectArrangement = OBJfrontDoor
     } else if (currentFocus == 2) {
-      currentObjectArrangement = BLANKtile
-    } else {
-      currentObjectArrangement = BLANKtile
+      currentObjectArrangement = OBJhallway1
+    } else if (currentFocus == 3) {
+      currentObjectArrangement = OBJhallway2
     }
   } else if (currentLocation == 2) {
     if (currentFocus == 1) {
-      currentObjectArrangement = OBJlivingroom1
+      currentObjectArrangement = OBJlivingroom3
     } else if (currentFocus == 2) {
-      currentObjectArrangement = BLANKtile
+      currentObjectArrangement = OBJlivingroom1
     } else {
-      currentObjectArrangement = BLANKtile
+      currentObjectArrangement = OBJlivingroom2
     }
   } else if (currentLocation == 3) {
     if (currentFocus == 1) {
@@ -425,8 +447,6 @@ function placeObjectsInside () {
       currentObjectArrangement = OBJbathroom1
     } else if (currentFocus == 2) {
       currentObjectArrangement = OBJbathroom2
-    } else {
-      currentObjectArrangement = BLANKtile
     }
   } else if (currentLocation == 5) {
     if (currentFocus == 1) {
@@ -434,7 +454,7 @@ function placeObjectsInside () {
     } else if (currentFocus == 2) {
       currentObjectArrangement = OBJstudy1
     } else {
-      currentObjectArrangement = BLANKtile
+      currentObjectArrangement = OBJbedroom2
     }
   }
 
@@ -475,11 +495,11 @@ function leftNavClicked() {
     }
   } else if (currentLocation == 5) {
     if (currentFocus == 1) {
-      currentFocus = 2
-    } else if (currentFocus == 2) {
       currentFocus = 3
-    } else if (currentFocus == 3) {
+    } else if (currentFocus == 2) {
       currentFocus = 1
+    } else if (currentFocus == 3) {
+      currentFocus = 2
     }
   }
 }
@@ -517,11 +537,11 @@ function rightNavClicked() {
     }
   } else if (currentLocation == 5) {
     if (currentFocus == 1) {
-      currentFocus = 3
-    } else if (currentFocus == 2) {
-      currentFocus = 1
-    } else if (currentFocus == 3) {
       currentFocus = 2
+    } else if (currentFocus == 2) {
+      currentFocus = 3
+    } else if (currentFocus == 3) {
+      currentFocus = 1
     }
   }
 }
