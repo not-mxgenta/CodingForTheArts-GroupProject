@@ -1,9 +1,9 @@
 //dictating which 'stage' of the game we are in, changes the background tilemaps and any events
 let currentGameState = 2;
 //more specific, works within each game state i.e. may be in state 2 (inside), dictates whether in location 0 (bathroom) or location 1 (bedroom) etc.
-let currentLocation = 3;
+let currentLocation = 2;
 //even more specific, specifies which part of a location is the player's current focus i.e. left wall
-let currentFocus = 3;
+let currentFocus = 1;
 
 //essential to centre all activity on the screen, regardless of screen size
 let newMouseX;
@@ -262,6 +262,7 @@ function setup() {
 
 }
 
+
 //Update if window is resized
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
@@ -380,6 +381,7 @@ function BGtilesInside() {
   }
 }
 
+
 function NAVtiles() {
  
   let NAVtileID = 0
@@ -413,6 +415,16 @@ function NAVtiles() {
 
     }
   }
+}
+
+function displayInteractText(interactIDinput) {
+
+  fill('white')
+  textFont(VT323Font, 50)
+  textAlign(LEFT, CENTER)
+
+  text(interactIDinput, newMouseX + 50, newMouseY)
+
 }
 
 function placeObjectsInside () {
@@ -459,7 +471,6 @@ function placeObjectsInside () {
   }
 
   image(currentObjectArrangement, 0, 0, 1280, 768)
-
 }
 
 function leftNavClicked() {
@@ -546,19 +557,59 @@ function rightNavClicked() {
   }
 }
 
+
 function checkMouseHover() {
 
-//check, based on current mouse position, whether the player is hovering over the left or right nav arrows
-if (-740 < newMouseX && newMouseX < -670 && -80 < newMouseY && newMouseY < 10) {
-  leftNavHovered = true;
-  rightNavHovered = false;
-} else if (670 < newMouseX && newMouseX < 740 && -80 < newMouseY && newMouseY < 10) {
-  rightNavHovered = true;
-  leftNavHovered = false;
-} else {
-  rightNavHovered = false;
-  leftNavHovered = false;
+  let interactID = 0
+
+  //check, based on current mouse position, whether the player is hovering over the left or right nav arrows
+  if (-740 < newMouseX && newMouseX < -670 && -80 < newMouseY && newMouseY < 10) {
+    leftNavHovered = true;
+    rightNavHovered = false;
+  } else if (670 < newMouseX && newMouseX < 740 && -80 < newMouseY && newMouseY < 10) {
+    rightNavHovered = true;
+    leftNavHovered = false;
+  } else {
+    rightNavHovered = false;
+    leftNavHovered = false;
+
+    if (currentLocation == 1 && currentFocus == 1) {
+      if (-370 < newMouseX && newMouseX < -195 && 240 < newMouseY && newMouseY < 380) {
+        interactID = 1
+      } else if (46 < newMouseX && newMouseX < 112 && 75 < newMouseY && newMouseY < 112) {
+        interactID = 2
+      } else if (95 < newMouseX && newMouseX < 112 && 125 < newMouseY && newMouseY < 160) {
+        interactID = 3
+      } else if (80 < newMouseX && newMouseX < 180 && -80 < newMouseY && newMouseY < -30) {
+        interactID = 4
+      } else if (-340 < newMouseX && newMouseX < -210 && -160 < newMouseY && newMouseY < 190) {
+        interactID = 5
+      }
+    } else if (currentLocation == 1 && currentFocus == 2) {
+      if (-580 < newMouseX && newMouseX < -320 && -112 < newMouseY && newMouseY < 380) {
+        interactID = 6
+      } else if (6 < newMouseX && newMouseX < 150 && 290 < newMouseY && newMouseY < 380) {
+        interactID = 7
+      } else if (375 < newMouseX && newMouseX < 450 && 240 < newMouseY && newMouseY < 380) {
+        interactID = 8
+      }
+    } else if (currentLocation == 1 && currentFocus == 3) {
+      if (-630 < newMouseX && newMouseX < -370 && -112 < newMouseY && newMouseY < 380) {
+        interactID = 9
+      } else if (370 < newMouseX && newMouseX < 630 && -112 < newMouseY && newMouseY < 380) {
+        interactID = 10
+      } else if (140 < newMouseX && newMouseX < 300 && 120 < newMouseY && newMouseY < 200) {
+        interactID = 11
+      } else if (100 < newMouseX && newMouseX < 330 && -80 < newMouseY && newMouseY < 80) {
+        interactID = 12
+      }
+    }
 }
+
+if (interactID != 0) {
+  displayInteractText(interactID)
+}
+
 }
 
 //anything to do with clicking the mouse - tracking it's position, recording interaction, playing noise etc
@@ -593,8 +644,6 @@ function draw() {
   frameJitter()
   applyVHSdistortion()
 
-  //check whether the mouse is hovering over anything interactable before drawing
-  checkMouseHover()
 
   push()
   
@@ -678,5 +727,8 @@ function draw() {
   textAlign(CENTER, CENTER)
   text(newMouseX, newMouseX+50, newMouseY)
   text(newMouseY, newMouseX+50, newMouseY + 30)
+
+  //check whether the mouse is hovering over anything interactable
+  checkMouseHover()
 
 }
