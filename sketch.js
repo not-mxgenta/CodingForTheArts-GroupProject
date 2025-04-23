@@ -47,7 +47,11 @@ let tileImage;
 
 let interactID = 0;
 
-let displayingDialogue = true;
+let displayingDialogue = false;
+
+let displayingChoice = false;
+
+let currentChoices = [];
 
 let dialogueBoxes = [];
 
@@ -58,6 +62,34 @@ let currentDialogue = '';
 let charTyped = 0;
 
 let scanLineY = 0;
+
+let dialogueToDisplay = 0;
+
+let branchCodeArray = [
+  ['SP_lend', null],
+  ['SP_fdLock', null],
+  ['SP_fdChain', null],
+  ['SP_jacket', null],
+  ['SP_shoes', null],
+  ['SP_satchel', null],
+  ['SP_hallDrawer', null],
+  ['SP_phone', null],
+  ['SP_lrWindow', null],
+  ['SP_lrUpperDrawer', null],
+  ['SP_lrLowerDrawer', null],
+  ['SP_radio', null],
+  ['SP_TV', null],
+  ['SP_diningChair', null],
+  ['SP_kitchenSink', null],
+  ['SP_bath', null],
+  ['SP_bathroomSink', null],
+  ['SP_showerCurtain', null],
+  ['SP_underBed', null],
+  ['SP_bedroomWindow', null],
+  ['SP_book', null],
+  ['SP_wardrobe', null],
+  ['SP_bedroomCabinet', null]
+]
 
 
 //Graphics maps for each environment, dictating placement of tiles for background
@@ -184,10 +216,11 @@ class interactTextClass {
 }
 
 class dialogueBoxClass {
-  constructor(dialogueID, dialogueContent, isInteractive) {
+  constructor(dialogueID, dialogueContent, firstChoice, secondChoice) {
     this.dialogueID = dialogueID;
     this.dialogueContent = dialogueContent;
-    this.isInteractive = isInteractive;
+    this.firstChoice = firstChoice;
+    this.secondChoice = secondChoice;
   }
 
   displayDialogue () {
@@ -195,11 +228,11 @@ class dialogueBoxClass {
     push()
     translate(0, 465)
     fill('black')
-    rect(0, 0, 1000, 200)
+    rect(0, 0, 1200, 200)
     fill(255, 255, 255, 200)
-    rect(0, 0, 985, 185)
+    rect(0, 0, 1180, 185)
     fill('black')
-    rect(0, 0, 970, 170)
+    rect(0, 0, 1160, 170)
 
     for (let scanLines = 0; scanLines < 16; scanLines++) {
 
@@ -214,7 +247,7 @@ class dialogueBoxClass {
         scanLinePosition += 197
       }
 
-      rect(0, scanLinePosition, 1000, 6)
+      rect(0, scanLinePosition, 1180, 6)
 
       pop()
     }
@@ -222,13 +255,16 @@ class dialogueBoxClass {
     pop()
 
     currentDialogue = this.dialogueContent;
-    
+    currentChoices = [this.firstChoice, this.secondChoice]
 
+    if (this.firstChoice != null) {
+      displayingChoice = true
+    } else {
+      displayingChoice = false
+    }
+    
   }
 }
-
-
-
 
 //preload assets here to speed up programe running
 function preload() {
@@ -283,8 +319,6 @@ function preload() {
 
 }
 
-
-
 //Extra VHS-style effects
 function frameJitter() {
   translate(random(-0.5, 0.5), random(-0.5, 0.5)); // Minor movement like VHS instability
@@ -298,9 +332,6 @@ function drawFlicker() {
   let flicker = random(0.9, 1.1); // Small brightness variations
   tint(255 * flicker, 255 * flicker, 255 * flicker, 200); // Apply flicker to tint
 }
-
-
-
 
 //general set up
 function setup() {
@@ -328,7 +359,6 @@ function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   background('black')
 }
-
 
 function BGtilesInside() {
 
@@ -441,7 +471,6 @@ function BGtilesInside() {
   }
 }
 
-
 function NAVtiles() {
  
   let NAVtileID = 0
@@ -477,12 +506,53 @@ function NAVtiles() {
   }
 }
 
-
 function buildDialogueBox() {
  
 
   let dialogueToAdd = [
-    ['Welcome home Quinn!', 0]
+    ["---", null, null],
+    ["---", null, null],
+    ["Better lock this.", 'lock the door', 'leave it'],
+    ["Double locked. No one's getting in here!", null, null],
+    ["---", null, null],
+    [null],
+    ["I shouldn't leave my shoes lying around like this, they're a tripping hazard", 'tuck them under the bench', 'leave them'],
+    ["Did I leave my phone in here?", 'look for the phone', 'leave it'],
+    [null],
+    [null],
+    ["---", 'take it', 'leave it'],
+    ["---", null, null],
+    ["---", null, null],
+    ["---", null, null],
+    ["---", null, null],
+    ["---", null, null],
+    [null],
+    [null],
+    ["---", null, null],
+    ["---", null, null],
+    ["---", null, null],
+    ["---", null, null],
+    ["---", null, null],
+    [null],
+    ["---", null, null],
+    ["---", null, null],
+    ["---", null, null],
+    ["---", null, null],
+    ["---", null, null],
+    [null],
+    ["---", null, null],
+    ["---", null, null],
+    ["---", null, null],
+    ["---", null, null],
+    ["---", null, null],
+    ["---", null, null],
+    ["---", null, null],
+    ["---", null, null],
+    ["---", null, null],
+    [null],
+    ["---", null, null],
+    ["---", null, null],
+
   ]
   
   //empty list ready to contain all dialogue box instances
@@ -491,8 +561,11 @@ function buildDialogueBox() {
   //iterate through each dialogue
   for (let dialogueAdded = 0; dialogueAdded < dialogueToAdd.length; dialogueAdded++) {
 
-    //adds next dialogue instance to array
-    dialogueBoxes[dialogueAdded] = new dialogueBoxClass(dialogueAdded, dialogueToAdd[dialogueAdded][0], dialogueToAdd[dialogueAdded][1])
+    if (dialogueToAdd[dialogueAdded][0] != null) {
+      //adds next dialogue instance to array
+      dialogueBoxes[dialogueAdded] = new dialogueBoxClass(dialogueAdded, dialogueToAdd[dialogueAdded][0], dialogueToAdd[dialogueAdded][1], dialogueToAdd[dialogueAdded][2])
+    }
+
 
   }
 }
@@ -553,8 +626,6 @@ function placeObjectsInside () {
 
   image(currentObjectArrangement, 0, 0, 1280, 768)
 }
-
-
 
 function leftNavClicked() {
   if (currentLocation == 1) {
@@ -645,132 +716,155 @@ function checkMouseHover() {
 
   interactID = 0
 
-  //check, based on current mouse position, whether the player is hovering over the left or right nav arrows
-  if (-740 < newMouseX && newMouseX < -670 && -80 < newMouseY && newMouseY < 10) {
-    leftNavHovered = true;
-    rightNavHovered = false;
-  } else if (670 < newMouseX && newMouseX < 740 && -80 < newMouseY && newMouseY < 10) {
-    rightNavHovered = true;
-    leftNavHovered = false;
-  } else {
-    rightNavHovered = false;
-    leftNavHovered = false;
+  if (inputBlocked == false) {
+    if (displayingDialogue == true) {
 
-    if (currentLocation == 1 && currentFocus == 1) {
-      if (-370 < newMouseX && newMouseX < -195 && 240 < newMouseY && newMouseY < 380) {
-        interactID = 1
-      } else if (46 < newMouseX && newMouseX < 112 && 75 < newMouseY && newMouseY < 112) {
-        interactID = 2
-      } else if (95 < newMouseX && newMouseX < 112 && 125 < newMouseY && newMouseY < 160) {
-        interactID = 3
-      } else if (80 < newMouseX && newMouseX < 180 && -80 < newMouseY && newMouseY < -30) {
-        interactID = 4
-      } else if (-340 < newMouseX && newMouseX < -210 && -160 < newMouseY && newMouseY < 190) {
-        interactID = 5
+      if (displayingChoice == true) {
+        push()
+        fill('white')
+        rectMode(CENTER, CENTER)
+        //let underlineWidth = 0
+        if (170 < newMouseX && newMouseX < 600 && 370 < newMouseY && newMouseY < 420) {
+          //underlineWidth = textWidth(currentChoices[0])*1.75
+          rect(520, 440, 100, 4)
+        } else if (170 < newMouseX && newMouseX < 600 && 490 < newMouseY && newMouseY < 540) {
+          //underlineWidth = textWidth(currentChoices[1])*1.75
+          rect(520, 490, 100, 4)
+        }
+        pop()
       }
-    } else if (currentLocation == 1 && currentFocus == 2) {
-      if (-580 < newMouseX && newMouseX < -320 && -112 < newMouseY && newMouseY < 380) {
-        interactID = 6
-      } else if (6 < newMouseX && newMouseX < 150 && 290 < newMouseY && newMouseY < 380) {
-        interactID = 7
-      } else if (375 < newMouseX && newMouseX < 450 && 240 < newMouseY && newMouseY < 380) {
-        interactID = 8
-      }
-    } else if (currentLocation == 1 && currentFocus == 3) {
-      if (-630 < newMouseX && newMouseX < -370 && -112 < newMouseY && newMouseY < 380) {
-        interactID = 9
-      } else if (370 < newMouseX && newMouseX < 630 && -112 < newMouseY && newMouseY < 380) {
-        interactID = 10
-      } else if (140 < newMouseX && newMouseX < 300 && 120 < newMouseY && newMouseY < 200) {
-        interactID = 11
-      } else if (100 < newMouseX && newMouseX < 330 && -80 < newMouseY && newMouseY < 80) {
-        interactID = 12
-      }
-    } else if (currentLocation == 2 && currentFocus == 1) {
-      if (-311 < newMouseX && newMouseX < 311 && -340 < newMouseY && newMouseY < 75) {
-        interactID = 13
-      }
-    } else if (currentLocation == 2 && currentFocus == 2) {
-      if (-80 < newMouseX && newMouseX < 310 && 90 < newMouseY && newMouseY < 190) {
-        interactID = 14
-      } else if (-80 < newMouseX && newMouseX < 310 && 200 < newMouseY && newMouseY < 330) {
-        interactID = 15
-      } else if (-65 < newMouseX && newMouseX < 95 && -120 < newMouseY && newMouseY < 30) {
-        interactID = 16
-      } else if (370 < newMouseX && newMouseX < 630 && -120 < newMouseY && newMouseY < 380) {
-        interactID = 17
-      }
-    } else if (currentLocation == 2 && currentFocus == 3) {
-      if (-150 < newMouseX && newMouseX < 100 && -110 < newMouseY && newMouseY < 390) {
-        interactID = 18
-      } else if (-120 < newMouseX && newMouseX < 70 && -320 < newMouseY && newMouseY < -130) {
-        interactID = 19
-      } else if (-500 < newMouseX && newMouseX < -280 && -5 < newMouseY && newMouseY < 210) {
-        interactID = 20
-      }
-    } else if (currentLocation == 3 && currentFocus == 1) {
-      if (-600 < newMouseX && newMouseX < -380 && 190 < newMouseY && newMouseY < 240) {
-        interactID = 21
-      }
-    } else if (currentLocation == 3 && currentFocus == 2) {
-      if (280 < newMouseX && newMouseX < 340 && -70 < newMouseY && newMouseY < 80) {
-        interactID = 22
-      } else if (400 < newMouseX && newMouseX < 610 && 140 < newMouseY && newMouseY < 340) {
-        interactID = 23
-      } else if (-620 < newMouseX && newMouseX < -380 && -112 < newMouseY && newMouseY < 380) {
-        interactID = 24
-      }
-    } else if (currentLocation == 3 && currentFocus == 3) {
-      if (-390 < newMouseX && newMouseX < -130 && -260 < newMouseY && newMouseY < 390) {
-        interactID = 25
-      } else if (30 < newMouseX && newMouseX < 220 && 0 < newMouseY && newMouseY < 100) {
-        interactID = 26
-      }
-    } else if (currentLocation == 4 && currentFocus == 1) {
-      if (-300 < newMouseX && newMouseX < -75 && 110 < newMouseY && newMouseY < 240) {
-        interactID = 27
-      } else if (-400 < newMouseX && newMouseX < 20 && -170 < newMouseY && newMouseY < 55) {
-        interactID = 28
-      } else if (400 < newMouseX && newMouseX < 590 && 190 < newMouseY && newMouseY < 335) {
-        interactID = 29
-      } else if (65 < newMouseX && newMouseX < 320 && -112 < newMouseY && newMouseY < 380) {
-        interactID = 30
-      }
-    } else if (currentLocation == 4 && currentFocus == 2) {
-      if (-130 < newMouseX && newMouseX < 380 && 170 < newMouseY && newMouseY < 350) {
-        interactID = 31
-      } else if (140 < newMouseX && newMouseX < 370 && -80 < newMouseY && newMouseY < 175) {
-        interactID = 32
-      } else if (-340 < newMouseX && newMouseX < -165 && 120 < newMouseY && newMouseY < 330) {
-        interactID = 33
-      }
-    } else if (currentLocation == 5 && currentFocus == 1) {
-      if (140 < newMouseX && newMouseX < 630 && 190 < newMouseY && newMouseY < 330) {
-        interactID = 34
-      } else if (190 < newMouseX && newMouseX < 600 && 330 < newMouseY && newMouseY < 380) {
-        interactID = 35
-      } else if (-115 < newMouseX && newMouseX < 360 && -160 < newMouseY && newMouseY < 60) {
-        interactID = 36
-      }
-    } else if (currentLocation == 5 && currentFocus == 2) {
-      if (-115 < newMouseX && newMouseX < 110 && -70 < newMouseY && newMouseY < 130) {
-        interactID = 37
-      }
-    } else if (currentLocation == 5 && currentFocus == 3) {
-      if (-255 < newMouseX && newMouseX < -130 && 80 < newMouseY && newMouseY < 130) {
-        interactID = 38
-      } else if (110 < newMouseX && newMouseX < 350 && -250 < newMouseY && newMouseY < 330) {
-        interactID = 39
-      } else if (380 < newMouseX && newMouseX < 640 && -112 < newMouseY && newMouseY < 380) {
-        interactID = 40
-      } else if (-240 < newMouseX && newMouseX < -35 && 190 < newMouseY && newMouseY < 340) {
-        interactID = 41
-      } else if (-580 < newMouseX && newMouseX < -180 && -370 < newMouseY && newMouseY < 65) {
-        interactID = 42
-      }
+
     } else {
-      interactID = 0
-    }
+      
+      //check, based on current mouse position, whether the player is hovering over the left or right nav arrows
+      if (-740 < newMouseX && newMouseX < -670 && -80 < newMouseY && newMouseY < 10) {
+        leftNavHovered = true;
+        rightNavHovered = false;
+      } else if (670 < newMouseX && newMouseX < 740 && -80 < newMouseY && newMouseY < 10) {
+        rightNavHovered = true;
+        leftNavHovered = false;
+      } else {
+        rightNavHovered = false;
+        leftNavHovered = false;
+
+        if (currentLocation == 1 && currentFocus == 1) {
+          if (-370 < newMouseX && newMouseX < -195 && 240 < newMouseY && newMouseY < 380) {
+            interactID = 1
+          } else if (46 < newMouseX && newMouseX < 112 && 75 < newMouseY && newMouseY < 112) {
+            interactID = 2
+          } else if (95 < newMouseX && newMouseX < 112 && 125 < newMouseY && newMouseY < 160) {
+            interactID = 3
+          } else if (80 < newMouseX && newMouseX < 180 && -80 < newMouseY && newMouseY < -30) {
+            interactID = 4
+          } else if (-340 < newMouseX && newMouseX < -210 && -160 < newMouseY && newMouseY < 190) {
+            interactID = 5
+          }
+        } else if (currentLocation == 1 && currentFocus == 2) {
+          if (-580 < newMouseX && newMouseX < -320 && -112 < newMouseY && newMouseY < 380) {
+            interactID = 6
+          } else if (6 < newMouseX && newMouseX < 150 && 290 < newMouseY && newMouseY < 380) {
+            interactID = 7
+          } else if (375 < newMouseX && newMouseX < 450 && 240 < newMouseY && newMouseY < 380) {
+            interactID = 8
+          }
+        } else if (currentLocation == 1 && currentFocus == 3) {
+          if (-630 < newMouseX && newMouseX < -370 && -112 < newMouseY && newMouseY < 380) {
+            interactID = 9
+          } else if (370 < newMouseX && newMouseX < 630 && -112 < newMouseY && newMouseY < 380) {
+            interactID = 10
+          } else if (140 < newMouseX && newMouseX < 300 && 120 < newMouseY && newMouseY < 200) {
+            interactID = 11
+          } else if (100 < newMouseX && newMouseX < 330 && -80 < newMouseY && newMouseY < 80) {
+            interactID = 12
+          }
+        } else if (currentLocation == 2 && currentFocus == 1) {
+          if (-311 < newMouseX && newMouseX < 311 && -340 < newMouseY && newMouseY < 75) {
+            interactID = 13
+          }
+        } else if (currentLocation == 2 && currentFocus == 2) {
+          if (-80 < newMouseX && newMouseX < 310 && 90 < newMouseY && newMouseY < 190) {
+            interactID = 14
+          } else if (-80 < newMouseX && newMouseX < 310 && 200 < newMouseY && newMouseY < 330) {
+            interactID = 15
+          } else if (-65 < newMouseX && newMouseX < 95 && -120 < newMouseY && newMouseY < 30) {
+            interactID = 16
+          } else if (370 < newMouseX && newMouseX < 630 && -120 < newMouseY && newMouseY < 380) {
+            interactID = 17
+          }
+        } else if (currentLocation == 2 && currentFocus == 3) {
+          if (-150 < newMouseX && newMouseX < 100 && -110 < newMouseY && newMouseY < 390) {
+            interactID = 18
+          } else if (-120 < newMouseX && newMouseX < 70 && -320 < newMouseY && newMouseY < -130) {
+            interactID = 19
+          } else if (-500 < newMouseX && newMouseX < -280 && -5 < newMouseY && newMouseY < 210) {
+            interactID = 20
+          }
+        } else if (currentLocation == 3 && currentFocus == 1) {
+          if (-600 < newMouseX && newMouseX < -380 && 190 < newMouseY && newMouseY < 240) {
+            interactID = 21
+          }
+        } else if (currentLocation == 3 && currentFocus == 2) {
+          if (280 < newMouseX && newMouseX < 340 && -70 < newMouseY && newMouseY < 80) {
+            interactID = 22
+          } else if (400 < newMouseX && newMouseX < 610 && 140 < newMouseY && newMouseY < 340) {
+            interactID = 23
+          } else if (-620 < newMouseX && newMouseX < -380 && -112 < newMouseY && newMouseY < 380) {
+            interactID = 24
+          }
+        } else if (currentLocation == 3 && currentFocus == 3) {
+          if (-390 < newMouseX && newMouseX < -130 && -260 < newMouseY && newMouseY < 390) {
+            interactID = 25
+          } else if (30 < newMouseX && newMouseX < 220 && 0 < newMouseY && newMouseY < 100) {
+            interactID = 26
+          }
+        } else if (currentLocation == 4 && currentFocus == 1) {
+          if (-300 < newMouseX && newMouseX < -75 && 110 < newMouseY && newMouseY < 240) {
+            interactID = 27
+          } else if (-400 < newMouseX && newMouseX < 20 && -170 < newMouseY && newMouseY < 55) {
+            interactID = 28
+          } else if (400 < newMouseX && newMouseX < 590 && 190 < newMouseY && newMouseY < 335) {
+            interactID = 29
+          } else if (65 < newMouseX && newMouseX < 320 && -112 < newMouseY && newMouseY < 380) {
+            interactID = 30
+          }
+        } else if (currentLocation == 4 && currentFocus == 2) {
+          if (-130 < newMouseX && newMouseX < 380 && 170 < newMouseY && newMouseY < 350) {
+            interactID = 31
+          } else if (140 < newMouseX && newMouseX < 370 && -80 < newMouseY && newMouseY < 175) {
+            interactID = 32
+          } else if (-340 < newMouseX && newMouseX < -165 && 120 < newMouseY && newMouseY < 330) {
+            interactID = 33
+          }
+        } else if (currentLocation == 5 && currentFocus == 1) {
+          if (140 < newMouseX && newMouseX < 630 && 190 < newMouseY && newMouseY < 330) {
+            interactID = 34
+          } else if (190 < newMouseX && newMouseX < 600 && 330 < newMouseY && newMouseY < 380) {
+            interactID = 35
+          } else if (-115 < newMouseX && newMouseX < 360 && -160 < newMouseY && newMouseY < 60) {
+            interactID = 36
+          }
+        } else if (currentLocation == 5 && currentFocus == 2) {
+          if (-115 < newMouseX && newMouseX < 110 && -70 < newMouseY && newMouseY < 130) {
+            interactID = 37
+          }
+        } else if (currentLocation == 5 && currentFocus == 3) {
+          if (-255 < newMouseX && newMouseX < -130 && 80 < newMouseY && newMouseY < 130) {
+            interactID = 38
+          } else if (110 < newMouseX && newMouseX < 350 && -250 < newMouseY && newMouseY < 330) {
+            interactID = 39
+          } else if (380 < newMouseX && newMouseX < 640 && -112 < newMouseY && newMouseY < 380) {
+            interactID = 40
+          } else if (-240 < newMouseX && newMouseX < -35 && 190 < newMouseY && newMouseY < 340) {
+            interactID = 41
+          } else if (-580 < newMouseX && newMouseX < -180 && -370 < newMouseY && newMouseY < 65) {
+            interactID = 42
+          }
+        } else {
+          interactID = 0
+        }
+      }
+    
+  }
 }
 
 if (interactID != 0) {
@@ -779,12 +873,33 @@ if (interactID != 0) {
 
 }
 
+
+
+function choiceMade(inputChoice) {
+
+}
+
+
+
 //anything to do with clicking the mouse - tracking it's position, recording interaction, playing noise etc
 function mouseClicked() {
 
   if (inputBlocked == false) {
     if (displayingDialogue == true) {
-      displayingDialogue = false
+      if (displayingChoice == true) {
+        if (170 < newMouseX && newMouseX < 600 && 370 < newMouseY && newMouseY < 420) {
+          choiceMade(currentChoices[0])
+          displayingDialogue = false
+          displayingChoice = false
+        } else if (170 < newMouseX && newMouseX < 600 && 490 < newMouseY && newMouseY < 540) {
+          choiceMade(currentChoices[1])
+          displayingDialogue = false
+          displayingChoice = false
+        }
+      } else {
+        displayingDialogue = false
+      }
+
     } else {
       if (-740 < newMouseX && newMouseX < -670 && -80 < newMouseY && newMouseY < 10) {
         leftNavClicked()
@@ -815,6 +930,9 @@ function mouseClicked() {
         } else if (interactID == 40) {
           currentLocation = 2
           currentFocus = 3
+        } else if (interactID != 0) {
+          displayingDialogue = true
+          dialogueToDisplay = interactID - 1
         }
       }
     }
@@ -923,11 +1041,8 @@ function draw() {
   text(newMouseX, newMouseX+50, newMouseY)
   text(newMouseY, newMouseX+50, newMouseY + 30)
 
-  //check whether the mouse is hovering over anything interactable
-  checkMouseHover()
-
-
   push()
+
   if (displayingDialogue == true) {
 
     if (scanLineY > 197) {
@@ -936,16 +1051,19 @@ function draw() {
       scanLineY = scanLineY + 2
     }
 
+
+    textWrap(WORD)
+
     inputBlocked = true
-    dialogueBoxes[0].displayDialogue()
+    dialogueBoxes[dialogueToDisplay].displayDialogue()
 
     if (charTyped < currentDialogue.length) {
       let toType = currentDialogue.substring(0, charTyped)
 
       fill('white')
-      textFont(VT323Font, 50)
+      textFont(VT323Font, 40)
       textAlign(LEFT, CENTER)
-      text(toType, -470, 465)
+      text(toType, -195, 465, 750)
 
       charTyped++ 
       
@@ -953,22 +1071,44 @@ function draw() {
 
       inputBlocked = false
       fill('white')
-      textFont(VT323Font, 50)
+      textFont(VT323Font, 40)
       textAlign(LEFT, CENTER)
-      text(currentDialogue, -470, 465)
+      text(currentDialogue, -195, 465, 750)
+
+    }
+
+    if (displayingChoice == true) {
+
+      textAlign(RIGHT, CENTER)
+
+      if (currentChoices[0] != null) {
+        text(currentChoices[0], 570, 410)
+      }
+      if (currentChoices[0] != null && currentChoices[1] != null) {
+        text(currentChoices[1], 570, 510)
+      }
+
+    } else {
 
       textSize(30)
       textAlign(RIGHT, CENTER)
       text('click to continue...', 470, 525)
 
     }
+
+
   } else {
 
     charTyped = 0
     scanlineY = 0
 
   }
+
   pop()
 
+  //check whether the mouse is hovering over anything interactable
+  checkMouseHover()
 
+
+  
 }
