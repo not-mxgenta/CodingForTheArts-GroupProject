@@ -47,7 +47,7 @@ let tileImage;
 
 let interactID = 0;
 
-let displayingDialogue = false;
+let displayingDialogue = true;
 
 let dialogueBoxes = [];
 
@@ -56,6 +56,8 @@ let inputBlocked = false;
 let currentDialogue = '';
 
 let charTyped = 0;
+
+let scanLineY = 0;
 
 
 //Graphics maps for each environment, dictating placement of tiles for background
@@ -192,15 +194,32 @@ class dialogueBoxClass {
 
     push()
     translate(0, 465)
-    fill('red')
+    fill('black')
     rect(0, 0, 1000, 200)
-    fill('white')
+    fill(255, 255, 255, 200)
     rect(0, 0, 985, 185)
-    fill('red')
+    fill('black')
     rect(0, 0, 970, 170)
-    pop()
 
-    inputBlocked = true;
+    for (let scanLines = 0; scanLines < 16; scanLines++) {
+
+      push()
+
+      translate(0, -97)
+      fill(255, 255, 255, 20)
+      
+      let scanLinePosition = (scanLineY + (25 * scanLines) - 100) % 197
+
+      if (scanLinePosition < 0) {
+        scanLinePosition += 197
+      }
+
+      rect(0, scanLinePosition, 1000, 6)
+
+      pop()
+    }
+
+    pop()
 
     currentDialogue = this.dialogueContent;
     
@@ -535,6 +554,8 @@ function placeObjectsInside () {
   image(currentObjectArrangement, 0, 0, 1280, 768)
 }
 
+
+
 function leftNavClicked() {
   if (currentLocation == 1) {
     if (currentFocus == 1) {
@@ -762,35 +783,39 @@ if (interactID != 0) {
 function mouseClicked() {
 
   if (inputBlocked == false) {
-    if (-740 < newMouseX && newMouseX < -670 && -80 < newMouseY && newMouseY < 10) {
-      leftNavClicked()
-    } else if (670 < newMouseX && newMouseX < 740 && -80 < newMouseY && newMouseY < 10) {
-      rightNavClicked()
+    if (displayingDialogue == true) {
+      displayingDialogue = false
     } else {
-      if (interactID == 6) {
-        currentLocation = 2
-        currentFocus = 2
-      } else if (interactID == 9) {
-        currentLocation = 4
-        currentFocus = 1
-      } else if (interactID == 10) {
-        currentLocation = 3
-        currentFocus = 2
-      } else if (interactID == 17) {
-        currentLocation = 1
-        currentFocus = 2
-      } else if (interactID == 18) {
-        currentLocation = 5
-        currentFocus = 3
-      } else if (interactID == 24) {
-        currentLocation = 1
-        currentFocus = 3
-      } else if (interactID == 30) {
-        currentLocation = 1
-        currentFocus = 3
-      } else if (interactID == 40) {
-        currentLocation = 2
-        currentFocus = 3
+      if (-740 < newMouseX && newMouseX < -670 && -80 < newMouseY && newMouseY < 10) {
+        leftNavClicked()
+      } else if (670 < newMouseX && newMouseX < 740 && -80 < newMouseY && newMouseY < 10) {
+        rightNavClicked()
+      } else {
+        if (interactID == 6) {
+          currentLocation = 2
+          currentFocus = 2
+        } else if (interactID == 9) {
+          currentLocation = 4
+          currentFocus = 1
+        } else if (interactID == 10) {
+          currentLocation = 3
+          currentFocus = 2
+        } else if (interactID == 17) {
+          currentLocation = 1
+          currentFocus = 2
+        } else if (interactID == 18) {
+          currentLocation = 5
+          currentFocus = 3
+        } else if (interactID == 24) {
+          currentLocation = 1
+          currentFocus = 3
+        } else if (interactID == 30) {
+          currentLocation = 1
+          currentFocus = 3
+        } else if (interactID == 40) {
+          currentLocation = 2
+          currentFocus = 3
+        }
       }
     }
   }
@@ -902,23 +927,48 @@ function draw() {
   checkMouseHover()
 
 
-  dialogueBoxes[0].displayDialogue()
+  push()
+  if (displayingDialogue == true) {
 
-  if (charTyped < currentDialogue.length) {
-    let toType = currentDialogue.substring(0, charTyped)
+    if (scanLineY > 197) {
+      scanLineY = 0
+    } else {
+      scanLineY = scanLineY + 2
+    }
 
-    fill('white')
-    textFont(VT323Font, 50)
-    textAlign(LEFT, CENTER)
-    text(toType, -470, 465)
+    inputBlocked = true
+    dialogueBoxes[0].displayDialogue()
 
-    charTyped++ 
-    
+    if (charTyped < currentDialogue.length) {
+      let toType = currentDialogue.substring(0, charTyped)
+
+      fill('white')
+      textFont(VT323Font, 50)
+      textAlign(LEFT, CENTER)
+      text(toType, -470, 465)
+
+      charTyped++ 
+      
+    } else if (charTyped == currentDialogue.length) {
+
+      inputBlocked = false
+      fill('white')
+      textFont(VT323Font, 50)
+      textAlign(LEFT, CENTER)
+      text(currentDialogue, -470, 465)
+
+      textSize(30)
+      textAlign(RIGHT, CENTER)
+      text('click to continue...', 470, 525)
+
+    }
   } else {
 
     charTyped = 0
+    scanlineY = 0
 
   }
+  pop()
 
 
 }
