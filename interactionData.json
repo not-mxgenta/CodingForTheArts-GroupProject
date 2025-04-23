@@ -1,0 +1,68 @@
+{
+    "interactables": [
+      {
+        "id": 1,
+        "name": "Rain Boots",
+        "interactCount": 0,
+        "dialogues": [
+          {
+            "id": "d1",
+            "text": "Could really do with a clean. But today is NOT the day.",
+            "choices": [
+              {
+                "id": null,
+                "text": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Front Door Handle",
+        "interactCount": 0,
+        "dialogues": [
+          {
+            "id": "d1",
+            "text": "Just checking it's all locked up.",
+            "choices": [
+              {
+                "id": null,
+                "text": null
+              }
+            ]
+          },
+          {
+            "id": "d2",
+            "text": "Better safe than sorry I guess...",
+            "choices": [
+              {
+                "id": null,
+                "text": null
+              }
+            ]
+          },
+          {
+            "id": "d3",
+            "text": "I'm P-R-E-T-T-Y sure it's locked!",
+            "choices": [
+              {
+                "id": null,
+                "text": null
+              }
+            ]
+          },
+          {
+            "id": "d4",
+            "text": "I gotta remember to lock this before I go to bed.",
+            "choices": [
+              {
+                "id": null,
+                "text": null
+              }
+            ]
+          }
+        ]
+        }
+    ]
+  }

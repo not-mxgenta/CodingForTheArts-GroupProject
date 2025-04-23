@@ -328,6 +328,9 @@ function preload() {
   //other
   BLANKtile = loadImage("assets/BLANKtile.png")
 
+  //JSONs
+  dialogueData = loadJSON("interactionData.json")
+
 }
 
 //Extra VHS-style effects
