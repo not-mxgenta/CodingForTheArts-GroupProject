@@ -53,7 +53,9 @@ let displayingChoice = false;
 
 let currentChoices = [];
 
-let dialogueBoxes = [];
+let interactDialogueBoxes = [];
+
+let storyDialogueBoxes = [];
 
 let inputBlocked = false;
 
@@ -90,6 +92,15 @@ let branchCodeArray = [
   ['SP_wardrobe', null],
   ['SP_bedroomCabinet', null]
 ]
+
+let dialogueType = null;
+
+let storyComplete = [
+  [], //stage 1
+  [false], //stage 2
+]
+
+let storyDialogueNumber = 0;
 
 
 //Graphics maps for each environment, dictating placement of tiles for background
@@ -199,21 +210,21 @@ class BGtileClass {
   }
 }
 
-class interactTextClass {
-  constructor(INTtextSize, INTtextID, INTtextContent, isDisplayed) {
-    this.INTtextSize = INTtextSize;
-    this.INTtextID = INTtextID;
-    this.INTtextContent = INTtextContent;
-    this.isDisplayed = isDisplayed
-  }
+// class interactTextClass {
+//   constructor(INTtextSize, INTtextID, INTtextContent, isDisplayed) {
+//     this.INTtextSize = INTtextSize;
+//     this.INTtextID = INTtextID;
+//     this.INTtextContent = INTtextContent;
+//     this.isDisplayed = isDisplayed
+//   }
 
-  displayText(textXpos, textYpos) {
-    fill('white')
-    textFont(VT323Font, this.INTtextSize)
-    textAlign(LEFT, CENTER)
-    text(this.INTtextContent, textXpos, textYpos)
-  }
-}
+//   displayText(textXpos, textYpos) {
+//     fill('white')
+//     textFont(VT323Font, this.INTtextSize)
+//     textAlign(LEFT, CENTER)
+//     text(this.INTtextContent, textXpos, textYpos)
+//   }
+// }
 
 class dialogueBoxClass {
   constructor(dialogueID, dialogueContent, firstChoice, secondChoice) {
@@ -508,8 +519,7 @@ function NAVtiles() {
 
 function buildDialogueBox() {
  
-
-  let dialogueToAdd = [
+  let interactDialogueToAdd = [
     ["---", null, null],
     ["---", null, null],
     ["Better lock this.", 'lock the door', 'leave it'],
@@ -554,18 +564,33 @@ function buildDialogueBox() {
     ["---", null, null],
 
   ]
+
+
+  let storyDialogueToAdd = [
+    ["Home, finally. God I'm so tired - but I have that lasagne for dinner, I should go put it in the oven.", null, null],
+    ["It's been such a long day. I just want to collapse into bed as soon as possible.", null, null]
+  ]
+
   
   //empty list ready to contain all dialogue box instances
-  dialogueBoxes = []
+  interactDialogueBoxes = [];
+  storyDialogueBoxes = [];
 
   //iterate through each dialogue
-  for (let dialogueAdded = 0; dialogueAdded < dialogueToAdd.length; dialogueAdded++) {
+  for (let dialogueAdded = 0; dialogueAdded < interactDialogueToAdd.length; dialogueAdded++) {
 
-    if (dialogueToAdd[dialogueAdded][0] != null) {
+    if (interactDialogueToAdd[dialogueAdded][0] != null) {
       //adds next dialogue instance to array
-      dialogueBoxes[dialogueAdded] = new dialogueBoxClass(dialogueAdded, dialogueToAdd[dialogueAdded][0], dialogueToAdd[dialogueAdded][1], dialogueToAdd[dialogueAdded][2])
+      interactDialogueBoxes[dialogueAdded] = new dialogueBoxClass(dialogueAdded, interactDialogueToAdd[dialogueAdded][0], interactDialogueToAdd[dialogueAdded][1], interactDialogueToAdd[dialogueAdded][2])
     }
 
+  }
+
+
+  for (let dialogueAdded = 0; dialogueAdded < storyDialogueToAdd.length; dialogueAdded++) {
+
+    //adds next dialogue instance to array
+    storyDialogueBoxes[dialogueAdded] = new dialogueBoxClass(dialogueAdded, storyDialogueToAdd[dialogueAdded][0], storyDialogueToAdd[dialogueAdded][1], storyDialogueToAdd[dialogueAdded][2])
 
   }
 }
@@ -873,10 +898,68 @@ if (interactID != 0) {
 
 }
 
+function choiceMade(optionChosen) {
 
+  let SP_Choice = null;
 
-function choiceMade(inputChoice) {
+  if (optionChosen == 1) {
+    SP_Choice = true
+  } else {
+    SP_Choice = false
+  }
+  if (dialogueToDisplay == 3) {
+    branchCodeArray[1][1] = SP_Choice
+  } else if (dialogueToDisplay == 4) {
+    branchCodeArray[2][1] = SP_Choice
+  } else if (dialogueToDisplay == 5) {
+    branchCodeArray[3][1] = SP_Choice
+  } else if (dialogueToDisplay == 7) {
+    branchCodeArray[4][1] = SP_Choice
+  } else if (dialogueToDisplay == 8) {
+    branchCodeArray[5][1] = SP_Choice
+  } else if (dialogueToDisplay == 11) {
+    branchCodeArray[6][1] = SP_Choice
+  } else if (dialogueToDisplay == 12) {
+    branchCodeArray[7][1] = SP_Choice
+  } else if (dialogueToDisplay == 13) {
+    branchCodeArray[8][1] = SP_Choice
+  } else if (dialogueToDisplay == 14) {
+    branchCodeArray[9][1] = SP_Choice
+  } else if (dialogueToDisplay == 15) {
+    branchCodeArray[10][1] = SP_Choice
+  } else if (dialogueToDisplay == 16) {
+    branchCodeArray[11][1] = SP_Choice
+  } else if (dialogueToDisplay == 20) {
+    branchCodeArray[12][1] = SP_Choice
+  } else if (dialogueToDisplay == 21) {
+    branchCodeArray[13][1] = SP_Choice
+  } else if (dialogueToDisplay == 26) {
+    branchCodeArray[14][1] = SP_Choice
+  } else if (dialogueToDisplay == 31) {
+    branchCodeArray[15][1] = SP_Choice
+  // } else if (dialogueToDisplay == 4) {
+  //   branchCodeArray[16][1] = SP_Choice
+  } else if (dialogueToDisplay == 32) {
+    branchCodeArray[17][1] = SP_Choice
+  } else if (dialogueToDisplay == 35) {
+    branchCodeArray[18][1] = SP_Choice
+  } else if (dialogueToDisplay == 36) {
+    branchCodeArray[19][1] = SP_Choice
+  } else if (dialogueToDisplay == 38) {
+    branchCodeArray[20][1] = SP_Choice
+  } else if (dialogueToDisplay == 39) {
+    branchCodeArray[21][1] = SP_Choice
+  } else if (dialogueToDisplay == 41) {
+    branchCodeArray[22][1] = SP_Choice
+  }
+  
 
+}
+
+function beginStageTwo() {
+  dialogueType = 'story'
+  displayingDialogue = true
+  dialogueToDisplay = storyDialogueNumber
 }
 
 
@@ -888,16 +971,22 @@ function mouseClicked() {
     if (displayingDialogue == true) {
       if (displayingChoice == true) {
         if (170 < newMouseX && newMouseX < 600 && 370 < newMouseY && newMouseY < 420) {
-          choiceMade(currentChoices[0])
+          choiceMade(1)
           displayingDialogue = false
           displayingChoice = false
         } else if (170 < newMouseX && newMouseX < 600 && 490 < newMouseY && newMouseY < 540) {
-          choiceMade(currentChoices[1])
+          choiceMade(2)
           displayingDialogue = false
           displayingChoice = false
         }
       } else {
-        displayingDialogue = false
+        if (dialogueType == 'story' && storyDialogueNumber < storyDialogueBoxes.length) {
+          storyDialogueNumber++
+          dialogueToDisplay = storyDialogueNumber
+          beginStageTwo()
+        } else {
+          displayingDialogue = false
+        }
       }
 
     } else {
@@ -933,6 +1022,7 @@ function mouseClicked() {
         } else if (interactID != 0) {
           displayingDialogue = true
           dialogueToDisplay = interactID - 1
+          dialogueType = 'interact'
         }
       }
     }
@@ -974,140 +1064,154 @@ function draw() {
   pop()
 
 
-  push()
 
-  //centre tile maps in window
-  translate(-BGtilesX * BGtileSize/2 + BGtileSize/2, -BGtilesY * BGtileSize/2 + BGtileSize/2, 0);
+  if (currentGameState == 2) {
+    push()
+
+    //centre tile maps in window
+    translate(-BGtilesX * BGtileSize/2 + BGtileSize/2, -BGtilesY * BGtileSize/2 + BGtileSize/2, 0);
 
 
-  //draw each tile in current tile map
-  for (let tileX = 0; tileX < BGtilesX; tileX++) {
+    //draw each tile in current tile map
+    for (let tileX = 0; tileX < BGtilesX; tileX++) {
 
-    for (let tileY = 0; tileY < BGtilesY; tileY++) {
+      for (let tileY = 0; tileY < BGtilesY; tileY++) {
 
-      BGtileMap[tileX][tileY].displayTile()
+        BGtileMap[tileX][tileY].displayTile()
+      }
     }
-  }
 
 
-  //sorts the orientation and position of navigation arrows
-  for (let tileX = 0; tileX < OVERLAYtilesX; tileX++) {
+    //sorts the orientation and position of navigation arrows
+    for (let tileX = 0; tileX < OVERLAYtilesX; tileX++) {
 
-    for (let tileY = 0; tileY < OVERLAYtilesY; tileY++) {
+      for (let tileY = 0; tileY < OVERLAYtilesY; tileY++) {
 
-      if (navPosMap1[tileX][tileY] == 1) {
-        push()
-        translate(-NAVtileSize - 30, -30)
-        if (leftNavHovered == true) {
-          translate(10, 10)
+        if (navPosMap1[tileX][tileY] == 1) {
+          push()
+          translate(-NAVtileSize - 30, -30)
+          if (leftNavHovered == true) {
+            translate(10, 10)
+          }
+          NAVtileMap[tileX][tileY].displayTile()
+          pop()
+        } else if (navPosMap1[tileX][tileY] == -1) {
+          push()
+          translate((NAVtileSize * 18 + 30), -30)
+          scale(-1, 1)
+          if (rightNavHovered == true) {
+            translate(10, 10)
+          }
+          NAVtileMap[tileX][tileY].displayTile()
+          pop()
         }
-        NAVtileMap[tileX][tileY].displayTile()
-        pop()
-      } else if (navPosMap1[tileX][tileY] == -1) {
-        push()
-        translate((NAVtileSize * 18 + 30), -30)
-        scale(-1, 1)
-        if (rightNavHovered == true) {
-          translate(10, 10)
+
+      }
+    }
+
+    //reset translations (so they don't just accumulate with every run of the draw function)
+    pop()
+
+
+    push()
+    //draw objects based on current location and focus
+    placeObjectsInside()
+    pop()
+
+
+    push()
+    translate(0, 256/4)
+    //semi-transparent VHS-style overlay
+    tint(255, 100);
+    image(VHSoverlay, 0, 0, 1550, 1024);
+    pop()
+
+    //track mouse coordinates on screen (useful for tracking click position later, remove when submitting final game)
+    fill('white')
+    textFont(VT323Font, 30)
+    textAlign(CENTER, CENTER)
+    text(newMouseX, newMouseX+50, newMouseY)
+    text(newMouseY, newMouseX+50, newMouseY + 30)
+
+    // if (storyDialogueNumber == 0) {
+    //       beginStageTwo()
+    // }
+
+
+    push()
+
+    if (displayingDialogue == true) {
+
+      if (scanLineY > 197) {
+        scanLineY = 0
+      } else {
+        scanLineY = scanLineY + 2
+      }
+
+
+      textWrap(WORD)
+
+      inputBlocked = true
+
+      if (dialogueType == 'interact') {
+        interactDialogueBoxes[dialogueToDisplay].displayDialogue()
+      } else if (dialogueType == 'story') {
+        storyDialogueBoxes[dialogueToDisplay].displayDialogue()
+      }
+
+      if (charTyped < currentDialogue.length) {
+        let toType = currentDialogue.substring(0, charTyped)
+
+        fill('white')
+        textFont(VT323Font, 40)
+        textAlign(LEFT, CENTER)
+        text(toType, -195, 465, 750)
+
+        charTyped++ 
+        
+      } else if (charTyped == currentDialogue.length) {
+
+        inputBlocked = false
+        fill('white')
+        textFont(VT323Font, 40)
+        textAlign(LEFT, CENTER)
+        text(currentDialogue, -195, 465, 750)
+
+      }
+
+      if (displayingChoice == true) {
+
+        textAlign(RIGHT, CENTER)
+
+        if (currentChoices[0] != null) {
+          text(currentChoices[0], 570, 410)
         }
-        NAVtileMap[tileX][tileY].displayTile()
-        pop()
+        if (currentChoices[0] != null && currentChoices[1] != null) {
+          text(currentChoices[1], 570, 510)
+        }
+
+      } else {
+
+        textSize(30)
+        textAlign(RIGHT, CENTER)
+        text('click to continue...', 570, 525)
+
       }
 
-    }
-  }
-
-  //reset translations (so they don't just accumulate with every run of the draw function)
-  pop()
-
-
-  push()
-  //draw objects based on current location and focus
-  placeObjectsInside()
-  pop()
-
-
-  push()
-  translate(0, 256/4)
-  //semi-transparent VHS-style overlay
-  tint(255, 100);
-  image(VHSoverlay, 0, 0, 1550, 1024);
-  pop()
-
-  //track mouse coordinates on screen (useful for tracking click position later, remove when submitting final game)
-  fill('white')
-  textFont(VT323Font, 30)
-  textAlign(CENTER, CENTER)
-  text(newMouseX, newMouseX+50, newMouseY)
-  text(newMouseY, newMouseX+50, newMouseY + 30)
-
-  push()
-
-  if (displayingDialogue == true) {
-
-    if (scanLineY > 197) {
-      scanLineY = 0
-    } else {
-      scanLineY = scanLineY + 2
-    }
-
-
-    textWrap(WORD)
-
-    inputBlocked = true
-    dialogueBoxes[dialogueToDisplay].displayDialogue()
-
-    if (charTyped < currentDialogue.length) {
-      let toType = currentDialogue.substring(0, charTyped)
-
-      fill('white')
-      textFont(VT323Font, 40)
-      textAlign(LEFT, CENTER)
-      text(toType, -195, 465, 750)
-
-      charTyped++ 
-      
-    } else if (charTyped == currentDialogue.length) {
-
-      inputBlocked = false
-      fill('white')
-      textFont(VT323Font, 40)
-      textAlign(LEFT, CENTER)
-      text(currentDialogue, -195, 465, 750)
-
-    }
-
-    if (displayingChoice == true) {
-
-      textAlign(RIGHT, CENTER)
-
-      if (currentChoices[0] != null) {
-        text(currentChoices[0], 570, 410)
-      }
-      if (currentChoices[0] != null && currentChoices[1] != null) {
-        text(currentChoices[1], 570, 510)
-      }
 
     } else {
 
-      textSize(30)
-      textAlign(RIGHT, CENTER)
-      text('click to continue...', 470, 525)
+      charTyped = 0
+      scanlineY = 0
 
     }
 
+    pop()
 
-  } else {
+    //check whether the mouse is hovering over anything interactable
+    checkMouseHover()
 
-    charTyped = 0
-    scanlineY = 0
-
-  }
-
-  pop()
-
-  //check whether the mouse is hovering over anything interactable
-  checkMouseHover()
+}
 
 
   
