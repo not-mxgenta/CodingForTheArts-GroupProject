@@ -47,6 +47,16 @@ let tileImage;
 
 let interactID = 0;
 
+let displayingDialogue = false;
+
+let dialogueBoxes = [];
+
+let inputBlocked = false;
+
+let currentDialogue = '';
+
+let charTyped = 0;
+
 
 //Graphics maps for each environment, dictating placement of tiles for background
 //Oriented weirdly for some reason? Wasn't harming anyone so just left it lol
@@ -171,6 +181,35 @@ class interactTextClass {
   }
 }
 
+class dialogueBoxClass {
+  constructor(dialogueID, dialogueContent, isInteractive) {
+    this.dialogueID = dialogueID;
+    this.dialogueContent = dialogueContent;
+    this.isInteractive = isInteractive;
+  }
+
+  displayDialogue () {
+
+    push()
+    translate(0, 465)
+    fill('red')
+    rect(0, 0, 1000, 200)
+    fill('white')
+    rect(0, 0, 985, 185)
+    fill('red')
+    rect(0, 0, 970, 170)
+    pop()
+
+    inputBlocked = true;
+
+    currentDialogue = this.dialogueContent;
+    
+
+  }
+}
+
+
+
 
 //preload assets here to speed up programe running
 function preload() {
@@ -260,7 +299,7 @@ function setup() {
   VHSoverlay.volume(0);
   VHSoverlay.play()
 
-  OBJsheetArray = [OBJbedroom1, OBJbathroom1, OBJhallway1, OBJkitchen1, OBJkitchen2, OBJdining1]
+  buildDialogueBox()
 
 }
 
@@ -418,6 +457,27 @@ function NAVtiles() {
     }
   }
 }
+
+
+function buildDialogueBox() {
+ 
+
+  let dialogueToAdd = [
+    ['Welcome home Quinn!', 0]
+  ]
+  
+  //empty list ready to contain all dialogue box instances
+  dialogueBoxes = []
+
+  //iterate through each dialogue
+  for (let dialogueAdded = 0; dialogueAdded < dialogueToAdd.length; dialogueAdded++) {
+
+    //adds next dialogue instance to array
+    dialogueBoxes[dialogueAdded] = new dialogueBoxClass(dialogueAdded, dialogueToAdd[dialogueAdded][0], dialogueToAdd[dialogueAdded][1])
+
+  }
+}
+
 
 function displayInteractText(interactIDinput) {
 
@@ -700,35 +760,38 @@ if (interactID != 0) {
 
 //anything to do with clicking the mouse - tracking it's position, recording interaction, playing noise etc
 function mouseClicked() {
-  if (-740 < newMouseX && newMouseX < -670 && -80 < newMouseY && newMouseY < 10) {
-    leftNavClicked()
-  } else if (670 < newMouseX && newMouseX < 740 && -80 < newMouseY && newMouseY < 10) {
-    rightNavClicked()
-  } else {
-    if (interactID == 6) {
-      currentLocation = 2
-      currentFocus = 2
-    } else if (interactID == 9) {
-      currentLocation = 4
-      currentFocus = 1
-    } else if (interactID == 10) {
-      currentLocation = 3
-      currentFocus = 2
-    } else if (interactID == 17) {
-      currentLocation = 1
-      currentFocus = 2
-    } else if (interactID == 18) {
-      currentLocation = 5
-      currentFocus = 3
-    } else if (interactID == 24) {
-      currentLocation = 1
-      currentFocus = 3
-    } else if (interactID == 30) {
-      currentLocation = 1
-      currentFocus = 3
-    } else if (interactID == 40) {
-      currentLocation = 2
-      currentFocus = 3
+
+  if (inputBlocked == false) {
+    if (-740 < newMouseX && newMouseX < -670 && -80 < newMouseY && newMouseY < 10) {
+      leftNavClicked()
+    } else if (670 < newMouseX && newMouseX < 740 && -80 < newMouseY && newMouseY < 10) {
+      rightNavClicked()
+    } else {
+      if (interactID == 6) {
+        currentLocation = 2
+        currentFocus = 2
+      } else if (interactID == 9) {
+        currentLocation = 4
+        currentFocus = 1
+      } else if (interactID == 10) {
+        currentLocation = 3
+        currentFocus = 2
+      } else if (interactID == 17) {
+        currentLocation = 1
+        currentFocus = 2
+      } else if (interactID == 18) {
+        currentLocation = 5
+        currentFocus = 3
+      } else if (interactID == 24) {
+        currentLocation = 1
+        currentFocus = 3
+      } else if (interactID == 30) {
+        currentLocation = 1
+        currentFocus = 3
+      } else if (interactID == 40) {
+        currentLocation = 2
+        currentFocus = 3
+      }
     }
   }
 }
@@ -737,10 +800,7 @@ function mouseClicked() {
 function draw() {
   background('black')
   
-  //for debug only
-  // currentGameState = 2
-  // currentLocation = 1
-  // currentFocus = 1
+  frameRate(24)
 
   //Calculates new mouse coordinates based on center of screen instead of default top left corner, thus allowing coordinates to remain same regardless of window resizing - crucial when calculating mouse click position across different window sizes
   newMouseX = mouseX - (windowWidth/2)
@@ -840,5 +900,25 @@ function draw() {
 
   //check whether the mouse is hovering over anything interactable
   checkMouseHover()
+
+
+  dialogueBoxes[0].displayDialogue()
+
+  if (charTyped < currentDialogue.length) {
+    let toType = currentDialogue.substring(0, charTyped)
+
+    fill('white')
+    textFont(VT323Font, 50)
+    textAlign(LEFT, CENTER)
+    text(toType, -470, 465)
+
+    charTyped++ 
+    
+  } else {
+
+    charTyped = 0
+
+  }
+
 
 }
