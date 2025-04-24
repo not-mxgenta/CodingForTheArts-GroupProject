@@ -1,0 +1,61 @@
+{
+  "interactDialogue": [
+    {
+      "id": 0,
+      "text": "rain boots",
+      "choices": null
+    },
+    {
+      "id": 1,
+      "text": "---",
+      "choices": null
+    },
+    {
+      "id": 2,
+      "text": "Better lock this.",
+      "choices": ["lock the door", "leave it"]
+    },
+    {
+      "id": 3,
+      "text": "Double locked. No one's getting in here!",
+      "choices": null
+    },
+    {
+      "id": 4,
+      "text": "---",
+      "choices": null
+    },
+    {
+      "id": 5,
+      "text": "I shouldn't leave my shoes lying around like this, they're a tripping hazard",
+      "choices": ["tuck them under the bench", "leave them"]
+    },
+    {
+      "id": 6,
+      "text": "Did I leave my phone in here?",
+      "choices": ["look for the phone", "leave it"]
+    },
+    {
+      "id": 7,
+      "text": "---",
+      "choices": ["take it", "leave it"]
+    },
+    {
+      "id": 8,
+      "text": "frog boots",
+      "choices": null
+    }
+  ],
+  "storyDialogue": [
+    {
+      "id": 0,
+      "text": "Home, finally. God I'm so tired - but I have that lasagne for dinner, I should go put it in the oven.",
+      "choices": null
+    },
+    {
+      "id": 1,
+      "text": "It's been such a long day. I just want to collapse into bed as soon as possible.",
+      "choices": null
+    }
+  ]
+}

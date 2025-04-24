@@ -102,6 +102,8 @@ let storyComplete = [
 
 let storyDialogueNumber = 0;
 
+// ===== JSON DIALOGUE SYSTEM: Add variable to store loaded JSON data =====
+let dialogueData;
 
 //Graphics maps for each environment, dictating placement of tiles for background
 //Oriented weirdly for some reason? Wasn't harming anyone so just left it lol
@@ -328,8 +330,8 @@ function preload() {
   //other
   BLANKtile = loadImage("assets/BLANKtile.png")
 
-  //JSONs
-  dialogueData = loadJSON("interactionData.json")
+  // ===== JSON DIALOGUE SYSTEM: Load dialogue data from JSON file =====
+  dialogueData = loadJSON("dialogueData.json")
 
 }
 
@@ -521,80 +523,31 @@ function NAVtiles() {
 }
 
 function buildDialogueBox() {
- 
-  let interactDialogueToAdd = [
-    ["---", null, null],
-    ["---", null, null],
-    ["Better lock this.", 'lock the door', 'leave it'],
-    ["Double locked. No one's getting in here!", null, null],
-    ["---", null, null],
-    [null],
-    ["I shouldn't leave my shoes lying around like this, they're a tripping hazard", 'tuck them under the bench', 'leave them'],
-    ["Did I leave my phone in here?", 'look for the phone', 'leave it'],
-    [null],
-    [null],
-    ["---", 'take it', 'leave it'],
-    ["---", null, null],
-    ["---", null, null],
-    ["---", null, null],
-    ["---", null, null],
-    ["---", null, null],
-    [null],
-    [null],
-    ["---", null, null],
-    ["---", null, null],
-    ["---", null, null],
-    ["---", null, null],
-    ["---", null, null],
-    [null],
-    ["---", null, null],
-    ["---", null, null],
-    ["---", null, null],
-    ["---", null, null],
-    ["---", null, null],
-    [null],
-    ["---", null, null],
-    ["---", null, null],
-    ["---", null, null],
-    ["---", null, null],
-    ["---", null, null],
-    ["---", null, null],
-    ["---", null, null],
-    ["---", null, null],
-    ["---", null, null],
-    [null],
-    ["---", null, null],
-    ["---", null, null],
-
-  ]
-
-
-  let storyDialogueToAdd = [
-    ["Home, finally. God I'm so tired - but I have that lasagne for dinner, I should go put it in the oven.", null, null],
-    ["It's been such a long day. I just want to collapse into bed as soon as possible.", null, null]
-  ]
-
-  
   //empty list ready to contain all dialogue box instances
   interactDialogueBoxes = [];
   storyDialogueBoxes = [];
 
-  //iterate through each dialogue
-  for (let dialogueAdded = 0; dialogueAdded < interactDialogueToAdd.length; dialogueAdded++) {
-
-    if (interactDialogueToAdd[dialogueAdded][0] != null) {
-      //adds next dialogue instance to array
-      interactDialogueBoxes[dialogueAdded] = new dialogueBoxClass(dialogueAdded, interactDialogueToAdd[dialogueAdded][0], interactDialogueToAdd[dialogueAdded][1], interactDialogueToAdd[dialogueAdded][2])
+  // ===== JSON DIALOGUE SYSTEM: Load dialogue from JSON instead of hardcoded arrays =====
+  // Load interact dialogue from JSON
+  for (let dialogue of dialogueData.interactDialogue) {
+    if (dialogue.text != null) {
+      interactDialogueBoxes[dialogue.id] = new dialogueBoxClass(
+        dialogue.id,
+        dialogue.text,
+        dialogue.choices ? dialogue.choices[0] : null,
+        dialogue.choices ? dialogue.choices[1] : null
+      );
     }
-
   }
 
-
-  for (let dialogueAdded = 0; dialogueAdded < storyDialogueToAdd.length; dialogueAdded++) {
-
-    //adds next dialogue instance to array
-    storyDialogueBoxes[dialogueAdded] = new dialogueBoxClass(dialogueAdded, storyDialogueToAdd[dialogueAdded][0], storyDialogueToAdd[dialogueAdded][1], storyDialogueToAdd[dialogueAdded][2])
-
+  // Load story dialogue from JSON
+  for (let dialogue of dialogueData.storyDialogue) {
+    storyDialogueBoxes[dialogue.id] = new dialogueBoxClass(
+      dialogue.id,
+      dialogue.text,
+      dialogue.choices ? dialogue.choices[0] : null,
+      dialogue.choices ? dialogue.choices[1] : null
+    );
   }
 }
 
