@@ -84,6 +84,7 @@ let branchCodeArray = [
   ['SP_diningChair', null],
   ['SP_kitchenSink', null],
   ['SP_bath', null],
+  ['SP_bathroomCabinet', null],
   ['SP_bathroomSink', null],
   ['SP_showerCurtain', null],
   ['SP_underBed', null],
@@ -211,22 +212,6 @@ class BGtileClass {
     image(this.tileImage, this.xPos, this.yPos, this.tileSize, this.tileSize)
   }
 }
-
-// class interactTextClass {
-//   constructor(INTtextSize, INTtextID, INTtextContent, isDisplayed) {
-//     this.INTtextSize = INTtextSize;
-//     this.INTtextID = INTtextID;
-//     this.INTtextContent = INTtextContent;
-//     this.isDisplayed = isDisplayed
-//   }
-
-//   displayText(textXpos, textYpos) {
-//     fill('white')
-//     textFont(VT323Font, this.INTtextSize)
-//     textAlign(LEFT, CENTER)
-//     text(this.INTtextContent, textXpos, textYpos)
-//   }
-// }
 
 class dialogueBoxClass {
   constructor(dialogueID, dialogueContent, firstChoice, secondChoice) {
