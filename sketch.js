@@ -555,10 +555,13 @@ function buildDialogueBox() {
 function displayInteractText(interactIDinput) {
 
   fill('white')
-  textFont(VT323Font, 50)
-  textAlign(LEFT, CENTER)
+  textFont(VT323Font, 30)
+  textAlign(CENTER, CENTER)
 
-  text(interactIDinput, newMouseX + 50, newMouseY)
+
+  let hoverText = dialogueData.interactDialogue.find(item => item.id === interactIDinput-1)
+
+  text(hoverText.hover, newMouseX, newMouseY - 15)
 
 }
 
@@ -1088,6 +1091,7 @@ function draw() {
     textAlign(CENTER, CENTER)
     text(newMouseX, newMouseX+50, newMouseY)
     text(newMouseY, newMouseX+50, newMouseY + 30)
+    text(interactID, newMouseX+50, newMouseY + 60)
 
     // if (storyDialogueNumber == 0) {
     //       beginStageTwo()
