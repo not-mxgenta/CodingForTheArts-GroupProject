@@ -96,12 +96,6 @@ let branchCodeArray = [
 
 let dialogueType = null;
 
-let storyComplete = [
-  [], //stage 1
-  [false], //stage 2
-]
-
-let storyDialogueNumber = 0;
 
 // ===== JSON DIALOGUE SYSTEM: Add variable to store loaded JSON data =====
 let dialogueData;
@@ -546,7 +540,7 @@ function displayInteractText(interactIDinput) {
 
   let hoverText = dialogueData.interactDialogue.find(item => item.id === interactIDinput-1)
 
-  text(hoverText.hover, newMouseX, newMouseY - 15)
+  text(hoverText.hover, newMouseX, newMouseY - 20)
 
 }
 
@@ -881,8 +875,8 @@ function choiceMade(optionChosen) {
     branchCodeArray[14][1] = SP_Choice
   } else if (dialogueToDisplay == 31) {
     branchCodeArray[15][1] = SP_Choice
-  // } else if (dialogueToDisplay == 4) {
-  //   branchCodeArray[16][1] = SP_Choice
+  } else if (dialogueToDisplay == 4) {
+    branchCodeArray[16][1] = SP_Choice
   } else if (dialogueToDisplay == 32) {
     branchCodeArray[17][1] = SP_Choice
   } else if (dialogueToDisplay == 35) {
@@ -897,13 +891,6 @@ function choiceMade(optionChosen) {
     branchCodeArray[22][1] = SP_Choice
   }
   
-
-}
-
-function beginStageTwo() {
-  dialogueType = 'story'
-  displayingDialogue = true
-  dialogueToDisplay = storyDialogueNumber
 }
 
 
@@ -924,13 +911,7 @@ function mouseClicked() {
           displayingChoice = false
         }
       } else {
-        if (dialogueType == 'story' && storyDialogueNumber < storyDialogueBoxes.length) {
-          storyDialogueNumber++
-          dialogueToDisplay = storyDialogueNumber
-          beginStageTwo()
-        } else {
-          displayingDialogue = false
-        }
+        displayingDialogue = false
       }
 
     } else {
@@ -1077,10 +1058,6 @@ function draw() {
     text(newMouseX, newMouseX+50, newMouseY)
     text(newMouseY, newMouseX+50, newMouseY + 30)
     text(interactID, newMouseX+50, newMouseY + 60)
-
-    // if (storyDialogueNumber == 0) {
-    //       beginStageTwo()
-    // }
 
 
     push()
