@@ -11,6 +11,9 @@ let fadingInit = true;
 let fadingForward = false;
 let fadeHold = 0;
 let intermediateGameState = null;
+let intermediateLocation = null;
+let intermediateFocus = null;
+let fadeSpeed = 1;
 
 //essential to centre all activity on the screen, regardless of screen size
 let newMouseX;
@@ -970,7 +973,7 @@ function checkMouseHover() {
 
   interactID = 0
 
-  if (inputBlocked == false) {
+  if (inputBlocked == false && currentGameState == 2) {
     if (displayingDialogue == true) {
 
       if (displayingChoice == true) {
@@ -1193,58 +1196,74 @@ function mouseClicked() {
     intermediateGameState = 1
     fadingInit = true
     fadingForward = true
-  }
-
-  if (inputBlocked == false) {
-    if (displayingDialogue == true) {
-      if (displayingChoice == true) {
-        if (170 < newMouseX && newMouseX < 600 && 370 < newMouseY && newMouseY < 420) {
-          choiceMade(1)
+  } else if (currentGameState == 2) {
+    if (inputBlocked == false) {
+      if (displayingDialogue == true) {
+        if (displayingChoice == true) {
+          if (170 < newMouseX && newMouseX < 600 && 370 < newMouseY && newMouseY < 420) {
+            choiceMade(1)
+            displayingDialogue = false
+            displayingChoice = false
+          } else if (170 < newMouseX && newMouseX < 600 && 490 < newMouseY && newMouseY < 540) {
+            choiceMade(2)
+            displayingDialogue = false
+            displayingChoice = false
+          }
+        } else {
           displayingDialogue = false
-          displayingChoice = false
-        } else if (170 < newMouseX && newMouseX < 600 && 490 < newMouseY && newMouseY < 540) {
-          choiceMade(2)
-          displayingDialogue = false
-          displayingChoice = false
         }
+  
       } else {
-        displayingDialogue = false
-      }
-
-    } else {
-      if (-740 < newMouseX && newMouseX < -670 && -80 < newMouseY && newMouseY < 10) {
-        leftNavClicked()
-      } else if (670 < newMouseX && newMouseX < 740 && -80 < newMouseY && newMouseY < 10) {
-        rightNavClicked()
-      } else {
-        if (interactID == 6) {
-          currentLocation = 2
-          currentFocus = 2
-        } else if (interactID == 9) {
-          currentLocation = 4
-          currentFocus = 1
-        } else if (interactID == 10) {
-          currentLocation = 3
-          currentFocus = 2
-        } else if (interactID == 17) {
-          currentLocation = 1
-          currentFocus = 2
-        } else if (interactID == 18) {
-          currentLocation = 5
-          currentFocus = 3
-        } else if (interactID == 24) {
-          currentLocation = 1
-          currentFocus = 3
-        } else if (interactID == 30) {
-          currentLocation = 1
-          currentFocus = 3
-        } else if (interactID == 40) {
-          currentLocation = 2
-          currentFocus = 3
-        } else if (interactID != 0) {
-          displayingDialogue = true
-          dialogueToDisplay = interactID - 1
-          dialogueType = 'interact'
+        if (-740 < newMouseX && newMouseX < -670 && -80 < newMouseY && newMouseY < 10) {
+          leftNavClicked()
+        } else if (670 < newMouseX && newMouseX < 740 && -80 < newMouseY && newMouseY < 10) {
+          rightNavClicked()
+        } else {
+          if (interactID == 6) {
+            fadingInit = true
+            fadingForward = true
+            intermediateLocation = 2
+            intermediateFocus = 2
+          } else if (interactID == 9) {
+            fadingInit = true
+            fadingForward = true
+            intermediateLocation = 4
+            intermediateFocus = 1
+          } else if (interactID == 10) {
+            fadingInit = true
+            fadingForward = true
+            intermediateLocation = 3
+            intermediateFocus = 2
+          } else if (interactID == 17) {
+            fadingInit = true
+            fadingForward = true
+            intermediateLocation = 1
+            intermediateFocus = 2
+          } else if (interactID == 18) {
+            fadingInit = true
+            fadingForward = true
+            intermediateLocation = 5
+            intermediateFocus = 3
+          } else if (interactID == 24) {
+            fadingInit = true
+            fadingForward = true
+            intermediateLocation = 1
+            intermediateFocus = 3
+          } else if (interactID == 30) {
+            fadingInit = true
+            fadingForward = true
+            intermediateLocation = 1
+            intermediateFocus = 3
+          } else if (interactID == 40) {
+            fadingInit = true
+            fadingForward = true
+            intermediateLocation = 2
+            intermediateFocus = 3
+          } else if (interactID != 0) {
+            displayingDialogue = true
+            dialogueToDisplay = interactID - 1
+            dialogueType = 'interact'
+          }
         }
       }
     }
@@ -1255,6 +1274,12 @@ function manageFade() {
 
   fadeOpacity = 5.3125 * fadeStage
 
+  if (currentGameState == 0 || currentGameState == 1) {
+    fadeSpeed = 1
+  } else {
+    fadeSpeed = 4
+  }
+
   fill(0, 0, 0, fadeOpacity)
   strokeWeight(0)
   resetMatrix()
@@ -1262,13 +1287,13 @@ function manageFade() {
 
   if (fadingForward == true) {
     if (fadeStage != 48) {
-      fadeStage ++
+      fadeStage += fadeSpeed
     } else {
       fadingForward = null
     }
   } else if (fadingForward == false) {
     if (fadeStage != 0) {
-      fadeStage --
+      fadeStage -= fadeSpeed
     } else {
       fadingInit = false
       fadingForward = true
@@ -1276,14 +1301,23 @@ function manageFade() {
       fadeStage = 0
     }
   } else if (fadingForward == null) {
-    if (fadeHold == 10) {
+    if (fadeHold == 12) {
       fadingForward = false
       fadeHold = 0
       if (intermediateGameState != null) {
         currentGameState = intermediateGameState
+        intermediateGameState = null
+      }
+      if (intermediateLocation != null) {
+        currentLocation = intermediateLocation
+        intermediateLocation = null
+      }
+      if (intermediateFocus != null) {
+        currentFocus = intermediateFocus
+        intermediateFocus = null
       }
     } else {
-      fadeHold ++
+      fadeHold += fadeSpeed
     }
   }
 
@@ -1357,6 +1391,9 @@ function draw() {
     push()
 
   } else if (currentGameState == 2) {
+
+    quinnMovable = false
+
     push()
 
     //centre tile maps in window
@@ -1526,6 +1563,7 @@ stroke(150, 150, 150)
 rect(0, 256/4, 1550, 1024)
 
 pop()
+
 
   
 }
