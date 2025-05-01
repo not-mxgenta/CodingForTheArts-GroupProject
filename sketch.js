@@ -1,7 +1,7 @@
 //dictating which 'stage' of the game we are in, changes the background tilemaps and any events
 let currentGameState = 1;
 //more specific, works within each game state i.e. may be in state 2 (inside), dictates whether in location 0 (bathroom) or location 1 (bedroom) etc.
-let currentLocation = 2;
+let currentLocation = 1;
 //even more specific, specifies which part of a location is the player's current focus i.e. left wall
 let currentFocus = 1;
 
@@ -100,10 +100,11 @@ let dialogueType = null;
 let SPR_quinnWalkAnimArray = [];
 let currentQuinnWalkFrame = 0;
 let quinnMovable = true;
-let SPRrightAmount = 0;
+let SPRrightAmount = 620;
 let SPRleftAmount = 0;
 let quinnFacing = -1;
 let walkingXpos = 0;
+let BGscrollAmount = 0;
 
 // ===== JSON DIALOGUE SYSTEM: Add variable to store loaded JSON data =====
 let dialogueData;
@@ -189,7 +190,13 @@ let BGoutside1 = [
   [13, 7, 4],
   [11, 6, 4],
   [12, 9, 1],
-  [10, 7, 4]
+  [10, 7, 4],
+  [13, 5, 2],
+  [12, 8, 4],
+  [11, 7, 3],
+  [13, 9, 1],
+  [12, 5, 4],
+  [14, 8, 2]
 ]
 
 let BGoutside2 = [
@@ -362,8 +369,6 @@ class spriteQuinnClass {
 
     image(this.animArray[currentQuinnWalkFrame], -walkingXpos, this.spriteYpos, 128, 128)
     pop()
-
-    console.log(SPRrightAmount-SPRleftAmount)
   }
 
 }
@@ -493,7 +498,7 @@ function setup() {
 
   SPR_quinnWalkAnimArray = [SPRquinnWalk1, SPRquinnWalk2, SPRquinnWalk3, SPRquinnWalk4, SPRquinnWalk5, SPRquinnWalk6, SPRquinnWalk7, SPRquinnWalk8, SPRquinnWalk9, SPRquinnWalk10, SPRquinnWalk11, SPRquinnWalk12, SPRquinnWalk13, SPRquinnWalk14]
 
-  SPR_quinn = new spriteQuinnClass(SPRquinnStanding, SPR_quinnWalkAnimArray, 0, 370)
+  SPR_quinn = new spriteQuinnClass(SPRquinnStanding, SPR_quinnWalkAnimArray, 0, 120)
 }
 
 
@@ -509,6 +514,12 @@ function BGtiles() {
   
   //resets existing tile map to clean/empty map for new environment to be added
   BGtileMap = []
+
+  if (currentGameState == 1) {
+    BGtilesX = 11
+  } else {
+    BGtilesX = 5
+  }
 
   //iterate through each row of tiles
   for (let tileX = 0; tileX < BGtilesX; tileX++) {
@@ -673,19 +684,19 @@ function checkKeyPressMovement() {
 
   let SPRaddLeft = 0;
   let SPRaddRight = 0;
+  let BGscrollAdd = 0;
 
-  if ((SPRrightAmount - SPRleftAmount) <= -1050) {
+  if ((SPRrightAmount - SPRleftAmount) <= -550) {
     SPRaddLeft = 0
-    SPRaddRight = 8
-    BGmove(1)
-  } else if ((SPRrightAmount - SPRleftAmount) >= 100) {
-    SPRaddLeft = 8
+    SPRaddRight = 4
+  } else if ((SPRrightAmount - SPRleftAmount) >= 620) {
+    SPRaddLeft = 4
     SPRaddRight = 0
-    BGmove(-1)
   } else {
-    SPRaddLeft = 8
-    SPRaddRight = 8
+    SPRaddLeft = 4
+    SPRaddRight = 4
   }
+
 
   if (keyIsDown(68) || keyIsDown(RIGHT_ARROW)) {
     quinnFacing = -1
@@ -696,6 +707,12 @@ function checkKeyPressMovement() {
     } else {
       currentQuinnWalkFrame ++
     }
+    if (BGscrollAmount <= -1470) {
+      BGscrollAdd = 0
+    } else {
+      BGscrollAdd = 6
+    }
+    BGscrollAmount -= BGscrollAdd
   } else if (keyIsDown(65) || keyIsDown(LEFT_ARROW)) {
     quinnFacing = 1
     SPR_quinn.displayWalkingSprite()
@@ -705,20 +722,28 @@ function checkKeyPressMovement() {
     } else {
       currentQuinnWalkFrame ++
     }
+    if (BGscrollAmount >= 0) {
+      BGscrollAdd = 0
+    } else {
+      BGscrollAdd = 6
+    }
+    BGscrollAmount += BGscrollAdd
   } else {
     SPR_quinn.displayStaticSprite()
   }
+
+  console.log(BGscrollAmount)
 }
 
 function BGmove(directionToMove) {
 
-  if (directionToMove == 1 && currentLocation != 7) {
-    currentLocation++
-    SPRleftAmount -= 256
-  } else if (directionToMove == -1 && currentLocation != 1) {
-    currentLocation --
-    SPRrightAmount -= 256
-  }
+  // if (directionToMove == 1 && currentLocation != 7) {
+  //   currentLocation++
+  //   SPRleftAmount -= 256
+  // } else if (directionToMove == -1 && currentLocation != 1) {
+  //   currentLocation --
+  //   SPRrightAmount -= 256
+  // }
 
 }
 
@@ -1231,27 +1256,13 @@ function draw() {
   applyVHSdistortion()
 
 
-  push()
-  
-  fill(0, 0, 0,)
-  strokeWeight(30)
-  stroke(50, 50, 50)
-  rect(0, 256/4, 1550, 1024)
-  strokeWeight(20)
-  stroke(100, 100, 100)
-  rect(0, 256/4, 1550, 1024)
-  strokeWeight(10)
-  stroke(150, 150, 150)
-  rect(0, 256/4, 1550, 1024)
-
-  pop()
-
   if (currentGameState == 1) {
 
     push()
 
     //centre tile maps in window
-    translate(-BGtilesX * BGtileSize/2 + BGtileSize/2, -BGtilesY * BGtileSize/2 + BGtileSize/2, 0);
+    translate(-BGtilesX * BGtileSize/4 + BGtileSize/2, -BGtilesY * BGtileSize/2 + BGtileSize/2, 0);
+    translate (BGscrollAmount, 0, 0)
 
 
     //draw each tile in current tile map
@@ -1262,6 +1273,20 @@ function draw() {
         BGtileMap[tileX][tileY].displayTile()
       }
     }
+
+    pop()
+
+    fill(0, 0, 0)
+    strokeWeight(0)
+    rect(708, 50, 135, 900)
+    rect(-708, 50, 135, 900)
+
+    push()
+    translate(0, 256/4)
+    //semi-transparent VHS-style overlay
+    tint(255, 100);
+    image(VHSoverlay, 0, 0, 1550, 1024);
+    pop()
 
 
   } else if (currentGameState == 2) {
@@ -1413,6 +1438,21 @@ if (quinnMovable == true) {
   checkKeyPressMovement()
 }
 
+push()
+
+resetMatrix()
+fill(0, 0, 0, 0)
+strokeWeight(30)
+stroke(50, 50, 50)
+rect(0, 256/4, 1550, 1024)
+strokeWeight(20)
+stroke(100, 100, 100)
+rect(0, 256/4, 1550, 1024)
+strokeWeight(10)
+stroke(150, 150, 150)
+rect(0, 256/4, 1550, 1024)
+
+pop()
 
   
 }
