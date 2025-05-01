@@ -240,6 +240,7 @@ let BGoutside7 = [
   [14, 8, 2]
 ]
 
+
 //potential positions and orientations for navigation arrows
 let navPosMap1 = [
   [0, 0, 1, 0, 0],
@@ -528,15 +529,15 @@ function BGtiles() {
           mapToUse = BGoutside1
         } else if (currentLocation == 2) {
           mapToUse = BGoutside2
-        } else if (currentLocation == 2) {
+        } else if (currentLocation == 3) {
           mapToUse = BGoutside3
-        } else if (currentLocation == 2) {
+        } else if (currentLocation == 4) {
           mapToUse = BGoutside4
-        } else if (currentLocation == 2) {
+        } else if (currentLocation == 5) {
           mapToUse = BGoutside5
-        } else if (currentLocation == 2) {
+        } else if (currentLocation == 6) {
           mapToUse = BGoutside6
-        } else if (currentLocation == 2) {
+        } else if (currentLocation == 7) {
           mapToUse = BGoutside7
         }
 
@@ -676,9 +677,11 @@ function checkKeyPressMovement() {
   if ((SPRrightAmount - SPRleftAmount) <= -1050) {
     SPRaddLeft = 0
     SPRaddRight = 8
+    BGmove(1)
   } else if ((SPRrightAmount - SPRleftAmount) >= 100) {
     SPRaddLeft = 8
     SPRaddRight = 0
+    BGmove(-1)
   } else {
     SPRaddLeft = 8
     SPRaddRight = 8
@@ -706,6 +709,19 @@ function checkKeyPressMovement() {
     SPR_quinn.displayStaticSprite()
   }
 }
+
+function BGmove(directionToMove) {
+
+  if (directionToMove == 1 && currentLocation != 7) {
+    currentLocation++
+    SPRleftAmount -= 256
+  } else if (directionToMove == -1 && currentLocation != 1) {
+    currentLocation --
+    SPRrightAmount -= 256
+  }
+
+}
+
 
 
 function NAVtiles() {
