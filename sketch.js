@@ -1,5 +1,5 @@
 //dictating which 'stage' of the game we are in, changes the background tilemaps and any events
-let currentGameState = 2;
+let currentGameState = 1;
 //more specific, works within each game state i.e. may be in state 2 (inside), dictates whether in location 0 (bathroom) or location 1 (bedroom) etc.
 let currentLocation = 1;
 //even more specific, specifies which part of a location is the player's current focus i.e. left wall
@@ -177,6 +177,16 @@ let BGfrontDoorMap = [
   [0, 0, 0]
 ]
 
+//Layout of different tile types for the background of outside
+
+let BGoutside1 = [
+  [11, 6, 1],
+  [12, 7, 2],
+  [13, 8, 3],
+  [14, 9, 4],
+  [10, 5, 4]
+]
+
 //potential positions and orientations for navigation arrows
 let navPosMap1 = [
   [0, 0, 1, 0, 0],
@@ -279,6 +289,7 @@ function preload() {
   OSwall2 = loadImage("assets/OSWall2.png")
   OSwall3 = loadImage("assets/OSWall3.png")
   OSwall4 = loadImage("assets/OSWall4.png")
+  OSwall5 = loadImage("assets/OSWall5.png")
   OSsky1 = loadImage("assets/OSSky1.png")
   OSsky2 = loadImage("assets/OSSky2.png")
   OSsky3 = loadImage("assets/OSSky3.png")
@@ -392,7 +403,7 @@ function windowResized() {
   background('black')
 }
 
-function BGtilesInside() {
+function BGtiles() {
 
   let BGtileID = 0
   
@@ -410,89 +421,134 @@ function BGtilesInside() {
     //iterate through each column of tiles within a row
     for (let tileY = 0; tileY < BGtilesY; tileY++) {
 
-      //changes the image asset to use for the tile based on its value in the graphics map declared at the beginning
-      //each environment uses a different graphics map, dictated by the current game state and location
-      if (currentLocation == 1) {
-        if (currentFocus == 1) {
-          if (BGfrontDoorMap[tileX][tileY] == 1) {
-            tileImage = BGhallwayWallpaper
-          } else if (BGfrontDoorMap[tileX][tileY] == 2) {
-            tileImage = BGhallwayPanelling
-          } else {
-            tileImage = BLANKtile
-          }
-        } else {
-          if (BGhallwayMap[tileX][tileY] == 1) {
-            tileImage = BGhallwayWallpaper
-          } else if (BGhallwayMap[tileX][tileY] == 2) {
-            tileImage = BGhallwayPanelling
-          } else {
-            tileImage = BLANKtile
-          }
+      if (currentGameState == 1) {
+
+      let mapToUse = null
+
+        if (currentLocation == 1) {
+
+          mapToUse = BGoutside1
+
         }
-      } else if (currentLocation == 2) {
-        if (BGlivingRoomMap[tileX][tileY] == 1) {
-          tileImage = BGwallpaper
-        } else if (BGlivingRoomMap[tileX][tileY] == 2) {
-          tileImage = BGpanellingUpper
-        } else if (BGlivingRoomMap[tileX][tileY] == 3) {
-          tileImage = BGpanellingLower
+
+        if (mapToUse[tileX][tileY] == 1) {
+          tileImage = OSfloor1
+        } else if (mapToUse[tileX][tileY] == 2) {
+          tileImage = OSfloor2
+        } else if (mapToUse[tileX][tileY] == 3) {
+          tileImage = OSfloor3
+        } else if (mapToUse[tileX][tileY] == 4) {
+          tileImage = OSfloor4
+        } else if (mapToUse[tileX][tileY] == 5) {
+          tileImage = OSwall1
+        } else if (mapToUse[tileX][tileY] == 6) {
+          tileImage = OSwall2
+        } else if (mapToUse[tileX][tileY] == 7) {
+          tileImage = OSwall3
+        } else if (mapToUse[tileX][tileY] == 8) {
+          tileImage = OSwall4
+        } else if (mapToUse[tileX][tileY] == 9) {
+          tileImage = OSwall5
+        } else if (mapToUse[tileX][tileY] == 10) {
+          tileImage = OSsky1
+        } else if (mapToUse[tileX][tileY] == 11) {
+          tileImage = OSsky2
+        } else if (mapToUse[tileX][tileY] == 12) {
+          tileImage = OSsky3
+        } else if (mapToUse[tileX][tileY] == 13) {
+          tileImage = OSsky4
+        } else if (mapToUse[tileX][tileY] == 14) {
+          tileImage = OSskyMan
         } else {
           tileImage = BLANKtile
         }
-      } else if (currentLocation == 3) {
-        if (BGkitchenMap[tileX][tileY] == 1) {
-          tileImage = BGkitchenUpper
-        } else if (BGkitchenMap[tileX][tileY] == 2) {
-          tileImage = BGkitchenWall
-        } else {
-          tileImage = BLANKtile
+
+      } else if (currentGameState == 2) {
+
+        //changes the image asset to use for the tile based on its value in the graphics map declared at the beginning
+        //each environment uses a different graphics map, dictated by the current game state and location
+        if (currentLocation == 1) {
+          if (currentFocus == 1) {
+            if (BGfrontDoorMap[tileX][tileY] == 1) {
+              tileImage = BGhallwayWallpaper
+            } else if (BGfrontDoorMap[tileX][tileY] == 2) {
+              tileImage = BGhallwayPanelling
+            } else {
+              tileImage = BLANKtile
+            }
+          } else {
+            if (BGhallwayMap[tileX][tileY] == 1) {
+              tileImage = BGhallwayWallpaper
+            } else if (BGhallwayMap[tileX][tileY] == 2) {
+              tileImage = BGhallwayPanelling
+            } else {
+              tileImage = BLANKtile
+            }
+          }
+        } else if (currentLocation == 2) {
+          if (BGlivingRoomMap[tileX][tileY] == 1) {
+            tileImage = BGwallpaper
+          } else if (BGlivingRoomMap[tileX][tileY] == 2) {
+            tileImage = BGpanellingUpper
+          } else if (BGlivingRoomMap[tileX][tileY] == 3) {
+            tileImage = BGpanellingLower
+          } else {
+            tileImage = BLANKtile
+          }
+        } else if (currentLocation == 3) {
+          if (BGkitchenMap[tileX][tileY] == 1) {
+            tileImage = BGkitchenUpper
+          } else if (BGkitchenMap[tileX][tileY] == 2) {
+            tileImage = BGkitchenWall
+          } else {
+            tileImage = BLANKtile
+          }
+        } else if (currentLocation == 4) {
+          if (currentFocus == 2) {
+            if (BGbathroomCubbyMap[tileX][tileY] == 1) {
+              tileImage = BGbathroom
+            } else if (BGbathroomCubbyMap[tileX][tileY] == 2) {
+              tileImage = BGbathroomLower
+            } else  if (BGbathroomCubbyMap[tileX][tileY] == 3) {
+              tileImage = BGbathroomWall
+            } else {
+              tileImage = BLANKtile
+            }
+          } else {
+            if (BGbathroomMap[tileX][tileY] == 1) {
+              tileImage = BGbathroom
+            } else if (BGbathroomMap[tileX][tileY] == 2) {
+              tileImage = BGbathroomLower
+            } else  if (BGbathroomMap[tileX][tileY] == 3) {
+              tileImage = BGbathroomWall
+            } else {
+              tileImage = BLANKtile
+            }
+          }
+        } else if (currentLocation == 5) {
+          if (currentFocus == 2) {
+            if (BGbedroomStudyMap[tileX][tileY] == 1) {
+              tileImage = BGbedroomLower
+            } else if (BGbedroomStudyMap[tileX][tileY] == 2) {
+              tileImage = BGbedroomMiddle
+            } else if (BGbedroomStudyMap[tileX][tileY] == 3) {
+              tileImage = BGbedroomUpper
+            } else {
+              tileImage = BLANKtile
+            }
+          } else {
+            if (BGbedroomMap[tileX][tileY] == 1) {
+              tileImage = BGbedroomLower
+            } else if (BGbedroomMap[tileX][tileY] == 2) {
+              tileImage = BGbedroomMiddle
+            } else if (BGbedroomMap[tileX][tileY] == 3) {
+              tileImage = BGbedroomUpper
+            } else {
+              tileImage = BLANKtile
+            }
+          }
+          
         }
-      } else if (currentLocation == 4) {
-        if (currentFocus == 2) {
-          if (BGbathroomCubbyMap[tileX][tileY] == 1) {
-            tileImage = BGbathroom
-          } else if (BGbathroomCubbyMap[tileX][tileY] == 2) {
-            tileImage = BGbathroomLower
-          } else  if (BGbathroomCubbyMap[tileX][tileY] == 3) {
-            tileImage = BGbathroomWall
-          } else {
-            tileImage = BLANKtile
-          }
-        } else {
-          if (BGbathroomMap[tileX][tileY] == 1) {
-            tileImage = BGbathroom
-          } else if (BGbathroomMap[tileX][tileY] == 2) {
-            tileImage = BGbathroomLower
-          } else  if (BGbathroomMap[tileX][tileY] == 3) {
-            tileImage = BGbathroomWall
-          } else {
-            tileImage = BLANKtile
-          }
-        }
-      } else if (currentLocation == 5) {
-        if (currentFocus == 2) {
-          if (BGbedroomStudyMap[tileX][tileY] == 1) {
-            tileImage = BGbedroomLower
-          } else if (BGbedroomStudyMap[tileX][tileY] == 2) {
-            tileImage = BGbedroomMiddle
-          } else if (BGbedroomStudyMap[tileX][tileY] == 3) {
-            tileImage = BGbedroomUpper
-          } else {
-            tileImage = BLANKtile
-          }
-        } else {
-          if (BGbedroomMap[tileX][tileY] == 1) {
-            tileImage = BGbedroomLower
-          } else if (BGbedroomMap[tileX][tileY] == 2) {
-            tileImage = BGbedroomMiddle
-          } else if (BGbedroomMap[tileX][tileY] == 3) {
-            tileImage = BGbedroomUpper
-          } else {
-            tileImage = BLANKtile
-          }
-        }
-        
       }
 
       //adds new tile to tile map!
@@ -502,6 +558,7 @@ function BGtilesInside() {
     }
   }
 }
+
 
 function NAVtiles() {
  
@@ -1001,7 +1058,7 @@ function draw() {
   newMouseX = mouseX - (windowWidth/2)
   newMouseY = mouseY - (windowHeight/2)
 
-  BGtilesInside()
+  BGtiles()
   NAVtiles()
 
   //apply VHS effects
@@ -1025,9 +1082,25 @@ function draw() {
 
   pop()
 
+  if (currentGameState == 1) {
+
+    push()
+
+    //centre tile maps in window
+    translate(-BGtilesX * BGtileSize/2 + BGtileSize/2, -BGtilesY * BGtileSize/2 + BGtileSize/2, 0);
 
 
-  if (currentGameState == 2) {
+    //draw each tile in current tile map
+    for (let tileX = 0; tileX < BGtilesX; tileX++) {
+
+      for (let tileY = 0; tileY < BGtilesY; tileY++) {
+
+        BGtileMap[tileX][tileY].displayTile()
+      }
+    }
+
+
+  } else if (currentGameState == 2) {
     push()
 
     //centre tile maps in window
