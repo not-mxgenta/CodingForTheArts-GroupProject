@@ -1,9 +1,16 @@
 //dictating which 'stage' of the game we are in, changes the background tilemaps and any events
-let currentGameState = 1;
+let currentGameState = 0;
 //more specific, works within each game state i.e. may be in state 2 (inside), dictates whether in location 0 (bathroom) or location 1 (bedroom) etc.
 let currentLocation = 1;
 //even more specific, specifies which part of a location is the player's current focus i.e. left wall
 let currentFocus = 1;
+
+let fadeOpacity = 0;
+let fadeStage = 48;
+let fadingInit = true;
+let fadingForward = false;
+let fadeHold = 0;
+let intermediateGameState = null;
 
 //essential to centre all activity on the screen, regardless of screen size
 let newMouseX;
@@ -104,7 +111,7 @@ let outsideStoryPoint = false;
 //variables for Quinn's Walking Animation
 let SPR_quinnWalkAnimArray = [];
 let currentQuinnWalkFrame = 0;
-let quinnMovable = true;
+let quinnMovable = false;
 let SPRrightAmount = 620;
 let SPRleftAmount = 0;
 let quinnFacing = -1;
@@ -337,6 +344,9 @@ class spriteQuinnClass {
 
 //preload assets here to speed up programe running
 function preload() {
+
+  //menu assets
+  STALKlogo = loadImage("assets/STALKlogo.png")
 
   //overlay video
   VHSoverlay = createVideo("assets/vhsOverlay.mp4")
@@ -642,7 +652,7 @@ function BGtiles() {
   }
 }
 
-function checkKeyPressMovement() {
+function checkKeyPress() {
 
   let SPRaddLeft = 0;
   let SPRaddRight = 0;
@@ -660,11 +670,14 @@ function checkKeyPressMovement() {
   }
 
   if (keyIsDown(69) && outsideIntID == 1) {
-    currentGameState = 2
     currentLocation = 1
     currentFocus = 1
     quinnMovable = false
-    console.log('entering apartment')
+
+    intermediateGameState = 2
+    fadingInit = true
+    fadingForward = true
+
   }
 
   if (keyIsDown(68) || keyIsDown(RIGHT_ARROW)) {
@@ -1176,6 +1189,12 @@ function choiceMade(optionChosen) {
 //anything to do with clicking the mouse - tracking it's position, recording interaction, playing noise etc
 function mouseClicked() {
 
+  if (currentGameState == 0 && -130 < newMouseX && newMouseX < 130 && 330 < newMouseY && newMouseY < 460) {
+    intermediateGameState = 1
+    fadingInit = true
+    fadingForward = true
+  }
+
   if (inputBlocked == false) {
     if (displayingDialogue == true) {
       if (displayingChoice == true) {
@@ -1232,6 +1251,44 @@ function mouseClicked() {
   }
 }
 
+function manageFade() {
+
+  fadeOpacity = 5.3125 * fadeStage
+
+  fill(0, 0, 0, fadeOpacity)
+  strokeWeight(0)
+  resetMatrix()
+  rect(0, 256/4, 1550, 1024)
+
+  if (fadingForward == true) {
+    if (fadeStage != 48) {
+      fadeStage ++
+    } else {
+      fadingForward = null
+    }
+  } else if (fadingForward == false) {
+    if (fadeStage != 0) {
+      fadeStage --
+    } else {
+      fadingInit = false
+      fadingForward = true
+      fadeHold = 0
+      fadeStage = 0
+    }
+  } else if (fadingForward == null) {
+    if (fadeHold == 10) {
+      fadingForward = false
+      fadeHold = 0
+      if (intermediateGameState != null) {
+        currentGameState = intermediateGameState
+      }
+    } else {
+      fadeHold ++
+    }
+  }
+
+}
+
 
 function draw() {
   background('black')
@@ -1251,9 +1308,30 @@ function draw() {
   applyVHSdistortion()
 
 
-  if (currentGameState == 1) {
+  if (currentGameState == 0) {
+
+    image(STALKlogo, 0, -40, 800, 800)
 
     push()
+    fill(231, 229, 216)
+    strokeWeight(0)
+    rect(0, 400, 256, 128)
+    fill('black')
+    rect(0, 400, 250, 120)
+    pop()
+
+    push()
+    fill(231, 229, 216)
+    textFont(VT323Font, 100)
+    textAlign(CENTER, CENTER)
+    text("PLAY", 0, 385)
+    pop()
+
+  } else if (currentGameState == 1) {
+
+    push()
+
+    quinnMovable = true
 
     //centre tile maps in window
     translate(-BGtilesX * BGtileSize/4 + BGtileSize/2, -BGtilesY * BGtileSize/2 + BGtileSize/2, 0);
@@ -1277,12 +1355,6 @@ function draw() {
     rect(-708, 50, 135, 900)
 
     push()
-    translate(0, 256/4)
-    //semi-transparent VHS-style overlay
-    tint(255, 100);
-    image(VHSoverlay, 0, 0, 1550, 1024);
-    pop()
-
 
   } else if (currentGameState == 2) {
     push()
@@ -1337,13 +1409,8 @@ function draw() {
     placeObjectsInside()
     pop()
 
+  }
 
-    push()
-    translate(0, 256/4)
-    //semi-transparent VHS-style overlay
-    tint(255, 100);
-    image(VHSoverlay, 0, 0, 1550, 1024);
-    pop()
 
     //track mouse coordinates on screen (useful for tracking click position later, remove when submitting final game)
     fill('white')
@@ -1427,11 +1494,22 @@ function draw() {
     //check whether the mouse is hovering over anything interactable
     checkMouseHover()
 
-}
+
 
 if (quinnMovable == true) {
-  checkKeyPressMovement()
+  checkKeyPress()
 }
+
+if (fadingInit == true) {
+  manageFade()
+}
+
+push()
+translate(0, 256/4)
+//semi-transparent VHS-style overlay
+tint(255, 100);
+image(VHSoverlay, 0, 0, 1550, 1024);
+pop()
 
 push()
 
