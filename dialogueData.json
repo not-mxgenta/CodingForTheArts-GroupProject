@@ -307,6 +307,36 @@
       "id": 1,
       "text": "It's been such a long day. I just want to collapse into bed as soon as possible.",
       "choices": null
+    },
+    {
+      "id": 2,
+      "text": "I have some time to kill while dinner is cooking.",
+      "choices": ["stay in the kitchen", "look in the hall"]
+    },
+    {
+      "id": 3,
+      "text": "That's the timer on the oven. Better go get my dinner out before it burns!",
+      "choices": null
+    },
+    {
+      "id": 4,
+      "text": "It's been such a long day. I just want to collapse into bed as soon as possible.",
+      "choices": null
+    },
+    {
+      "id": 5,
+      "text": "It's been such a long day. I just want to collapse into bed as soon as possible.",
+      "choices": null
+    },
+    {
+      "id": 6,
+      "text": "It's been such a long day. I just want to collapse into bed as soon as possible.",
+      "choices": null
+    },
+    {
+      "id": 7,
+      "text": "It's been such a long day. I just want to collapse into bed as soon as possible.",
+      "choices": null
     }
   ]
 }

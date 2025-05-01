@@ -96,6 +96,9 @@ let branchCodeArray = [
 
 let dialogueType = null;
 
+//variables for Quinn's Walking Animation
+
+
 
 // ===== JSON DIALOGUE SYSTEM: Add variable to store loaded JSON data =====
 let dialogueData;
@@ -267,6 +270,21 @@ function preload() {
   //font
   VT323Font = loadFont("assets/fonts/VT323-Regular.ttf")
 
+  //background tiles (outside)
+  OSfloor1 = loadImage("assets/OSFloor1.png")
+  OSfloor2 = loadImage("assets/OSFloor2.png")
+  OSfloor3 = loadImage("assets/OSFloor3.png")
+  OSfloor4 = loadImage("assets/OSFloor4.png")
+  OSwall1 = loadImage("assets/OSWall1.png")
+  OSwall2 = loadImage("assets/OSWall2.png")
+  OSwall3 = loadImage("assets/OSWall3.png")
+  OSwall4 = loadImage("assets/OSWall4.png")
+  OSsky1 = loadImage("assets/OSSky1.png")
+  OSsky2 = loadImage("assets/OSSky2.png")
+  OSsky3 = loadImage("assets/OSSky3.png")
+  OSsky4 = loadImage("assets/OSSky4.png")
+  OSskyMan = loadImage("assets/OSSkyMan.png")
+
   //background tiles (inside)
   //living room
   BGwallpaper = loadImage("assets/BG_Wallpaper.png")
@@ -311,6 +329,25 @@ function preload() {
 
   // ===== JSON DIALOGUE SYSTEM: Load dialogue data from JSON file =====
   dialogueData = loadJSON("dialogueData.json")
+
+  //character sprites
+  SPRquinnStanding = loadImage("assets/SPRITE_quinnStanding.png")
+
+  //Quinn's walking animation
+  SPRquinnWalk1 = loadImage("assets/quinn_walking_animation/SPRITE_quinnWalkingAnim1.png")
+  SPRquinnWalk2 = loadImage("assets/quinn_walking_animation/SPRITE_quinnWalkingAnim2.png")
+  SPRquinnWalk3 = loadImage("assets/quinn_walking_animation/SPRITE_quinnWalkingAnim3.png")
+  SPRquinnWalk4 = loadImage("assets/quinn_walking_animation/SPRITE_quinnWalkingAnim4.png")
+  SPRquinnWalk5 = loadImage("assets/quinn_walking_animation/SPRITE_quinnWalkingAnim5.png")
+  SPRquinnWalk6 = loadImage("assets/quinn_walking_animation/SPRITE_quinnWalkingAnim6.png")
+  SPRquinnWalk7 = loadImage("assets/quinn_walking_animation/SPRITE_quinnWalkingAnim7.png")
+  SPRquinnWalk8 = loadImage("assets/quinn_walking_animation/SPRITE_quinnWalkingAnim8.png")
+  SPRquinnWalk9 = loadImage("assets/quinn_walking_animation/SPRITE_quinnWalkingAnim9.png")
+  SPRquinnWalk10 = loadImage("assets/quinn_walking_animation/SPRITE_quinnWalkingAnim10.png")
+  SPRquinnWalk11 = loadImage("assets/quinn_walking_animation/SPRITE_quinnWalkingAnim11.png")
+  SPRquinnWalk12 = loadImage("assets/quinn_walking_animation/SPRITE_quinnWalkingAnim12.png")
+  SPRquinnWalk13 = loadImage("assets/quinn_walking_animation/SPRITE_quinnWalkingAnim13.png")
+  SPRquinnWalk14 = loadImage("assets/quinn_walking_animation/SPRITE_quinnWalkingAnim14.png")
 
 }
 
