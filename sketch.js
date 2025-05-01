@@ -96,6 +96,11 @@ let branchCodeArray = [
 
 let dialogueType = null;
 
+let outsideIntTextPositionX = 0;
+let outsideIntID = 0;
+
+let outsideStoryPoint = false;
+
 //variables for Quinn's Walking Animation
 let SPR_quinnWalkAnimArray = [];
 let currentQuinnWalkFrame = 0;
@@ -199,53 +204,6 @@ let BGoutside1 = [
   [14, 8, 2]
 ]
 
-let BGoutside2 = [
-  [13, 7, 4],
-  [11, 6, 4],
-  [12, 9, 1],
-  [10, 7, 4],
-  [13, 5, 2]
-]
-
-let BGoutside3 = [
-  [11, 6, 4],
-  [12, 9, 1],
-  [10, 7, 4],
-  [13, 5, 2],
-  [12, 8, 4]
-]
-
-let BGoutside4 = [
-  [12, 9, 1],
-  [10, 7, 4],
-  [13, 5, 2],
-  [12, 8, 4],
-  [11, 7, 3]
-]
-
-let BGoutside5 = [
-  [10, 7, 4],
-  [13, 5, 2],
-  [12, 8, 4],
-  [11, 7, 3],
-  [13, 9, 1]
-]
-
-let BGoutside6 = [
-  [13, 5, 2],
-  [12, 8, 4],
-  [11, 7, 3],
-  [13, 9, 1],
-  [12, 5, 4]
-]
-
-let BGoutside7 = [
-  [12, 8, 4],
-  [11, 7, 3],
-  [13, 9, 1],
-  [12, 5, 4],
-  [14, 8, 2]
-]
 
 
 //potential positions and orientations for navigation arrows
@@ -353,6 +311,8 @@ class spriteQuinnClass {
 
     image(this.sprite, -walkingXpos, this.spriteYpos, 128, 128)
     pop()
+
+    outsideIntTextPositionX = walkingXpos
   }
 
   displayWalkingSprite() {
@@ -368,6 +328,8 @@ class spriteQuinnClass {
     }
 
     image(this.animArray[currentQuinnWalkFrame], -walkingXpos, this.spriteYpos, 128, 128)
+
+    outsideIntTextPositionX = walkingXpos
     pop()
   }
 
@@ -697,6 +659,13 @@ function checkKeyPressMovement() {
     SPRaddRight = 4
   }
 
+  if (keyIsDown(69) && outsideIntID == 1) {
+    currentGameState = 2
+    currentLocation = 1
+    currentFocus = 1
+    quinnMovable = false
+    console.log('entering apartment')
+  }
 
   if (keyIsDown(68) || keyIsDown(RIGHT_ARROW)) {
     quinnFacing = -1
@@ -732,22 +701,48 @@ function checkKeyPressMovement() {
     SPR_quinn.displayStaticSprite()
   }
 
-  console.log(BGscrollAmount)
-}
 
-function BGmove(directionToMove) {
-
-  // if (directionToMove == 1 && currentLocation != 7) {
-  //   currentLocation++
-  //   SPRleftAmount -= 256
-  // } else if (directionToMove == -1 && currentLocation != 1) {
-  //   currentLocation --
-  //   SPRrightAmount -= 256
-  // }
+  if (BGscrollAmount < -440 && outsideStoryPoint == false) {
+    outdoorsStoryPointTrigger()
+  } else {
+    outsideInteract()
+  }
 
 }
 
+function outsideInteract() {
 
+  let outsideIntText = '';
+
+  if (quinnFacing == 1) {
+    outsideIntTextPositionX = -outsideIntTextPositionX + 32
+  } else {
+    outsideIntTextPositionX = outsideIntTextPositionX - 32
+  }
+
+  
+  fill('white')
+  textFont(VT323Font, 30)
+  textAlign(CENTER, CENTER)
+
+  if (outsideIntTextPositionX <= 580 && outsideIntTextPositionX >= 520) {
+    outsideIntText = 'Enter Apartment - E'
+    outsideIntID = 1
+  } else {
+    outsideIntText = ''
+    outsideIntID = 0
+  }
+
+  push()
+  text(outsideIntText, outsideIntTextPositionX, 40)
+  pop()
+
+}
+
+function outdoorsStoryPointTrigger() {
+  console.log('triggered')
+  outsideStoryPoint = true
+}
 
 function NAVtiles() {
  
