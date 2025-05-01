@@ -361,6 +361,8 @@ class spriteQuinnClass {
 
     image(this.animArray[currentQuinnWalkFrame], -walkingXpos, this.spriteYpos, 128, 128)
     pop()
+
+    console.log(SPRrightAmount-SPRleftAmount)
   }
 
 }
@@ -668,10 +670,24 @@ function BGtiles() {
 
 function checkKeyPressMovement() {
 
+  let SPRaddLeft = 0;
+  let SPRaddRight = 0;
+
+  if ((SPRrightAmount - SPRleftAmount) <= -1050) {
+    SPRaddLeft = 0
+    SPRaddRight = 8
+  } else if ((SPRrightAmount - SPRleftAmount) >= 100) {
+    SPRaddLeft = 8
+    SPRaddRight = 0
+  } else {
+    SPRaddLeft = 8
+    SPRaddRight = 8
+  }
+
   if (keyIsDown(68) || keyIsDown(RIGHT_ARROW)) {
     quinnFacing = -1
     SPR_quinn.displayWalkingSprite()
-    SPRleftAmount += 5
+    SPRleftAmount += SPRaddLeft
     if (currentQuinnWalkFrame == 13) {
       currentQuinnWalkFrame = 0
     } else {
@@ -680,7 +696,7 @@ function checkKeyPressMovement() {
   } else if (keyIsDown(65) || keyIsDown(LEFT_ARROW)) {
     quinnFacing = 1
     SPR_quinn.displayWalkingSprite()
-    SPRrightAmount += 5
+    SPRrightAmount += SPRaddRight
     if (currentQuinnWalkFrame == 13) {
       currentQuinnWalkFrame = 0
     } else {
