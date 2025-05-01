@@ -1,7 +1,7 @@
 //dictating which 'stage' of the game we are in, changes the background tilemaps and any events
 let currentGameState = 1;
 //more specific, works within each game state i.e. may be in state 2 (inside), dictates whether in location 0 (bathroom) or location 1 (bedroom) etc.
-let currentLocation = 1;
+let currentLocation = 2;
 //even more specific, specifies which part of a location is the player's current focus i.e. left wall
 let currentFocus = 1;
 
@@ -97,8 +97,13 @@ let branchCodeArray = [
 let dialogueType = null;
 
 //variables for Quinn's Walking Animation
-
-
+let SPR_quinnWalkAnimArray = [];
+let currentQuinnWalkFrame = 0;
+let quinnMovable = true;
+let SPRrightAmount = 0;
+let SPRleftAmount = 0;
+let quinnFacing = -1;
+let walkingXpos = 0;
 
 // ===== JSON DIALOGUE SYSTEM: Add variable to store loaded JSON data =====
 let dialogueData;
@@ -180,11 +185,59 @@ let BGfrontDoorMap = [
 //Layout of different tile types for the background of outside
 
 let BGoutside1 = [
-  [11, 6, 1],
-  [12, 7, 2],
-  [13, 8, 3],
-  [14, 9, 4],
-  [10, 5, 4]
+  [11, 7, 3],
+  [13, 7, 4],
+  [11, 6, 4],
+  [12, 9, 1],
+  [10, 7, 4]
+]
+
+let BGoutside2 = [
+  [13, 7, 4],
+  [11, 6, 4],
+  [12, 9, 1],
+  [10, 7, 4],
+  [13, 5, 2]
+]
+
+let BGoutside3 = [
+  [11, 6, 4],
+  [12, 9, 1],
+  [10, 7, 4],
+  [13, 5, 2],
+  [12, 8, 4]
+]
+
+let BGoutside4 = [
+  [12, 9, 1],
+  [10, 7, 4],
+  [13, 5, 2],
+  [12, 8, 4],
+  [11, 7, 3]
+]
+
+let BGoutside5 = [
+  [10, 7, 4],
+  [13, 5, 2],
+  [12, 8, 4],
+  [11, 7, 3],
+  [13, 9, 1]
+]
+
+let BGoutside6 = [
+  [13, 5, 2],
+  [12, 8, 4],
+  [11, 7, 3],
+  [13, 9, 1],
+  [12, 5, 4]
+]
+
+let BGoutside7 = [
+  [12, 8, 4],
+  [11, 7, 3],
+  [13, 9, 1],
+  [12, 5, 4],
+  [14, 8, 2]
 ]
 
 //potential positions and orientations for navigation arrows
@@ -269,6 +322,47 @@ class dialogueBoxClass {
     }
     
   }
+}
+
+class spriteQuinnClass {
+  constructor(sprite, animArray, spriteXpos, spriteYpos) {
+    this.sprite = sprite;
+    this.animArray = animArray;
+    this.spriteXpos = spriteXpos;
+    this.spriteYpos = spriteYpos;
+  }
+
+  displayStaticSprite() {
+    walkingXpos = 0
+    push()
+    scale(quinnFacing, 1)
+
+    if (quinnFacing == 1) {
+      walkingXpos = this.spriteXpos + SPRrightAmount - SPRleftAmount
+    } else {
+      walkingXpos = -(this.spriteXpos + SPRrightAmount - SPRleftAmount - 64)
+    }
+
+    image(this.sprite, -walkingXpos, this.spriteYpos, 128, 128)
+    pop()
+  }
+
+  displayWalkingSprite() {
+    walkingXpos = 0
+
+    push()
+    scale(quinnFacing, 1)
+
+    if (quinnFacing == 1) {
+      walkingXpos = this.spriteXpos + SPRrightAmount - SPRleftAmount
+    } else {
+      walkingXpos = -(this.spriteXpos + SPRrightAmount - SPRleftAmount - 64)
+    }
+
+    image(this.animArray[currentQuinnWalkFrame], -walkingXpos, this.spriteYpos, 128, 128)
+    pop()
+  }
+
 }
 
 //preload assets here to speed up programe running
@@ -394,6 +488,9 @@ function setup() {
 
   buildDialogueBox()
 
+  SPR_quinnWalkAnimArray = [SPRquinnWalk1, SPRquinnWalk2, SPRquinnWalk3, SPRquinnWalk4, SPRquinnWalk5, SPRquinnWalk6, SPRquinnWalk7, SPRquinnWalk8, SPRquinnWalk9, SPRquinnWalk10, SPRquinnWalk11, SPRquinnWalk12, SPRquinnWalk13, SPRquinnWalk14]
+
+  SPR_quinn = new spriteQuinnClass(SPRquinnStanding, SPR_quinnWalkAnimArray, 0, 370)
 }
 
 
@@ -426,9 +523,19 @@ function BGtiles() {
       let mapToUse = null
 
         if (currentLocation == 1) {
-
           mapToUse = BGoutside1
-
+        } else if (currentLocation == 2) {
+          mapToUse = BGoutside2
+        } else if (currentLocation == 2) {
+          mapToUse = BGoutside3
+        } else if (currentLocation == 2) {
+          mapToUse = BGoutside4
+        } else if (currentLocation == 2) {
+          mapToUse = BGoutside5
+        } else if (currentLocation == 2) {
+          mapToUse = BGoutside6
+        } else if (currentLocation == 2) {
+          mapToUse = BGoutside7
         }
 
         if (mapToUse[tileX][tileY] == 1) {
@@ -556,6 +663,31 @@ function BGtiles() {
       BGtileID++
 
     }
+  }
+}
+
+function checkKeyPressMovement() {
+
+  if (keyIsDown(68) || keyIsDown(RIGHT_ARROW)) {
+    quinnFacing = -1
+    SPR_quinn.displayWalkingSprite()
+    SPRleftAmount += 5
+    if (currentQuinnWalkFrame == 13) {
+      currentQuinnWalkFrame = 0
+    } else {
+      currentQuinnWalkFrame ++
+    }
+  } else if (keyIsDown(65) || keyIsDown(LEFT_ARROW)) {
+    quinnFacing = 1
+    SPR_quinn.displayWalkingSprite()
+    SPRrightAmount += 5
+    if (currentQuinnWalkFrame == 13) {
+      currentQuinnWalkFrame = 0
+    } else {
+      currentQuinnWalkFrame ++
+    }
+  } else {
+    SPR_quinn.displayStaticSprite()
   }
 }
 
@@ -1243,6 +1375,10 @@ function draw() {
     //check whether the mouse is hovering over anything interactable
     checkMouseHover()
 
+}
+
+if (quinnMovable == true) {
+  checkKeyPressMovement()
 }
 
 
