@@ -124,6 +124,10 @@ let BGscrollAmount = 0;
 // ===== JSON DIALOGUE SYSTEM: Add variable to store loaded JSON data =====
 let dialogueData;
 
+let cutScenes = [false]
+let appearStage = 0
+let appearBlend = 1
+
 //Graphics maps for each environment, dictating placement of tiles for background
 //Oriented weirdly for some reason? Wasn't harming anyone so just left it lol
 
@@ -414,6 +418,8 @@ function preload() {
 
   //other
   BLANKtile = loadImage("assets/BLANKtile.png")
+  SCNmanFigure = loadImage("assets/SCN_ManFigure.png")
+  SCNmanRevealed = loadImage("assets/SCN_ManRevealed.png")
 
   // ===== JSON DIALOGUE SYSTEM: Load dialogue data from JSON file =====
   dialogueData = loadJSON("dialogueData.json")
@@ -756,8 +762,62 @@ function outsideInteract() {
 }
 
 function outdoorsStoryPointTrigger() {
-  console.log('triggered')
   outsideStoryPoint = true
+  quinnMovable = false
+
+  if (cutScenes[0] == false) {
+
+    appearStage = 0
+    appearBlend = 1
+    cutScenes[0] = true
+
+  } else {
+
+    push()
+    fill(20, 27, 47)
+    rect(0, 0, 1280, 768)
+    pop()
+
+    if (appearStage == 0) {
+
+      displayingDialogue = true
+      dialogueToDisplay = 5
+      dialogueType = 'story'
+
+      image(SCNmanFigure, 0, 0)
+
+      appearStage ++
+
+
+    } else if (appearStage < 48) {
+
+      push()
+      image(SCNmanFigure, 0, 0)
+      appearStage ++
+      pop()
+
+    } else if (appearStage < 303) {
+
+      push()
+      image(SCNmanRevealed, 0, 0)
+      tint(255, 255-appearBlend)
+      image(SCNmanFigure, 0, 0)
+      noTint()
+
+      appearStage ++
+      appearBlend += 2
+      pop()
+
+    } else {
+
+      image(SCNmanRevealed, 0, 0)
+
+    }
+
+
+  }
+
+
 }
 
 function NAVtiles() {
@@ -1196,7 +1256,7 @@ function mouseClicked() {
     intermediateGameState = 1
     fadingInit = true
     fadingForward = true
-  } else if (currentGameState == 2) {
+  } else if (currentGameState == 2 || currentGameState == 1) {
     if (inputBlocked == false) {
       if (displayingDialogue == true) {
         if (displayingChoice == true) {
@@ -1365,7 +1425,9 @@ function draw() {
 
     push()
 
-    quinnMovable = true
+    if (cutScenes[0] == false) {
+      quinnMovable = true
+    }
 
     //centre tile maps in window
     translate(-BGtilesX * BGtileSize/4 + BGtileSize/2, -BGtilesY * BGtileSize/2 + BGtileSize/2, 0);
@@ -1448,88 +1510,92 @@ function draw() {
 
   }
 
-
-    //track mouse coordinates on screen (useful for tracking click position later, remove when submitting final game)
-    fill('white')
-    textFont(VT323Font, 30)
-    textAlign(CENTER, CENTER)
-    text(newMouseX, newMouseX+50, newMouseY)
-    text(newMouseY, newMouseX+50, newMouseY + 30)
-    text(interactID, newMouseX+50, newMouseY + 60)
+  if (cutScenes[0] == true) {
+    outdoorsStoryPointTrigger()
+  }
 
 
-    push()
-
-    if (displayingDialogue == true) {
-
-      if (scanLineY > 197) {
-        scanLineY = 0
-      } else {
-        scanLineY = scanLineY + 2
-      }
+  //track mouse coordinates on screen (useful for tracking click position later, remove when submitting final game)
+  fill('white')
+  textFont(VT323Font, 30)
+  textAlign(CENTER, CENTER)
+  text(newMouseX, newMouseX+50, newMouseY)
+  text(newMouseY, newMouseX+50, newMouseY + 30)
+  text(interactID, newMouseX+50, newMouseY + 60)
 
 
-      textWrap(WORD)
+  push()
 
-      inputBlocked = true
+  if (displayingDialogue == true) {
 
-      if (dialogueType == 'interact') {
-        interactDialogueBoxes[dialogueToDisplay].displayDialogue()
-      } else if (dialogueType == 'story') {
-        storyDialogueBoxes[dialogueToDisplay].displayDialogue()
-      }
-
-      if (charTyped < currentDialogue.length) {
-        let toType = currentDialogue.substring(0, charTyped)
-
-        fill('white')
-        textFont(VT323Font, 40)
-        textAlign(LEFT, CENTER)
-        text(toType, -195, 465, 750)
-
-        charTyped++ 
-        
-      } else if (charTyped == currentDialogue.length) {
-
-        inputBlocked = false
-        fill('white')
-        textFont(VT323Font, 40)
-        textAlign(LEFT, CENTER)
-        text(currentDialogue, -195, 465, 750)
-
-      }
-
-      if (displayingChoice == true) {
-
-        textAlign(RIGHT, CENTER)
-
-        if (currentChoices[0] != null) {
-          text(currentChoices[0], 570, 410)
-        }
-        if (currentChoices[0] != null && currentChoices[1] != null) {
-          text(currentChoices[1], 570, 510)
-        }
-
-      } else {
-
-        textSize(30)
-        textAlign(RIGHT, CENTER)
-        text('click to continue...', 570, 525)
-
-      }
-
-
+    if (scanLineY > 197) {
+      scanLineY = 0
     } else {
+      scanLineY = scanLineY + 2
+    }
 
-      charTyped = 0
-      scanlineY = 0
+
+    textWrap(WORD)
+
+    inputBlocked = true
+
+    if (dialogueType == 'interact') {
+      interactDialogueBoxes[dialogueToDisplay].displayDialogue()
+    } else if (dialogueType == 'story') {
+      storyDialogueBoxes[dialogueToDisplay].displayDialogue()
+    }
+
+    if (charTyped < currentDialogue.length) {
+      let toType = currentDialogue.substring(0, charTyped)
+
+      fill('white')
+      textFont(VT323Font, 40)
+      textAlign(LEFT, CENTER)
+      text(toType, -195, 465, 750)
+
+      charTyped++ 
+      
+    } else if (charTyped == currentDialogue.length) {
+
+      inputBlocked = false
+      fill('white')
+      textFont(VT323Font, 40)
+      textAlign(LEFT, CENTER)
+      text(currentDialogue, -195, 465, 750)
 
     }
 
-    pop()
+    if (displayingChoice == true) {
 
-    //check whether the mouse is hovering over anything interactable
-    checkMouseHover()
+      textAlign(RIGHT, CENTER)
+
+      if (currentChoices[0] != null) {
+        text(currentChoices[0], 570, 410)
+      }
+      if (currentChoices[0] != null && currentChoices[1] != null) {
+        text(currentChoices[1], 570, 510)
+      }
+
+    } else {
+
+      textSize(30)
+      textAlign(RIGHT, CENTER)
+      text('click to continue...', 570, 525)
+
+    }
+
+
+  } else {
+
+    charTyped = 0
+    scanlineY = 0
+
+  }
+
+  pop()
+
+  //check whether the mouse is hovering over anything interactable
+  checkMouseHover()
 
 
 
@@ -1540,6 +1606,7 @@ if (quinnMovable == true) {
 if (fadingInit == true) {
   manageFade()
 }
+
 
 push()
 translate(0, 256/4)
