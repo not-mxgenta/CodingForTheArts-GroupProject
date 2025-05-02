@@ -330,12 +330,22 @@
     },
     {
       "id": 6,
-      "text": "It's been such a long day. I just want to collapse into bed as soon as possible.",
-      "choices": null
+      "text": "Hey, sorry for making you jump. Can I borrow some money for a taxi? I'd be ever so grateful.",
+      "choices": ["lend him the money", "tell him to back off"]
     },
     {
       "id": 7,
-      "text": "It's been such a long day. I just want to collapse into bed as soon as possible.",
+      "text": "Thank you, oh thank you. I wish the best for your future, for good actions will always be rewarded...",
+      "choices": null
+    },
+    {
+      "id": 8,
+      "text": "Seriously!? It's only a few coins, I'm desperate.",
+      "choices": null
+    },
+    {
+      "id": 9,
+      "text": "Whatever, the consequences of your actions will come back around eventually, and then maybe you'll think twice about the way you treat people.",
       "choices": null
     }
   ]

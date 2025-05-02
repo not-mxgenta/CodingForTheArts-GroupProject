@@ -124,7 +124,7 @@ let BGscrollAmount = 0;
 // ===== JSON DIALOGUE SYSTEM: Add variable to store loaded JSON data =====
 let dialogueData;
 
-let cutScenes = [false]
+let cutScenes = [false, false]
 let appearStage = 0
 let appearBlend = 1
 
@@ -762,14 +762,15 @@ function outsideInteract() {
 }
 
 function outdoorsStoryPointTrigger() {
+
   outsideStoryPoint = true
   quinnMovable = false
 
-  if (cutScenes[0] == false) {
+  if (cutScenes[1] == false && appearStage < 200) {
 
     appearStage = 0
     appearBlend = 1
-    cutScenes[0] = true
+    cutScenes[1] = true
 
   } else {
 
@@ -789,14 +790,18 @@ function outdoorsStoryPointTrigger() {
       appearStage ++
 
 
-    } else if (appearStage < 48) {
+    } else if (appearStage < 24) {
 
       push()
       image(SCNmanFigure, 0, 0)
-      appearStage ++
+
+      if (displayingDialogue == false) {
+        appearStage ++
+      }
+      
       pop()
 
-    } else if (appearStage < 303) {
+    } else if (appearStage < 152) {
 
       push()
       image(SCNmanRevealed, 0, 0)
@@ -808,12 +813,60 @@ function outdoorsStoryPointTrigger() {
       appearBlend += 2
       pop()
 
+    } else if (appearStage == 152) {
+
+      displayingDialogue = true
+      dialogueToDisplay = 6
+      dialogueType = 'story'
+
+      appearStage ++
+
+      image(SCNmanRevealed, 0, 0)
+
+    } else if (appearStage == 153 && displayingDialogue == false) {
+
+      image(SCNmanRevealed, 0, 0)
+      appearStage ++
+      
+    } else if (appearStage == 154 && displayingDialogue == false) {
+
+      image(SCNmanRevealed, 0, 0)
+
+      if (branchCodeArray[0][1] == true) {
+        displayingDialogue = true
+        dialogueToDisplay = 7
+        dialogueType = 'story'
+      } else {
+        displayingDialogue = true
+        dialogueToDisplay = 8
+        dialogueType = 'story'
+      }
+
+      appearStage ++
+
+    } else if (appearStage > 154 && displayingDialogue == false && appearStage < 205) {
+
+      image(SCNmanRevealed, 0, 0)
+      fadingInit = true
+      fadingForward = true
+
+      appearStage++
+
+    } else if (appearStage == 205) {
+
+      image(SCNmanRevealed, 0, 0)
+
+      cutScenes[1] = false
+      quinnMovable = true
+
     } else {
 
       image(SCNmanRevealed, 0, 0)
 
     }
 
+    // console.log(appearStage)
+    // console.log(cutScenes[0])
 
   }
 
@@ -1033,7 +1086,7 @@ function checkMouseHover() {
 
   interactID = 0
 
-  if (inputBlocked == false && currentGameState == 2) {
+  if (inputBlocked == false && (currentGameState == 2 || currentGameState == 1)) {
     if (displayingDialogue == true) {
 
       if (displayingChoice == true) {
@@ -1051,7 +1104,7 @@ function checkMouseHover() {
         pop()
       }
 
-    } else {
+    } else if (currentGameState == 2) {
       
       //check, based on current mouse position, whether the player is hovering over the left or right nav arrows
       if (-740 < newMouseX && newMouseX < -670 && -80 < newMouseY && newMouseY < 10) {
@@ -1243,6 +1296,8 @@ function choiceMade(optionChosen) {
     branchCodeArray[21][1] = SP_Choice
   } else if (dialogueToDisplay == 41) {
     branchCodeArray[22][1] = SP_Choice
+  } else if (cutScenes[1] == true) {
+    branchCodeArray[0][1] = SP_Choice
   }
   
 }
@@ -1425,7 +1480,7 @@ function draw() {
 
     push()
 
-    if (cutScenes[0] == false) {
+    if (cutScenes[1] == false) {
       quinnMovable = true
     }
 
@@ -1510,8 +1565,9 @@ function draw() {
 
   }
 
-  if (cutScenes[0] == true) {
+  if (cutScenes[1] == true) {
     outdoorsStoryPointTrigger()
+    console.log('triggered outside sp')
   }
 
 
