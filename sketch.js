@@ -5,6 +5,8 @@ let currentLocation = 1;
 //even more specific, specifies which part of a location is the player's current focus i.e. left wall
 let currentFocus = 1;
 
+let playBegin = false;
+
 let fadeOpacity = 0;
 let fadeStage = 48;
 let fadingInit = true;
@@ -14,6 +16,8 @@ let intermediateGameState = null;
 let intermediateLocation = null;
 let intermediateFocus = null;
 let fadeSpeed = 1;
+let postFadeDialogue = false;
+let postFadeDialogueIndex = null;
 
 //essential to centre all activity on the screen, regardless of screen size
 let newMouseX;
@@ -662,21 +666,28 @@ function BGtiles() {
 }
 
 function checkKeyPress() {
+  
 
   let SPRaddLeft = 0;
   let SPRaddRight = 0;
   let BGscrollAdd = 0;
 
-  if ((SPRrightAmount - SPRleftAmount) <= -550) {
-    SPRaddLeft = 0
-    SPRaddRight = 4
-  } else if ((SPRrightAmount - SPRleftAmount) >= 620) {
-    SPRaddLeft = 4
-    SPRaddRight = 0
+  if (quinnMovable != false) {
+    if ((SPRrightAmount - SPRleftAmount) <= -550) {
+      SPRaddLeft = 0
+      SPRaddRight = 4
+    } else if ((SPRrightAmount - SPRleftAmount) >= 620) {
+      SPRaddLeft = 4
+      SPRaddRight = 0
+    } else {
+      SPRaddLeft = 4
+      SPRaddRight = 4
+    }
   } else {
-    SPRaddLeft = 4
-    SPRaddRight = 4
+    SPRaddLeft = 0
+    SPRaddRight = 0
   }
+
 
   if (keyIsDown(69) && outsideIntID == 1) {
     currentLocation = 1
@@ -844,7 +855,24 @@ function outdoorsStoryPointTrigger() {
 
       appearStage ++
 
-    } else if (appearStage > 154 && displayingDialogue == false && appearStage < 205) {
+    } else if (appearStage == 155 && displayingDialogue == false) {
+
+      image(SCNmanRevealed, 0, 0)
+      appearStage ++
+    
+    } else if (appearStage == 156 && displayingDialogue == false) {
+
+      image(SCNmanRevealed, 0, 0)
+
+      if (branchCodeArray[0][1] == false) {
+        displayingDialogue = true
+        dialogueToDisplay = 9
+        dialogueType = 'story'
+      }
+
+      appearStage ++
+    
+    } else if (appearStage > 156 && displayingDialogue == false && appearStage < 205) {
 
       image(SCNmanRevealed, 0, 0)
       fadingInit = true
@@ -864,9 +892,6 @@ function outdoorsStoryPointTrigger() {
       image(SCNmanRevealed, 0, 0)
 
     }
-
-    // console.log(appearStage)
-    // console.log(cutScenes[0])
 
   }
 
@@ -936,7 +961,6 @@ function buildDialogueBox() {
     );
   }
 }
-
 
 function displayInteractText(interactIDinput) {
 
@@ -1414,6 +1438,11 @@ function manageFade() {
       fadingForward = true
       fadeHold = 0
       fadeStage = 0
+      if (postFadeDialogue == true) {
+        postFadeDialogueManager()
+      } else {
+        postFadeDialogueIndex = null;
+      }
     }
   } else if (fadingForward == null) {
     if (fadeHold == 12) {
@@ -1422,6 +1451,10 @@ function manageFade() {
       if (intermediateGameState != null) {
         currentGameState = intermediateGameState
         intermediateGameState = null
+        if (currentGameState == 1) {
+          postFadeDialogue = true
+          postFadeDialogueIndex = 4
+        }
       }
       if (intermediateLocation != null) {
         currentLocation = intermediateLocation
@@ -1435,6 +1468,16 @@ function manageFade() {
       fadeHold += fadeSpeed
     }
   }
+
+}
+
+function postFadeDialogueManager() {
+
+  displayingDialogue = true
+  dialogueToDisplay = postFadeDialogueIndex
+  dialogueType = 'story'
+  postFadeDialogue = false
+  playBegin = true
 
 }
 
@@ -1480,9 +1523,9 @@ function draw() {
 
     push()
 
-    if (cutScenes[1] == false) {
-      quinnMovable = true
-    }
+    // if (cutScenes[1] == false) {
+    //   quinnMovable = true
+    // }
 
     //centre tile maps in window
     translate(-BGtilesX * BGtileSize/4 + BGtileSize/2, -BGtilesY * BGtileSize/2 + BGtileSize/2, 0);
@@ -1567,7 +1610,6 @@ function draw() {
 
   if (cutScenes[1] == true) {
     outdoorsStoryPointTrigger()
-    console.log('triggered outside sp')
   }
 
 
@@ -1583,6 +1625,8 @@ function draw() {
   push()
 
   if (displayingDialogue == true) {
+
+    quinnMovable = false
 
     if (scanLineY > 197) {
       scanLineY = 0
@@ -1646,6 +1690,10 @@ function draw() {
     charTyped = 0
     scanlineY = 0
 
+    if (currentGameState == 1 && cutScenes[1] == false && playBegin == true) {
+      quinnMovable = true
+    }
+
   }
 
   pop()
@@ -1657,6 +1705,8 @@ function draw() {
 
 if (quinnMovable == true) {
   checkKeyPress()
+} else if (currentGameState == 1 && cutScenes[1] == false) {
+  SPR_quinn.displayStaticSprite()
 }
 
 if (fadingInit == true) {

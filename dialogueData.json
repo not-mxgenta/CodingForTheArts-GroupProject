@@ -340,12 +340,17 @@
     },
     {
       "id": 8,
-      "text": "Seriously!? It's only a few coins, I'm desperate.",
+      "text": "Seriously!? It's only a few coins, I'm desperate -- whatever...",
       "choices": null
     },
     {
       "id": 9,
-      "text": "Whatever, the consequences of your actions will come back around eventually, and then maybe you'll think twice about the way you treat people.",
+      "text": "The consequences of your actions will come back around, and then maybe you'll think twice about the way you treat people.",
+      "choices": null
+    },
+    {
+      "id": 10,
+      "text": "Well, he was... friendly.",
       "choices": null
     }
   ]
