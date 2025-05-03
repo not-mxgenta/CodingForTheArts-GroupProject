@@ -26,7 +26,7 @@
     },
     {
       "id": 4,
-      "text": "---",
+      "text": "What... the *ACTUAL* F-U-C-K...",
       "choices": null,
       "hover": "jacket"
     },
@@ -44,7 +44,7 @@
     },
     {
       "id": 7,
-      "text": "---",
+      "text": "I could've sworn I put my phone in here before my shift - my boss is pretty strict about those things.",
       "choices": null,
       "hover": "satchel"
     },
@@ -68,7 +68,7 @@
     },
     {
       "id": 11,
-      "text": "Shit! It's not connecting - has the line been... cut?",
+      "text": "I don't even know why I still have this old thing lying around, I never use it.",
       "choices": null,
       "hover": "landline"
     },
@@ -110,7 +110,7 @@
     },
     {
       "id": 18,
-      "text": "---",
+      "text": "Art is so therapeutic. I made this last year, and I couldn't be more proud of it.",
       "choices": null,
       "hover": "picture"
     },
@@ -134,7 +134,7 @@
     },
     {
       "id": 22,
-      "text": "---",
+      "text": "Put it in the oven, and set the timer. Easy-peezy ;)",
       "choices": null,
       "hover": "oven"
     },
@@ -171,8 +171,8 @@
     },
     {
       "id": 28,
-      "text": "---",
-      "choices": null,
+      "text": "I'm so tired - why can't I just sleep!? I'm sure I left some pills in here.",
+      "choices": ["take sleeping pills", "not tonight"],
       "hover": "cabinet"
     },
     {
@@ -195,19 +195,19 @@
     },
     {
       "id": 32,
-      "text": "---",
+      "text": "Keepin' my towels nice and toasty 'eh?",
       "choices": null,
       "hover": "towel rail"
     },
     {
       "id": 33,
-      "text": "---",
+      "text": "*honk shoo*...                 *honk shoo*...          *honk-*",
       "choices": null,
       "hover": "bed"
     },
     {
       "id": 34,
-      "text": "---",
+      "text": "Dusty-ahh.",
       "choices": null,
       "hover": "under bed"
     },
@@ -231,7 +231,7 @@
     },
     {
       "id": 38,
-      "text": "---",
+      "text": "5 variations of the same shirt. Love it. Plenty of room in here -- could make it 10 variations.",
       "choices": null,
       "hover": "wardrobe"
     },
@@ -252,8 +252,145 @@
       "text": "Best game, no debate.",
       "choices": null,
       "hover": "poster"
+    },
+    {
+      "id": 42,
+      "text": "Could really do with a clean. But today is NOT the day.",
+      "choices": null,
+      "hover": null
+    },
+    {
+      "id": 43,
+      "text": "Just checking it's all locked up.",
+      "choices": null,
+      "hover": null
+    },
+    {
+      "id": 44,
+      "text": "Better lock this.",
+      "choices": ["lock the door", "leave it"],
+      "hover": null
+    },
+    {
+      "id": 45,
+      "text": "Little extra security couldn't hurt",
+      "choices": ["secure the chain", "leave it"],
+      "hover": null
+    },
+    {
+      "id": 46,
+      "text": "---",
+      "choices": null,
+      "hover": null
+    },
+    {
+      "id": 47,
+      "text": null,
+      "choices": null,
+      "hover": null
+    },
+    {
+      "id": 48,
+      "text": "These are a tripping hazard, I should move them out of the way before it comes back to bite me on the ass.",
+      "choices": ["tuck them under the bench", "leave them where they are"],
+      "hover": null
+    },
+    {
+      "id": 49,
+      "text": "---",
+      "choices": null,
+      "hover": null
+    },
+    {
+      "id": 50,
+      "text": null,
+      "choices": null,
+      "hover": null
+    },
+    {
+      "id": 51,
+      "text": null,
+      "choices": null,
+      "hover": null
+    },
+    {
+      "id": 52,
+      "text": "---",
+      "choices": null,
+      "hover": null
+    },
+    {
+      "id": 53,
+      "text": "Shit! It's not connecting - has the line been... cut?",
+      "choices": null,
+      "hover": null
+    },
+    {
+      "id": 54,
+      "text": "---",
+      "choices": null,
+      "hover": null
+    },
+    {
+      "id": 55,
+      "text": "---",
+      "choices": null,
+      "hover": null
+    },
+    {
+      "id": 56,
+      "text": "---",
+      "choices": null,
+      "hover": null
+    },
+    {
+      "id": 57,
+      "text": "---",
+      "choices": null,
+      "hover": null
+    },
+    {
+      "id": 58,
+      "text": null,
+      "choices": null,
+      "hover": null
+    },
+    {
+      "id": 59,
+      "text": null,
+      "choices": null,
+      "hover": null
+    },
+    {
+      "id": 60,
+      "text": "---",
+      "choices": null,
+      "hover": null
+    },
+    {
+      "id": 61,
+      "text": "---",
+      "choices": null,
+      "hover": null
+    },
+    {
+      "id": 62,
+      "text": "I usually eat my dinner here. But it's been a long day... maybe I deserve a treat?",
+      "choices": ["eat at the table", "eat on the sofa"],
+      "hover": null
+    },
+    {
+      "id": 63,
+      "text": "All my knives are... missing. That's not good.",
+      "choices": null,
+      "hover": null
+    },
+    {
+      "id": 64,
+      "text": "---",
+      "choices": null,
+      "hover": null
     }
-   
    
   ],
   "storyDialogue": [
@@ -279,7 +416,7 @@
     },
     {
       "id": 4,
-      "text": "Man it's dark. Good thing I don't have to walk far to get to my apartment.",
+      "text": "Man, it's dark out here. Good thing I don't have to walk too far to get to my apartment.",
       "choices": null
     },
     {
