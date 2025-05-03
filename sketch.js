@@ -223,7 +223,6 @@ let BGoutside1 = [
 ]
 
 
-
 //potential positions and orientations for navigation arrows
 let navPosMap1 = [
   [0, 0, 1, 0, 0],
@@ -424,6 +423,8 @@ function preload() {
   BLANKtile = loadImage("assets/BLANKtile.png")
   SCNmanFigure = loadImage("assets/SCN_ManFigure.png")
   SCNmanRevealed = loadImage("assets/SCN_ManRevealed.png")
+  SCNmanHappy = loadImage("assets/SCN_manHappy.png")
+  SCNmanAngry = loadImage("assets/SCN_manAngry.png")
 
   // ===== JSON DIALOGUE SYSTEM: Load dialogue data from JSON file =====
   dialogueData = loadJSON("dialogueData.json")
@@ -841,13 +842,16 @@ function outdoorsStoryPointTrigger() {
       
     } else if (appearStage == 154 && displayingDialogue == false) {
 
-      image(SCNmanRevealed, 0, 0)
 
       if (branchCodeArray[0][1] == true) {
+
+        image(SCNmanHappy, 0, 0)
         displayingDialogue = true
         dialogueToDisplay = 7
         dialogueType = 'story'
       } else {
+
+        image(SCNmanAngry, 0, 0)
         displayingDialogue = true
         dialogueToDisplay = 8
         dialogueType = 'story'
@@ -857,17 +861,29 @@ function outdoorsStoryPointTrigger() {
 
     } else if (appearStage == 155 && displayingDialogue == false) {
 
-      image(SCNmanRevealed, 0, 0)
+      if (branchCodeArray[0][1] == true) {
+
+        image(SCNmanHappy, 0, 0)
+
+      } else {
+
+        image(SCNmanAngry, 0, 0)
+      }
+
       appearStage ++
     
     } else if (appearStage == 156 && displayingDialogue == false) {
 
-      image(SCNmanRevealed, 0, 0)
 
       if (branchCodeArray[0][1] == false) {
+
+        image(SCNmanAngry, 0, 0)
         displayingDialogue = true
         dialogueToDisplay = 9
         dialogueType = 'story'
+      } else {
+
+        image(SCNmanHappy, 0, 0)
       }
 
       appearStage ++
@@ -889,7 +905,28 @@ function outdoorsStoryPointTrigger() {
 
     } else {
 
-      image(SCNmanRevealed, 0, 0)
+      if (displayingDialogue == true) {
+
+        if (branchCodeArray[0][1] == false) {
+
+          image(SCNmanAngry, 0, 0)
+  
+        } else if (branchCodeArray[0][1] == true) {
+  
+          image(SCNmanHappy, 0, 0)
+
+        } else {
+
+          image(SCNmanRevealed, 0, 0)
+
+        }
+
+      } else {
+
+        image(SCNmanRevealed, 0, 0)
+        
+      }
+
 
     }
 
@@ -1455,6 +1492,9 @@ function manageFade() {
           postFadeDialogue = true
           postFadeDialogueIndex = 4
         }
+      } else if (currentGameState == 1) {
+        postFadeDialogue = true
+        postFadeDialogueIndex = 10
       }
       if (intermediateLocation != null) {
         currentLocation = intermediateLocation
@@ -1523,9 +1563,6 @@ function draw() {
 
     push()
 
-    // if (cutScenes[1] == false) {
-    //   quinnMovable = true
-    // }
 
     //centre tile maps in window
     translate(-BGtilesX * BGtileSize/4 + BGtileSize/2, -BGtilesY * BGtileSize/2 + BGtileSize/2, 0);
@@ -1692,6 +1729,9 @@ function draw() {
 
     if (currentGameState == 1 && cutScenes[1] == false && playBegin == true) {
       quinnMovable = true
+    }
+    if (postFadeDialogue == true) {
+      quinnMovable = false
     }
 
   }
