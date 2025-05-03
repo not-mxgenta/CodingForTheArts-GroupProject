@@ -4,190 +4,163 @@
       "id": 0,
       "text": "Could really do with a clean. But today is NOT the day.",
       "choices": null,
-      "hover": "rain boots",
-      "alternate": false
+      "hover": "rain boots"
     },
     {
       "id": 1,
       "text": "Just checking it's all locked up.",
       "choices": null,
-      "hover": "door handle",
-      "alternate": false
+      "hover": "door handle"
     },
     {
       "id": 2,
       "text": "Better lock this.",
       "choices": ["lock the door", "leave it"],
-      "hover": "door lock",
-      "alternate": false
+      "hover": "door lock"
     },
     {
       "id": 3,
       "text": "Little extra security couldn't hurt",
       "choices": ["secure the chain", "leave it"],
-      "hover": "door chain",
-      "alternate": false
+      "hover": "door chain"
     },
     {
       "id": 4,
       "text": "---",
       "choices": null,
-      "hover": "jacket",
-      "alternate": false
+      "hover": "jacket"
     },
     {
       "id": 5,
       "text": null,
       "choices": null,
-      "hover": "living room door",
-      "alternate": false
+      "hover": "living room door"
     },
     {
       "id": 6,
       "text": "These are a tripping hazard, I should move them out of the way before it comes back to bite me on the ass.",
       "choices": ["tuck them under the bench", "leave them where they are"],
-      "hover": "shoes",
-      "alternate": false
+      "hover": "shoes"
     },
     {
       "id": 7,
       "text": "---",
       "choices": null,
-      "hover": "satchel",
-      "alternate": false
+      "hover": "satchel"
     },
     {
       "id": 8,
       "text": null,
       "choices": null,
-      "hover": "bathroom door",
-      "alternate": false
+      "hover": "bathroom door"
     },
     {
       "id": 9,
       "text": null,
       "choices": null,
-      "hover": "kitchen door",
-      "alternate": false
+      "hover": "kitchen door"
     },
     {
       "id": 10,
       "text": "---",
       "choices": null,
-      "hover": "drawer",
-      "alternate": false
+      "hover": "drawer"
     },
     {
       "id": 11,
       "text": "Shit! It's not connecting - has the line been... cut?",
       "choices": null,
-      "hover": "landline",
-      "alternate": false
+      "hover": "landline"
     },
     {
       "id": 12,
       "text": "---",
       "choices": null,
-      "hover": "front window",
-      "alternate": false
+      "hover": "front window"
     },
     {
       "id": 13,
       "text": "---",
       "choices": null,
-      "hover": "drawer",
-      "alternate": false
+      "hover": "drawer"
     },
     {
       "id": 14,
       "text": "---",
       "choices": null,
-      "hover": "drawer",
-      "alternate": false
+      "hover": "drawer"
     },
     {
       "id": 15,
       "text": "---",
       "choices": null,
-      "hover": "radio",
-      "alternate": false
+      "hover": "radio"
     },
     {
       "id": 16,
       "text": null,
       "choices": null,
-      "hover": "hall door",
-      "alternate": false
+      "hover": "hall door"
     },
     {
       "id": 17,
       "text": null,
       "choices": null,
-      "hover": "bedroom door",
-      "alternate": false
+      "hover": "bedroom door"
     },
     {
       "id": 18,
       "text": "---",
       "choices": null,
-      "hover": "picture",
-      "alternate": false
+      "hover": "picture"
     },
     {
       "id": 19,
       "text": "---",
       "choices": null,
-      "hover": "TV",
-      "alternate": false
+      "hover": "TV"
     },
     {
       "id": 20,
       "text": "I usually eat my dinner here. But it's been a long day... maybe I deserve a treat?",
       "choices": ["eat at the table", "eat on the sofa"],
-      "hover": "dining chair",
-      "alternate": false
+      "hover": "dining chair"
     },
     {
       "id": 21,
       "text": "All my knives are... missing. That's not good.",
       "choices": null,
-      "hover": "utensils",
-      "alternate": false
+      "hover": "utensils"
     },
     {
       "id": 22,
       "text": "---",
       "choices": null,
-      "hover": "oven",
-      "alternate": false
+      "hover": "oven"
     },
     {
       "id": 23,
       "text": null,
       "choices": null,
-      "hover": "hall door",
-      "alternate": false
+      "hover": "hall door"
     },
     {
       "id": 24,
       "text": "---",
       "choices": null,
-      "hover": "fridge",
-      "alternate": false
+      "hover": "fridge"
     },
     {
       "id": 25,
       "text": "Forgot I left that washing up in there, I should probably do that soon. But it's been *such* a long day already.",
       "choices": ["wash the dishes", "problem for later-Quinn"],
-      "hover": "sink",
-      "alternate": false
+      "hover": "sink"
     },
     {
       "id": 26,
       "text": "---",
       "choices": null,
-      "hover": "sink",
-      "alternate": false
+      "hover": "sink"
     },
     {
       "id": 27,
@@ -200,99 +173,85 @@
       "id": 28,
       "text": "---",
       "choices": null,
-      "hover": "cabinet",
-      "alternate": false
+      "hover": "cabinet"
     },
     {
       "id": 29,
       "text": null,
       "choices": null,
-      "hover": "hall door ",
-      "alternate": false
+      "hover": "hall door "
     },
     {
       "id": 30,
       "text": "I really should shower tonight - it's been a long (and sweaty) day.",
       "choices": ["shower now", "it can wait"],
-      "hover": "shower",
-      "alternate": false
+      "hover": "shower"
     },
     {
       "id": 31,
       "text": "---",
       "choices": null,
-      "hover": "shower curtain",
-      "alternate": false
+      "hover": "shower curtain"
     },
     {
       "id": 32,
       "text": "---",
       "choices": null,
-      "hover": "towel rail",
-      "alternate": false
+      "hover": "towel rail"
     },
     {
       "id": 33,
       "text": "---",
       "choices": null,
-      "hover": "bed",
-      "alternate": false
+      "hover": "bed"
     },
     {
       "id": 34,
       "text": "---",
       "choices": null,
-      "hover": "under bed",
-      "alternate": false
+      "hover": "under bed"
     },
     {
       "id": 35,
       "text": "It's a bit hot in here, maybe I should open the window to let some air in.",
       "choices": ["open window", "leave closed"],
-      "hover": "window",
-      "alternate": false
+      "hover": "window"
     },
     {
       "id": 36,
       "text": "Where I usually do my coursework. Not today Satan.",
       "choices": null,
-      "hover": "computer",
-      "alternate": false
+      "hover": "computer"
     },
     {
       "id": 37,
       "text": "'You're not supposed to die tonight'... comforting, I guess.",
       "choices": null,
-      "hover": "book",
-      "alternate": false
+      "hover": "book"
     },
     {
       "id": 38,
       "text": "---",
       "choices": null,
-      "hover": "wardrobe",
-      "alternate": false
+      "hover": "wardrobe"
     },
     {
       "id": 39,
       "text": null,
       "choices": null,
-      "hover": "living room door",
-      "alternate": false
+      "hover": "living room door"
     },
     {
       "id": 40,
       "text": "---",
       "choices": null,
-      "hover": "cabinet",
-      "alternate": false
+      "hover": "cabinet"
     },
     {
       "id": 41,
       "text": "Best game, no debate.",
       "choices": null,
-      "hover": "poster",
-      "alternate": false
+      "hover": "poster"
     }
    
    

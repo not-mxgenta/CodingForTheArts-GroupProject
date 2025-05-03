@@ -110,6 +110,7 @@ let branchCodeArray = [
 
 let interactionCounts = [];
 let holdInteractCount = 0;
+let alternativeInteractText = null;
 
 let dialogueType = null;
 
@@ -1154,6 +1155,7 @@ function rightNavClicked() {
 function checkMouseHover() {
 
   interactID = 0
+  alternativeInteractText = 0
 
   if (inputBlocked == false && (currentGameState == 2 || currentGameState == 1)) {
     if (displayingDialogue == true) {
@@ -1192,18 +1194,33 @@ function checkMouseHover() {
           } else if (46 < newMouseX && newMouseX < 112 && 75 < newMouseY && newMouseY < 112) {
             interactID = 2
           } else if (95 < newMouseX && newMouseX < 112 && 125 < newMouseY && newMouseY < 160) {
+            if (branchCodeArray[1][1] != null) {
+              alternativeInteractText = 42
+            }
             interactID = 3
           } else if (80 < newMouseX && newMouseX < 180 && -80 < newMouseY && newMouseY < -30) {
+            if (branchCodeArray[2][1] != null) {
+              alternativeInteractText = 43
+            }
             interactID = 4
           } else if (-340 < newMouseX && newMouseX < -210 && -160 < newMouseY && newMouseY < 190) {
+            if (branchCodeArray[3][1] != null) {
+              alternativeInteractText = 44
+            }
             interactID = 5
           }
         } else if (currentLocation == 1 && currentFocus == 2) {
           if (-580 < newMouseX && newMouseX < -320 && -112 < newMouseY && newMouseY < 380) {
             interactID = 6
           } else if (6 < newMouseX && newMouseX < 150 && 290 < newMouseY && newMouseY < 380) {
+            if (branchCodeArray[4][1] != null) {
+              alternativeInteractText = 45
+            }
             interactID = 7
           } else if (375 < newMouseX && newMouseX < 450 && 240 < newMouseY && newMouseY < 380) {
+            if (branchCodeArray[5][1] != null) {
+              alternativeInteractText = 46
+            }
             interactID = 8
           }
         } else if (currentLocation == 1 && currentFocus == 3) {
@@ -1212,20 +1229,38 @@ function checkMouseHover() {
           } else if (370 < newMouseX && newMouseX < 630 && -112 < newMouseY && newMouseY < 380) {
             interactID = 10
           } else if (140 < newMouseX && newMouseX < 300 && 120 < newMouseY && newMouseY < 200) {
+            if (branchCodeArray[6][1] != null) {
+              alternativeInteractText = 47
+            }
             interactID = 11
           } else if (100 < newMouseX && newMouseX < 330 && -80 < newMouseY && newMouseY < 80) {
+            if (branchCodeArray[7][1] != null) {
+              alternativeInteractText = 48
+            }
             interactID = 12
           }
         } else if (currentLocation == 2 && currentFocus == 1) {
           if (-311 < newMouseX && newMouseX < 311 && -340 < newMouseY && newMouseY < 75) {
+            if (branchCodeArray[8][1] != null) {
+              alternativeInteractText = 49
+            }
             interactID = 13
           }
         } else if (currentLocation == 2 && currentFocus == 2) {
           if (-80 < newMouseX && newMouseX < 310 && 90 < newMouseY && newMouseY < 190) {
+            if (branchCodeArray[9][1] != null) {
+              alternativeInteractText = 50
+            }
             interactID = 14
           } else if (-80 < newMouseX && newMouseX < 310 && 200 < newMouseY && newMouseY < 330) {
+            if (branchCodeArray[10][1] != null) {
+              alternativeInteractText = 51
+            }
             interactID = 15
           } else if (-65 < newMouseX && newMouseX < 95 && -120 < newMouseY && newMouseY < 30) {
+            if (branchCodeArray[11][1] != null) {
+              alternativeInteractText = 52
+            }
             interactID = 16
           } else if (370 < newMouseX && newMouseX < 630 && -120 < newMouseY && newMouseY < 380) {
             interactID = 17
@@ -1236,10 +1271,16 @@ function checkMouseHover() {
           } else if (-120 < newMouseX && newMouseX < 70 && -320 < newMouseY && newMouseY < -130) {
             interactID = 19
           } else if (-500 < newMouseX && newMouseX < -280 && -5 < newMouseY && newMouseY < 210) {
+            if (branchCodeArray[12][1] != null) {
+              alternativeInteractText = 53
+            }
             interactID = 20
           }
         } else if (currentLocation == 3 && currentFocus == 1) {
           if (-600 < newMouseX && newMouseX < -380 && 190 < newMouseY && newMouseY < 240) {
+            if (branchCodeArray[13][1] != null) {
+              alternativeInteractText = 54
+            }
             interactID = 21
           }
         } else if (currentLocation == 3 && currentFocus == 2) {
@@ -1254,22 +1295,37 @@ function checkMouseHover() {
           if (-390 < newMouseX && newMouseX < -130 && -260 < newMouseY && newMouseY < 390) {
             interactID = 25
           } else if (30 < newMouseX && newMouseX < 220 && 0 < newMouseY && newMouseY < 100) {
+            if (branchCodeArray[14][1] != null) {
+              alternativeInteractText = 55
+            }
             interactID = 26
           }
         } else if (currentLocation == 4 && currentFocus == 1) {
           if (-300 < newMouseX && newMouseX < -75 && 110 < newMouseY && newMouseY < 240) {
+            if (branchCodeArray[17][1] != null) {
+              alternativeInteractText = 56
+            }
             interactID = 27
           } else if (-400 < newMouseX && newMouseX < 20 && -170 < newMouseY && newMouseY < 55) {
             interactID = 28
           } else if (400 < newMouseX && newMouseX < 590 && 190 < newMouseY && newMouseY < 335) {
+            if (branchCodeArray[16][1] != null) {
+              alternativeInteractText = 57
+            }
             interactID = 29
           } else if (65 < newMouseX && newMouseX < 320 && -112 < newMouseY && newMouseY < 380) {
             interactID = 30
           }
         } else if (currentLocation == 4 && currentFocus == 2) {
           if (-130 < newMouseX && newMouseX < 380 && 170 < newMouseY && newMouseY < 350) {
+            if (branchCodeArray[15][1] != null) {
+              alternativeInteractText = 58
+            }
             interactID = 31
           } else if (140 < newMouseX && newMouseX < 370 && -80 < newMouseY && newMouseY < 175) {
+            if (branchCodeArray[18][1] != null) {
+              alternativeInteractText = 59
+            }
             interactID = 32
           } else if (-340 < newMouseX && newMouseX < -165 && 120 < newMouseY && newMouseY < 330) {
             interactID = 33
@@ -1278,8 +1334,14 @@ function checkMouseHover() {
           if (140 < newMouseX && newMouseX < 630 && 190 < newMouseY && newMouseY < 330) {
             interactID = 34
           } else if (190 < newMouseX && newMouseX < 600 && 330 < newMouseY && newMouseY < 380) {
+            if (branchCodeArray[19][1] != null) {
+              alternativeInteractText = 60
+            }
             interactID = 35
           } else if (-115 < newMouseX && newMouseX < 360 && -160 < newMouseY && newMouseY < 60) {
+            if (branchCodeArray[20][1] != null) {
+              alternativeInteractText = 61
+            }
             interactID = 36
           }
         } else if (currentLocation == 5 && currentFocus == 2) {
@@ -1288,12 +1350,21 @@ function checkMouseHover() {
           }
         } else if (currentLocation == 5 && currentFocus == 3) {
           if (-255 < newMouseX && newMouseX < -130 && 80 < newMouseY && newMouseY < 130) {
+            if (branchCodeArray[21][1] != null) {
+              alternativeInteractText = 62
+            }
             interactID = 38
           } else if (110 < newMouseX && newMouseX < 350 && -250 < newMouseY && newMouseY < 330) {
+            if (branchCodeArray[22][1] != null) {
+              alternativeInteractText = 63
+            }
             interactID = 39
           } else if (380 < newMouseX && newMouseX < 640 && -112 < newMouseY && newMouseY < 380) {
             interactID = 40
           } else if (-240 < newMouseX && newMouseX < -35 && 190 < newMouseY && newMouseY < 340) {
+            if (branchCodeArray[23][1] != null) {
+              alternativeInteractText = 64
+            }
             interactID = 41
           } else if (-580 < newMouseX && newMouseX < -180 && -370 < newMouseY && newMouseY < 65) {
             interactID = 42
@@ -1444,9 +1515,16 @@ function mouseClicked() {
             intermediateLocation = 2
             intermediateFocus = 3
           } else if (interactID != 0) {
-            displayingDialogue = true
-            dialogueToDisplay = interactID - 1
-            dialogueType = 'interact'
+
+            if (alternativeInteractText == null) {
+              displayingDialogue = true
+              dialogueToDisplay = interactID - 1
+              dialogueType = 'interact'
+            } else {
+              displayingDialogue = true
+              dialogueToDisplay = alternativeInteractText
+              dialogueType = 'interact'
+            }
 
             holdInteractCount = interactionCounts[interactID-1]
             holdInteractCount++
