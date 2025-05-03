@@ -23,7 +23,9 @@ LINK TO GITHUB PAGES: [insert link here]
 
 OVERVIEW OF PROJECT
 
-80s-style analogue horror game about home invasion, featuring mixture of point-and-click investigation and chase sequences
+80s-style analogue horror game about home invasion, featuring mixture of point-and-click investigation and chase sequences.
+With a heavy focus on the themes of choice and consequence, the game encourages players to 'wind-back' time and experience the varying
+outcomes relating to different choices.
 
 Describe your project in a few sentences. What is it about? What are its key technical features? 
 What are its key themes, aesthetics, etc.

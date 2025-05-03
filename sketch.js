@@ -108,6 +108,9 @@ let branchCodeArray = [
   ['SP_bedroomCabinet', null]
 ]
 
+let interactionCounts = [];
+let holdInteractCount = 0;
+
 let dialogueType = null;
 
 let outsideIntTextPositionX = 0;
@@ -485,6 +488,11 @@ function setup() {
   SPR_quinnWalkAnimArray = [SPRquinnWalk1, SPRquinnWalk2, SPRquinnWalk3, SPRquinnWalk4, SPRquinnWalk5, SPRquinnWalk6, SPRquinnWalk7, SPRquinnWalk8, SPRquinnWalk9, SPRquinnWalk10, SPRquinnWalk11, SPRquinnWalk12, SPRquinnWalk13, SPRquinnWalk14]
 
   SPR_quinn = new spriteQuinnClass(SPRquinnStanding, SPR_quinnWalkAnimArray, 0, 120)
+
+  for (let addArrayCount = 0; addArrayCount < 42; addArrayCount ++) {
+    interactionCounts.push(0)
+  }
+
 }
 
 
@@ -1439,6 +1447,11 @@ function mouseClicked() {
             displayingDialogue = true
             dialogueToDisplay = interactID - 1
             dialogueType = 'interact'
+
+            holdInteractCount = interactionCounts[interactID-1]
+            holdInteractCount++
+            interactionCounts[(interactID-1)] = holdInteractCount
+
           }
         }
       }
