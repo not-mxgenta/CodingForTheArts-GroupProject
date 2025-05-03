@@ -1311,34 +1311,22 @@ function checkMouseHover() {
           }
         } else if (currentLocation == 2 && currentFocus == 1) {
           if (-311 < newMouseX && newMouseX < 311 && -340 < newMouseY && newMouseY < 75) {
-            if ((currentPlayStage == 1 || currentPlayStage == 3) && interactionCounts[12] == 0) {
+            if ((currentPlayStage == 2 || currentPlayStage == 3 || currentPlayStage == 4 || currentPlayStage == 6) && interactionCounts[12] == 0) {
               interactID = 13
-            }
-            if (branchCodeArray[8][1] != null) {
-              alternativeInteractText = 49
             }
           }
         } else if (currentLocation == 2 && currentFocus == 2) {
           if (-80 < newMouseX && newMouseX < 310 && 90 < newMouseY && newMouseY < 190) {
-            if ((currentPlayStage == 1 || currentPlayStage == 3) && interactionCounts[13] == 0) {
+            if (currentPlayStage != 7 && interactionCounts[13] == 0) {
               interactID = 14
             }
-            if (branchCodeArray[9][1] != null) {
-              alternativeInteractText = 50
-            }
           } else if (-80 < newMouseX && newMouseX < 310 && 200 < newMouseY && newMouseY < 330) {
-            if ((currentPlayStage == 1 || currentPlayStage == 3) && interactionCounts[14] == 0) {
+            if (currentPlayStage != 7 && interactionCounts[14] == 0) {
               interactID = 15
             }
-            if (branchCodeArray[10][1] != null) {
-              alternativeInteractText = 51
-            }
           } else if (-65 < newMouseX && newMouseX < 95 && -120 < newMouseY && newMouseY < 30) {
-            if ((currentPlayStage == 1 || currentPlayStage == 3) && interactionCounts[15] == 0) {
+            if (currentPlayStage != 7 && interactionCounts[15] == 0) {
               interactID = 16
-            }
-            if (branchCodeArray[11][1] != null) {
-              alternativeInteractText = 52
             }
           } else if (370 < newMouseX && newMouseX < 630 && -120 < newMouseY && newMouseY < 380) {
             interactID = 17
@@ -1347,29 +1335,27 @@ function checkMouseHover() {
           if (-150 < newMouseX && newMouseX < 100 && -110 < newMouseY && newMouseY < 390) {
             interactID = 18
           } else if (-120 < newMouseX && newMouseX < 70 && -320 < newMouseY && newMouseY < -130) {
-            if ((currentPlayStage == 1 || currentPlayStage == 3) && interactionCounts[18] == 0) {
+            if ((currentPlayStage == 2 || currentPlayStage == 4) && interactionCounts[18] == 0) {
               interactID = 19
             }
           } else if (-500 < newMouseX && newMouseX < -280 && -5 < newMouseY && newMouseY < 210) {
-            if ((currentPlayStage == 1 || currentPlayStage == 3) && interactionCounts[19] == 0) {
+            if (1 < currentPlayStage < 7) {
               interactID = 20
-            }
-            if (branchCodeArray[12][1] != null) {
-              alternativeInteractText = 53
             }
           }
         } else if (currentLocation == 3 && currentFocus == 1) {
           if (-600 < newMouseX && newMouseX < -380 && 190 < newMouseY && newMouseY < 240) {
-            if ((currentPlayStage == 1 || currentPlayStage == 3) && interactionCounts[20] == 0) {
+            if (currentPlayStage == 3 && interactionCounts[20] == 0) {
               interactID = 21
             }
-            if (branchCodeArray[13][1] != null) {
+            if (branchCodeArray[13][1] != null && currentPlayStage == 3) {
               alternativeInteractText = 54
+              interactID = 21
             }
           }
         } else if (currentLocation == 3 && currentFocus == 2) {
           if (280 < newMouseX && newMouseX < 340 && -70 < newMouseY && newMouseY < 80) {
-            if ((currentPlayStage == 1 || currentPlayStage == 3) && interactionCounts[21] == 0) {
+            if (currentPlayStage == 6) {
               interactID = 22
             }
           } else if (400 < newMouseX && newMouseX < 610 && 140 < newMouseY && newMouseY < 340) {
@@ -1381,15 +1367,21 @@ function checkMouseHover() {
           }
         } else if (currentLocation == 3 && currentFocus == 3) {
           if (-390 < newMouseX && newMouseX < -130 && -260 < newMouseY && newMouseY < 390) {
-            if ((currentPlayStage == 1 || currentPlayStage == 3) && interactionCounts[24] == 0) {
+            if (currentPlayStage == 1 && interactionCounts[24] == 0) {
               interactID = 25
             }
           } else if (30 < newMouseX && newMouseX < 220 && 0 < newMouseY && newMouseY < 100) {
-            if ((currentPlayStage == 1 || currentPlayStage == 3) && interactionCounts[25] == 0) {
+            if (currentPlayStage == 2 || currentPlayStage == 3 || currentPlayStage == 4) {
               interactID = 26
-            }
-            if (branchCodeArray[14][1] != null) {
-              alternativeInteractText = 55
+              if (branchCodeArray[14][1] != null) {
+                if (interactionCounts[25] == 1) {
+                  alternativeInteractText = 55
+                } else {
+                  interactID = 0
+                }
+              }
+            } else if (currentPlayStage > 5) {
+              alternativeInteractText = 49    
             }
           }
         } else if (currentLocation == 4 && currentFocus == 1) {
@@ -1401,14 +1393,14 @@ function checkMouseHover() {
               alternativeInteractText = 56
             }
           } else if (-400 < newMouseX && newMouseX < 20 && -170 < newMouseY && newMouseY < 55) {
-            if ((currentPlayStage == 1 || currentPlayStage == 3) && interactionCounts[27] == 0) {
+            if ((currentPlayStage > 5) && interactionCounts[27] == 0) {
               interactID = 28
             }
           } else if (400 < newMouseX && newMouseX < 590 && 190 < newMouseY && newMouseY < 335) {
-            if ((currentPlayStage == 1 || currentPlayStage == 3) && interactionCounts[28] == 0) {
+            if ((currentPlayStage == 6) && interactionCounts[28] == 0) {
               interactID = 29
             }
-            if (branchCodeArray[16][1] != null) {
+            if (branchCodeArray[16][1] != null && interactionCounts[28] == 1) {
               alternativeInteractText = 57
             }
           } else if (65 < newMouseX && newMouseX < 320 && -112 < newMouseY && newMouseY < 380) {
@@ -1416,18 +1408,18 @@ function checkMouseHover() {
           }
         } else if (currentLocation == 4 && currentFocus == 2) {
           if (-130 < newMouseX && newMouseX < 380 && 170 < newMouseY && newMouseY < 350) {
-            if ((currentPlayStage == 1 || currentPlayStage == 3) && interactionCounts[30] == 0) {
+            if (currentPlayStage == 2 && interactionCounts[30] == 0) {
               interactID = 31
-            }
-            if (branchCodeArray[15][1] != null) {
-              alternativeInteractText = 58
+              alternativeInteractText = 50
+            } else if (currentPlayStage == 4 || currentPlayStage > 5) {
+              interactID = 31
+              if (branchCodeArray[15][1] != null && currentPlayStage > 5) {
+                alternativeInteractText = 58
+              }
             }
           } else if (140 < newMouseX && newMouseX < 370 && -80 < newMouseY && newMouseY < 175) {
-            if ((currentPlayStage == 1 || currentPlayStage == 3) && interactionCounts[31] == 0) {
+            if ((currentPlayStage > 5) && interactionCounts[31] == 0) {
               interactID = 32
-            }
-            if (branchCodeArray[18][1] != null) {
-              alternativeInteractText = 59
             }
           } else if (-340 < newMouseX && newMouseX < -165 && 120 < newMouseY && newMouseY < 330) {
             if ((currentPlayStage == 1 || currentPlayStage == 3) && interactionCounts[32] == 0) {
@@ -1436,56 +1428,50 @@ function checkMouseHover() {
           }
         } else if (currentLocation == 5 && currentFocus == 1) {
           if (140 < newMouseX && newMouseX < 630 && 190 < newMouseY && newMouseY < 330) {
-            if ((currentPlayStage == 1 || currentPlayStage == 3) && interactionCounts[33] == 0) {
+            if ((3 < currentPlayStage < 7) && interactionCounts[33] < 2) {
               interactID = 34
+              if (currentPlayStage < 5) {
+                alternativeInteractText = 51
+              }
             }
           } else if (190 < newMouseX && newMouseX < 600 && 330 < newMouseY && newMouseY < 380) {
-            if ((currentPlayStage == 1 || currentPlayStage == 3) && interactionCounts[34] == 0) {
+            if ((3 < currentPlayStage) && interactionCounts[34] == 0) {
               interactID = 35
             }
-            if (branchCodeArray[19][1] != null) {
+            if (currentPlayStage > 5) {
               alternativeInteractText = 60
             }
           } else if (-115 < newMouseX && newMouseX < 360 && -160 < newMouseY && newMouseY < 60) {
-            if ((currentPlayStage == 1 || currentPlayStage == 3) && interactionCounts[35] == 0) {
+            if ((currentPlayStage == 5) && branchCodeArray[20][1] == null) {
               interactID = 36
-            }
-            if (branchCodeArray[20][1] != null) {
-              alternativeInteractText = 61
             }
           }
         } else if (currentLocation == 5 && currentFocus == 2) {
           if (-115 < newMouseX && newMouseX < 110 && -70 < newMouseY && newMouseY < 130) {
-            if ((currentPlayStage == 1 || currentPlayStage == 3) && interactionCounts[36] == 0) {
+            if (interactionCounts[36] == 0) {
               interactID = 37
             }
           }
         } else if (currentLocation == 5 && currentFocus == 3) {
           if (-255 < newMouseX && newMouseX < -130 && 80 < newMouseY && newMouseY < 130) {
-            if ((currentPlayStage == 1 || currentPlayStage == 3) && interactionCounts[37] == 0) {
+            if (interactionCounts[37] == 0) {
               interactID = 38
             }
-            if (branchCodeArray[21][1] != null) {
-              alternativeInteractText = 62
-            }
           } else if (110 < newMouseX && newMouseX < 350 && -250 < newMouseY && newMouseY < 330) {
-            if ((currentPlayStage == 1 || currentPlayStage == 3) && interactionCounts[38] == 0) {
+            if (currentPlayStage > 3 && interactionCounts[38] == 0) {
               interactID = 39
             }
-            if (branchCodeArray[22][1] != null) {
+            if (currentPlayStage > 5) {
               alternativeInteractText = 63
             }
           } else if (380 < newMouseX && newMouseX < 640 && -112 < newMouseY && newMouseY < 380) {
             interactID = 40
           } else if (-240 < newMouseX && newMouseX < -35 && 190 < newMouseY && newMouseY < 340) {
-            if ((currentPlayStage == 1 || currentPlayStage == 3) && interactionCounts[40] == 0) {
+            if (interactionCounts[40] == 0) {
               interactID = 41
             }
-            if (branchCodeArray[23][1] != null) {
-              alternativeInteractText = 64
-            }
           } else if (-580 < newMouseX && newMouseX < -180 && -370 < newMouseY && newMouseY < 65) {
-            if ((currentPlayStage == 1 || currentPlayStage == 3) && interactionCounts[41] == 0) {
+            if (interactionCounts[41] == 0) {
               interactID = 42
             }
 
