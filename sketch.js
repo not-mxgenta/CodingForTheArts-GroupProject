@@ -123,6 +123,8 @@ let outsideIntID = 0;
 
 let outsideStoryPoint = false;
 
+let playStageInteractCounter = 0;
+
 //variables for Quinn's Walking Animation
 let SPR_quinnWalkAnimArray = [];
 let currentQuinnWalkFrame = 0;
@@ -514,6 +516,22 @@ function preload() {
   SPRquinnWalk13 = loadImage("assets/quinn_walking_animation/SPRITE_quinnWalkingAnim13.png")
   SPRquinnWalk14 = loadImage("assets/quinn_walking_animation/SPRITE_quinnWalkingAnim14.png")
 
+  //mini map
+  MMbath1 = loadImage("assets/minimap/MM_bath1.png")
+  MMbath2 = loadImage("assets/minimap/MM_bath2.png")
+  MMbed1 = loadImage("assets/minimap/MM_bed1.png")
+  MMbed2 = loadImage("assets/minimap/MM_bed2.png")
+  MMstudy = loadImage("assets/minimap/MM_study.png")
+  MMhall1 = loadImage("assets/minimap/MM_hall1.png")
+  MMhall2 = loadImage("assets/minimap/MM_hall2.png")
+  MMhall3 = loadImage("assets/minimap/MM_hall3.png")
+  MMkitchen1 = loadImage("assets/minimap/MM_kitchen1.png")
+  MMkitchen2 = loadImage("assets/minimap/MM_kitchen2.png")
+  MMkitchen3 = loadImage("assets/minimap/MM_kitchen3.png")
+  MMlr1 = loadImage("assets/minimap/MM_lr1.png")
+  MMlr2 = loadImage("assets/minimap/MM_lr2.png")
+  MMlr3 = loadImage("assets/minimap/MM_lr3.png")
+
 }
 
 //Extra VHS-style effects
@@ -726,6 +744,52 @@ function BGtiles() {
   }
 }
 
+function miniMap() {
+
+  let miniMapDisplay = null;
+
+  if (displayingDialogue == false) {
+    if (currentLocation == 1 && currentFocus == 1) {
+      miniMapDisplay = MMhall1
+    } else if (currentLocation == 1 && currentFocus == 2) {
+      miniMapDisplay = MMhall3
+    } else if (currentLocation == 1 && currentFocus == 3) {
+      miniMapDisplay = MMhall2
+    } else if (currentLocation == 2 && currentFocus == 1) {
+      miniMapDisplay = MMlr1
+    } else if (currentLocation == 2 && currentFocus == 2) {
+      miniMapDisplay = MMlr3
+    } else if (currentLocation == 2 && currentFocus == 3) {
+      miniMapDisplay = MMlr2
+    } else if (currentLocation == 3 & currentFocus == 1) {
+      miniMapDisplay = MMkitchen2
+    } else if (currentLocation == 3 && currentFocus == 2) {
+      miniMapDisplay = MMkitchen3
+    } else if (currentLocation == 3 && currentFocus == 3) {
+      miniMapDisplay = MMkitchen1
+    } else if (currentLocation == 4 && currentFocus == 1) {
+      miniMapDisplay = MMbath1
+    } else if (currentLocation == 4 && currentFocus == 2) {
+      miniMapDisplay = MMbath2
+    } else if (currentLocation == 5 && currentFocus == 1) {
+      miniMapDisplay = MMbed1
+    } else if (currentLocation == 5 && currentFocus == 2) {
+      miniMapDisplay = MMstudy
+    } else if (currentLocation == 5 && currentFocus == 3) {
+      miniMapDisplay = MMbed2
+    }
+  }
+
+  push()
+  fill('white')
+  rect(615, -290, 310, 310)
+  if (miniMapDisplay != null) {
+    image(miniMapDisplay, 615, -290, 300, 300)
+  }
+  pop()
+
+}
+
 function checkKeyPress() {
   
 
@@ -849,7 +913,7 @@ function outdoorsStoryPointTrigger() {
 
     push()
     fill(20, 27, 47)
-    rect(0, 0, 1280, 768)
+    rect(0, 0, 1280, 770)
     pop()
 
     if (appearStage == 0) {
@@ -1416,11 +1480,11 @@ function checkMouseHover() {
           }
         } else if (currentLocation == 3 && currentFocus == 2) {
           if (280 < newMouseX && newMouseX < 340 && -70 < newMouseY && newMouseY < 80) {
-            if (currentPlayStage == 6 && interactionCounts[21] == 0 && interactionCounts[24] > 0) {
+            if (currentPlayStage == 6 && interactionCounts[21] == 0) {
               interactID = 22
             }
           } else if (400 < newMouseX && newMouseX < 610 && 140 < newMouseY && newMouseY < 340) {
-            if ((currentPlayStage == 1 || currentPlayStage == 2.5) && interactionCounts[22] < 2) {
+            if ((currentPlayStage == 1 || currentPlayStage == 2.5) && interactionCounts[22] < 2 && interactionCounts[24] > 0) {
               interactID = 23
               if (currentPlayStage == 2.5) {
                 alternativeInteractText = 56
@@ -1650,8 +1714,6 @@ function choiceMade(optionChosen) {
   
 }
 
-
-
 //anything to do with clicking the mouse - tracking it's position, recording interaction, playing noise etc
 function mouseClicked() {
 
@@ -1675,6 +1737,8 @@ function mouseClicked() {
           if (dialogueToDisplay == 2 && dialogueType == 'story') {
             displayObjective = true
             currentObjective = 2
+            currentPlayStage = 2
+            playStageInteractCounter = 0
           }
         } else {
           if ((dialogueToDisplay == 44 && dialogueType == 'interact') || (dialogueToDisplay == 15 && dialogueType == 'interact') || goingToSleep == true || (dialogueToDisplay == 48 && branchCodeArray[6][1] == true) || (dialogueToDisplay == 22 && dialogueType == 'interact')) {
@@ -1753,8 +1817,6 @@ function mouseClicked() {
             intermediateFocus = 3
           } else if (interactID != 0) {
 
-            console.log(alternativeInteractText)
-
             if (alternativeInteractText == null) {
               displayingDialogue = true
               dialogueToDisplay = interactID - 1
@@ -1769,6 +1831,10 @@ function mouseClicked() {
             holdInteractCount = interactionCounts[interactID-1]
             holdInteractCount++
             interactionCounts[(interactID-1)] = holdInteractCount
+
+            if (currentPlayStage == 2) {
+              playStageInteractCounter ++
+            }
 
 
           }
@@ -1895,8 +1961,6 @@ function draw() {
 
     push()
 
-
-
     //centre tile maps in window
     translate(-BGtilesX * BGtileSize/4 + BGtileSize/2, -BGtilesY * BGtileSize/2 + BGtileSize/2, 0);
     translate (BGscrollAmount, 0, 0)
@@ -2012,6 +2076,16 @@ function draw() {
   }
 
 
+  if (followUpDialogue[0] != null && displayingDialogue == false) {
+
+    displayingDialogue = true
+    dialogueToDisplay = followUpDialogue[0]
+    dialogueType = followUpDialogue[1]
+    followUpDialogue = [null, null]
+
+  }
+
+
   if (displayingDialogue == true) {
 
     quinnMovable = false
@@ -2068,14 +2142,6 @@ function draw() {
 
     }
 
-
-
-  } else if (followUpDialogue[0] != null) {
-
-    displayingDialogue = true
-    dialogueToDisplay = followUpDialogue[0]
-    dialogueType = followUpDialogue[1]
-    followUpDialogue = [null, null]
   
   } else {
 
@@ -2087,6 +2153,10 @@ function draw() {
     }
     if (postFadeDialogue == true) {
       quinnMovable = false
+    }
+
+    if (currentGameState == 2) {
+      miniMap()
     }
 
 
