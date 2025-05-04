@@ -62,7 +62,7 @@
     },
     {
       "id": 10,
-      "text": "---",
+      "text": null,
       "choices": null,
       "hover": "drawer"
     },
@@ -92,7 +92,7 @@
     },
     {
       "id": 15,
-      "text": "---",
+      "text": "krrrrr -- shhhhhhhiiiirrrrr --- *static noises* -- - *faint voices*...",
       "choices": null,
       "hover": "radio"
     },
@@ -146,7 +146,7 @@
     },
     {
       "id": 24,
-      "text": "---",
+      "text": "Lasagna, oh lasanga, where art thou?",
       "choices": null,
       "hover": "fridge"
     },
@@ -158,7 +158,7 @@
     },
     {
       "id": 26,
-      "text": "---",
+      "text": "Gotta brush those pearly whites -       ew, why did I say that.",
       "choices": null,
       "hover": "sink"
     },
@@ -273,7 +273,7 @@
     },
     {
       "id": 45,
-      "text": "---",
+      "text": "I don't have time for this, my dinner is getting cold. Cold lasagna is so not the vibe.",
       "choices": null,
       "hover": null
     },
@@ -285,7 +285,7 @@
     },
     {
       "id": 47,
-      "text": null,
+      "text": "If I don't hurry up and take my dinner out of the oven, it's going to be burnt to a crisp!",
       "choices": null,
       "hover": null
     },
@@ -327,7 +327,7 @@
     },
     {
       "id": 54,
-      "text": "---",
+      "text": "The sooner I put my dinner on, the sooner I can collapse into bed.",
       "choices": null,
       "hover": null
     },
@@ -339,91 +339,85 @@
     },
     {
       "id": 56,
-      "text": "---",
+      "text": "Mmmmmm, smells good.",
       "choices": null,
       "hover": null
     },
     {
       "id": 57,
-      "text": "---",
+      "text": "My phone clearly isn't here, c'mon I'm wasting time!",
       "choices": null,
       "hover": null
     },
     {
       "id": 58,
-      "text": null,
+      "text": "A glass of water is what I need, I'm basically d-y-i-n-g of dehydration right now.",
       "choices": null,
       "hover": null
     },
     {
       "id": 59,
-      "text": null,
+      "text": "I'm so tired I can't even see straight. Surely this can wait until tomorrow.",
       "choices": null,
       "hover": null
     },
     {
       "id": 60,
-      "text": "---",
+      "text": null,
       "choices": null,
       "hover": null
     },
     {
       "id": 61,
-      "text": "---",
+      "text": "God who showered in here, a gorilla? There's water everywhere! Oh wait - 'twas me. hehe.",
       "choices": null,
       "hover": null
     },
     {
       "id": 62,
-      "text": "I usually eat my dinner here. But it's been a long day... maybe I deserve a treat?",
-      "choices": ["eat at the table", "eat on the sofa"],
+      "text": "I could crawl under here and hide?",
+      "choices": ["hide", "find somewhere else"],
       "hover": null
     },
     {
       "id": 63,
-      "text": "All my knives are... missing. That's not good.",
-      "choices": null,
+      "text": "Classic hiding spot, if I squish right to the back no one will find me.",
+      "choices": ["hide", "find somewhere else"],
       "hover": null
     },
     {
       "id": 64,
-      "text": "---",
+      "text": null,
       "choices": null,
       "hover": null
     },
     {
       "id": 65,
-      "text": "---",
+      "text": null,
       "choices": null,
       "hover": null
     },
     {
       "id": 66,
-      "text": "---",
+      "text": "-huh!? Oh, I fell asleep on the couch, damn. Bloody horror movie must have woken me up.",
       "choices": null,
       "hover": null
     },
     {
       "id": 67,
-      "text": "---",
+      "text": "-huh!? I fell asleep on the couch, damn. Wonder what woke me up...",
       "choices": null,
       "hover": null
     },
     {
       "id": 68,
-      "text": "---",
+      "text": "Reports are coming in that a dangerous convict has escaped from the nearby county detention center. Police urge everyone to lock all doors and be extra cautious until he is apprehended.",
       "choices": null,
       "hover": null
     },
     {
       "id": 69,
-      "text": "---",
-      "choices": null,
-      "hover": null
-    },
-    {
-      "id": 70,
-      "text": "---",
+      "text": null,
       "choices": null,
       "hover": null
     }
