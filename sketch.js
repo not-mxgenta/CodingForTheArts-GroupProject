@@ -1495,59 +1495,76 @@ if (interactID != 0) {
 
 function choiceMade(optionChosen) {
 
-  let SP_Choice = null;
-
-  if (optionChosen == 1) {
-    SP_Choice = true
-  } else {
-    SP_Choice = false
-  }
-  if (dialogueToDisplay == 3) {
-    branchCodeArray[1][1] = SP_Choice
-  } else if (dialogueToDisplay == 4) {
-    branchCodeArray[2][1] = SP_Choice
-  } else if (dialogueToDisplay == 5) {
-    branchCodeArray[3][1] = SP_Choice
-  } else if (dialogueToDisplay == 7) {
-    branchCodeArray[4][1] = SP_Choice
-  } else if (dialogueToDisplay == 8) {
-    branchCodeArray[5][1] = SP_Choice
-  } else if (dialogueToDisplay == 11) {
-    branchCodeArray[6][1] = SP_Choice
-  } else if (dialogueToDisplay == 12) {
-    branchCodeArray[7][1] = SP_Choice
-  } else if (dialogueToDisplay == 13) {
-    branchCodeArray[8][1] = SP_Choice
-  } else if (dialogueToDisplay == 14) {
-    branchCodeArray[9][1] = SP_Choice
-  } else if (dialogueToDisplay == 15) {
-    branchCodeArray[10][1] = SP_Choice
-  } else if (dialogueToDisplay == 16) {
-    branchCodeArray[11][1] = SP_Choice
+  if (dialogueToDisplay == 2) {
+    if (optionChosen == 1) {
+      branchCodeArray[1][1] = true
+    }
+  } else if (dialogueToDisplay == 3) {
+    if (optionChosen == 1) {
+      branchCodeArray[2][1] = true
+    }
+  } else if (dialogueToDisplay == 6) {
+    if (optionChosen == 1) {
+      branchCodeArray[3][1] = true
+    }
+  } else if (dialogueToDisplay == 19) {
+    if (optionChosen == 1) {
+      branchCodeArray[11][1] = 'horror'
+    } else {
+      branchCodeArray[11][1] = 'romcom'
+    }
   } else if (dialogueToDisplay == 20) {
-    branchCodeArray[12][1] = SP_Choice
-  } else if (dialogueToDisplay == 21) {
-    branchCodeArray[13][1] = SP_Choice
-  } else if (dialogueToDisplay == 26) {
-    branchCodeArray[14][1] = SP_Choice
-  } else if (dialogueToDisplay == 31) {
-    branchCodeArray[15][1] = SP_Choice
-  } else if (dialogueToDisplay == 4) {
-    branchCodeArray[16][1] = SP_Choice
-  } else if (dialogueToDisplay == 32) {
-    branchCodeArray[17][1] = SP_Choice
+    if (optionChosen == 1) {
+      branchCodeArray[12][1] = 'table'
+    } else {
+      branchCodeArray[12][1] = 'sofa'
+    }
+  } else if (dialogueToDisplay == 25) {
+    if (optionChosen == 1) {
+      branchCodeArray[13][1] = true
+    }
+  } else if (dialogueToDisplay == 28) {
+    if (optionChosen == 1) {
+      branchCodeArray[13][1] = true
+    } else {
+      branchCodeArray[13][1] = false
+    }
+  } else if (dialogueToDisplay == 30) {
+    if (optionChosen == 1) {
+      branchCodeArray[14][1] = true
+    }
   } else if (dialogueToDisplay == 35) {
-    branchCodeArray[18][1] = SP_Choice
-  } else if (dialogueToDisplay == 36) {
-    branchCodeArray[19][1] = SP_Choice
-  } else if (dialogueToDisplay == 38) {
-    branchCodeArray[20][1] = SP_Choice
-  } else if (dialogueToDisplay == 39) {
-    branchCodeArray[21][1] = SP_Choice
-  } else if (dialogueToDisplay == 41) {
-    branchCodeArray[22][1] = SP_Choice
+    if (optionChosen == 1) {
+      branchCodeArray[17][1] = true
+    }
+  } else if (dialogueToDisplay == 37) {
+    if (optionChosen == 1) {
+      branchCodeArray[18][1] = true
+    }
+  } else if (dialogueToDisplay == 48) {
+    if (optionChosen == 1) {
+      branchCodeArray[12][1] = true
+    } else {
+      branchCodeArray[12][1] = false
+    }
+  } else if (dialogueToDisplay == 50) {
+    if (optionChosen == 1) {
+      SP_hidingArray.push('shower')
+    }
+  } else if (dialogueToDisplay == 51) {
+    if (optionChosen == 1) {
+      //go to bed
+    }
+  } else if (dialogueToDisplay == 62) {
+    if (optionChosen == 1) {
+      SP_hidingArray.push('bed')
+    }
+  } else if (dialogueToDisplay == 63) {
+    if (optionChosen == 1) {
+      SP_hidingArray.push('wardrobe')
+    }
   } else if (cutScenes[1] == true) {
-    branchCodeArray[0][1] = SP_Choice
+    branchCodeArray[0][1] = optionChosen
   }
   
 }
@@ -1588,42 +1605,42 @@ function mouseClicked() {
         } else if (670 < newMouseX && newMouseX < 740 && -80 < newMouseY && newMouseY < 10) {
           rightNavClicked()
         } else {
-          if (interactID == 6) {
+          if (interactID == 6 && alternativeInteractText == null) {
             fadingInit = true
             fadingForward = true
             intermediateLocation = 2
             intermediateFocus = 2
-          } else if (interactID == 9) {
+          } else if (interactID == 9 && alternativeInteractText == null) {
             fadingInit = true
             fadingForward = true
             intermediateLocation = 4
             intermediateFocus = 1
-          } else if (interactID == 10) {
+          } else if (interactID == 10 && alternativeInteractText == null) {
             fadingInit = true
             fadingForward = true
             intermediateLocation = 3
             intermediateFocus = 2
-          } else if (interactID == 17) {
+          } else if (interactID == 17 && alternativeInteractText == null) {
             fadingInit = true
             fadingForward = true
             intermediateLocation = 1
             intermediateFocus = 2
-          } else if (interactID == 18) {
+          } else if (interactID == 18 && alternativeInteractText == null) {
             fadingInit = true
             fadingForward = true
             intermediateLocation = 5
             intermediateFocus = 3
-          } else if (interactID == 24) {
+          } else if (interactID == 24 && alternativeInteractText == null) {
             fadingInit = true
             fadingForward = true
             intermediateLocation = 1
             intermediateFocus = 3
-          } else if (interactID == 30) {
+          } else if (interactID == 30 && alternativeInteractText == null) {
             fadingInit = true
             fadingForward = true
             intermediateLocation = 1
             intermediateFocus = 3
-          } else if (interactID == 40) {
+          } else if (interactID == 40 && alternativeInteractText == null) {
             fadingInit = true
             fadingForward = true
             intermediateLocation = 2
