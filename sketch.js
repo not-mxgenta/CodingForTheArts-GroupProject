@@ -82,6 +82,7 @@ let charTyped = 0;
 let scanLineY = 0;
 
 let dialogueToDisplay = 0;
+let followUpDialogue = [null, null];
 
 let branchCodeArray = [
   ['SP_lend', null],
@@ -108,6 +109,8 @@ let branchCodeArray = [
 ]
 
 let SP_hidingArray = [];
+
+let goingToSleep = false;
 
 let interactionCounts = [];
 let holdInteractCount = 0;
@@ -136,6 +139,11 @@ let dialogueData;
 let cutScenes = [false, false]
 let appearStage = 0
 let appearBlend = 1
+
+let objectiveArray = ['walk home', 'cook dinner', 'wait for food', 'get dinner', 'eat dinner', 'get ready for bed', 'go to bed'];
+let currentObjective = null;
+let objectiveBoxes = [];
+let displayObjective = false;
 
 //Graphics maps for each environment, dictating placement of tiles for background
 //Oriented weirdly for some reason? Wasn't harming anyone so just left it lol
@@ -308,6 +316,59 @@ class dialogueBoxClass {
     } else {
       displayingChoice = false
     }
+    
+  }
+}
+
+class objectiveBoxClass {
+  constructor(objectiveID, objective) {
+    this.objectiveID = objectiveID;
+    this.objective = objective;
+  }
+
+  displayObjective () {
+
+    push()
+
+    translate(-590, -330)
+
+    push()
+    fill('black')
+    rect(0, 0, 330, 200)
+    fill(255, 255, 255, 200)
+    rect(0, 0, 315, 185)
+    fill('black')
+    rect(0, 0, 300, 170)
+
+    for (let scanLines = 0; scanLines < 16; scanLines++) {
+
+      push()
+
+      translate(0, -97)
+      fill(255, 255, 255, 20)
+      
+      let scanLinePosition = (scanLineY + (25 * scanLines) - 100) % 197
+
+      if (scanLinePosition < 0) {
+        scanLinePosition += 197
+      }
+
+      rect(0, scanLinePosition, 315, 6)
+
+      pop()
+    }
+
+    pop()
+
+    push()
+    fill('white')
+    textFont(VT323Font, 50)
+    textAlign(CENTER, CENTER)
+    text("OBJECTIVE:", 0, -55)
+    text(this.objective, 0, 10)
+    pop()
+
+    pop()
     
   }
 }
@@ -486,6 +547,7 @@ function setup() {
   VHSoverlay.play()
 
   buildDialogueBox()
+  buildObjectiveBox()
 
   SPR_quinnWalkAnimArray = [SPRquinnWalk1, SPRquinnWalk2, SPRquinnWalk3, SPRquinnWalk4, SPRquinnWalk5, SPRquinnWalk6, SPRquinnWalk7, SPRquinnWalk8, SPRquinnWalk9, SPRquinnWalk10, SPRquinnWalk11, SPRquinnWalk12, SPRquinnWalk13, SPRquinnWalk14]
 
@@ -775,6 +837,7 @@ function outdoorsStoryPointTrigger() {
 
   outsideStoryPoint = true
   quinnMovable = false
+  displayObjective = false
 
   if (cutScenes[1] == false && appearStage < 200) {
 
@@ -997,6 +1060,17 @@ function buildDialogueBox() {
   }
 }
 
+function buildObjectiveBox() {
+  //empty list ready to contain all objective box instances
+  objectiveBoxes = [];
+
+
+  for (let objectivesAdded = 0; objectivesAdded < objectiveArray.length; objectivesAdded++) {
+    objectiveBoxes[objectivesAdded] = new objectiveBoxClass(objectivesAdded, objectiveArray[objectivesAdded])
+  }
+
+}
+
 function displayInteractText(interactIDinput) {
 
   fill('white')
@@ -1144,7 +1218,7 @@ function rightNavClicked() {
 function checkMouseHover() {
 
   interactID = 0
-  alternativeInteractText = 0
+  alternativeInteractText = null
 
   if (inputBlocked == false && (currentGameState == 2 || currentGameState == 1)) {
     if (displayingDialogue == true) {
@@ -1342,7 +1416,7 @@ function checkMouseHover() {
           }
         } else if (currentLocation == 3 && currentFocus == 2) {
           if (280 < newMouseX && newMouseX < 340 && -70 < newMouseY && newMouseY < 80) {
-            if (currentPlayStage == 6 && interactionCounts[21] == 0) {
+            if (currentPlayStage == 6 && interactionCounts[21] == 0 && interactionCounts[24] > 0) {
               interactID = 22
             }
           } else if (400 < newMouseX && newMouseX < 610 && 140 < newMouseY && newMouseY < 340) {
@@ -1483,8 +1557,6 @@ function checkMouseHover() {
     
   }
 
-  console.log(interactID)
-
 }
 
 if (interactID != 0) {
@@ -1494,78 +1566,87 @@ if (interactID != 0) {
 }
 
 function choiceMade(optionChosen) {
-
-  if (dialogueToDisplay == 2) {
-    if (optionChosen == 1) {
-      branchCodeArray[1][1] = true
+  
+  if (dialogueType == 'interact') {
+    if (dialogueToDisplay == 2) {
+      if (optionChosen == 1) {
+        branchCodeArray[1][1] = true
+      }
+    } else if (dialogueToDisplay == 3) {
+      if (optionChosen == 1) {
+        branchCodeArray[2][1] = true
+      }
+    } else if (dialogueToDisplay == 6) {
+      if (optionChosen == 1) {
+        branchCodeArray[3][1] = true
+      }
+    } else if (dialogueToDisplay == 19) {
+      if (optionChosen == 1) {
+        branchCodeArray[11][1] = 'horror'
+      } else {
+        branchCodeArray[11][1] = 'romcom'
+      }
+    } else if (dialogueToDisplay == 20) {
+      if (optionChosen == 1) {
+        branchCodeArray[12][1] = 'table'
+      } else {
+        branchCodeArray[12][1] = 'sofa'
+      }
+    } else if (dialogueToDisplay == 25) {
+      if (optionChosen == 1) {
+        branchCodeArray[13][1] = true
+      }
+    } else if (dialogueToDisplay == 28) {
+      if (optionChosen == 1) {
+        branchCodeArray[13][1] = true
+      } else {
+        branchCodeArray[13][1] = false
+      }
+    } else if (dialogueToDisplay == 30) {
+      if (optionChosen == 1) {
+        branchCodeArray[14][1] = true
+      }
+    } else if (dialogueToDisplay == 35) {
+      if (optionChosen == 1) {
+        branchCodeArray[17][1] = true
+      }
+    } else if (dialogueToDisplay == 37) {
+      if (optionChosen == 1) {
+        branchCodeArray[18][1] = true
+      }
+    } else if (dialogueToDisplay == 48) {
+      if (optionChosen == 1) {
+        branchCodeArray[6][1] = true
+      } else {
+        branchCodeArray[6][1] = false
+      }
+    } else if (dialogueToDisplay == 50) {
+      if (optionChosen == 1) {
+        SP_hidingArray.push('shower')
+      }
+    } else if (dialogueToDisplay == 51) {
+      if (optionChosen == 1) {
+        goingToSleep = true
+      }
+    } else if (dialogueToDisplay == 62) {
+      if (optionChosen == 1) {
+        SP_hidingArray.push('bed')
+      }
+    } else if (dialogueToDisplay == 63) {
+      if (optionChosen == 1) {
+        SP_hidingArray.push('wardrobe')
+      }
     }
-  } else if (dialogueToDisplay == 3) {
-    if (optionChosen == 1) {
-      branchCodeArray[2][1] = true
+  } else {
+    if (cutScenes[1] == true) {
+      if (optionChosen == 1) {
+        branchCodeArray[0][1] = true
+      } else if (optionChosen == 2) {
+        branchCodeArray[0][1] = false
+      }
     }
-  } else if (dialogueToDisplay == 6) {
-    if (optionChosen == 1) {
-      branchCodeArray[3][1] = true
-    }
-  } else if (dialogueToDisplay == 19) {
-    if (optionChosen == 1) {
-      branchCodeArray[11][1] = 'horror'
-    } else {
-      branchCodeArray[11][1] = 'romcom'
-    }
-  } else if (dialogueToDisplay == 20) {
-    if (optionChosen == 1) {
-      branchCodeArray[12][1] = 'table'
-    } else {
-      branchCodeArray[12][1] = 'sofa'
-    }
-  } else if (dialogueToDisplay == 25) {
-    if (optionChosen == 1) {
-      branchCodeArray[13][1] = true
-    }
-  } else if (dialogueToDisplay == 28) {
-    if (optionChosen == 1) {
-      branchCodeArray[13][1] = true
-    } else {
-      branchCodeArray[13][1] = false
-    }
-  } else if (dialogueToDisplay == 30) {
-    if (optionChosen == 1) {
-      branchCodeArray[14][1] = true
-    }
-  } else if (dialogueToDisplay == 35) {
-    if (optionChosen == 1) {
-      branchCodeArray[17][1] = true
-    }
-  } else if (dialogueToDisplay == 37) {
-    if (optionChosen == 1) {
-      branchCodeArray[18][1] = true
-    }
-  } else if (dialogueToDisplay == 48) {
-    if (optionChosen == 1) {
-      branchCodeArray[12][1] = true
-    } else {
-      branchCodeArray[12][1] = false
-    }
-  } else if (dialogueToDisplay == 50) {
-    if (optionChosen == 1) {
-      SP_hidingArray.push('shower')
-    }
-  } else if (dialogueToDisplay == 51) {
-    if (optionChosen == 1) {
-      //go to bed
-    }
-  } else if (dialogueToDisplay == 62) {
-    if (optionChosen == 1) {
-      SP_hidingArray.push('bed')
-    }
-  } else if (dialogueToDisplay == 63) {
-    if (optionChosen == 1) {
-      SP_hidingArray.push('wardrobe')
-    }
-  } else if (cutScenes[1] == true) {
-    branchCodeArray[0][1] = optionChosen
   }
+
   
 }
 
@@ -1591,11 +1672,36 @@ function mouseClicked() {
             displayingDialogue = false
             displayingChoice = false
           }
+          if (dialogueToDisplay == 2 && dialogueType == 'story') {
+            displayObjective = true
+            currentObjective = 2
+          }
         } else {
+          if ((dialogueToDisplay == 44 && dialogueType == 'interact') || (dialogueToDisplay == 15 && dialogueType == 'interact') || goingToSleep == true || (dialogueToDisplay == 48 && branchCodeArray[6][1] == true) || (dialogueToDisplay == 22 && dialogueType == 'interact')) {
+            if(dialogueToDisplay == 44) {
+              followUpDialogue = [48, 'interact']
+            } else if (dialogueToDisplay == 15) {
+              followUpDialogue = [68, 'interact']
+            } else if (goingToSleep == true) {
+              followUpDialogue = [33, 'interact']
+              goingToSleep = false
+            } else if (dialogueToDisplay == 48) {
+              followUpDialogue = [53, 'interact']
+            } else if (dialogueToDisplay == 22) {
+              followUpDialogue = [2, 'story']
+            }
+          }
           displayingDialogue = false
           if (currentPlayStage == 0 && currentGameState == 2) {
             currentPlayStage = 1
             cutScenes[0] = false
+          }
+          if ((dialogueToDisplay == 4 || dialogueToDisplay == 10) && dialogueType == 'story') {
+            displayObjective = true
+            currentObjective = 0
+          } else if (dialogueToDisplay == 0 && dialogueType == 'story') {
+            displayObjective = true
+            currentObjective = 1
           }
         }
   
@@ -1647,6 +1753,8 @@ function mouseClicked() {
             intermediateFocus = 3
           } else if (interactID != 0) {
 
+            console.log(alternativeInteractText)
+
             if (alternativeInteractText == null) {
               displayingDialogue = true
               dialogueToDisplay = interactID - 1
@@ -1655,11 +1763,13 @@ function mouseClicked() {
               displayingDialogue = true
               dialogueToDisplay = alternativeInteractText
               dialogueType = 'interact'
+              alternativeInteractText = null
             }
 
             holdInteractCount = interactionCounts[interactID-1]
             holdInteractCount++
             interactionCounts[(interactID-1)] = holdInteractCount
+
 
           }
         }
@@ -1786,6 +1896,7 @@ function draw() {
     push()
 
 
+
     //centre tile maps in window
     translate(-BGtilesX * BGtileSize/4 + BGtileSize/2, -BGtilesY * BGtileSize/2 + BGtileSize/2, 0);
     translate (BGscrollAmount, 0, 0)
@@ -1808,6 +1919,7 @@ function draw() {
     rect(-708, 50, 135, 900)
 
     push()
+
 
   } else if (currentGameState == 2) {
 
@@ -1881,6 +1993,7 @@ function draw() {
   }
 
 
+
   //track mouse coordinates on screen (useful for tracking click position later, remove when submitting final game)
   fill('white')
   textFont(VT323Font, 30)
@@ -1892,15 +2005,17 @@ function draw() {
 
   push()
 
+  if (scanLineY > 197) {
+    scanLineY = 0
+  } else {
+    scanLineY = scanLineY + 2
+  }
+
+
   if (displayingDialogue == true) {
 
     quinnMovable = false
-
-    if (scanLineY > 197) {
-      scanLineY = 0
-    } else {
-      scanLineY = scanLineY + 2
-    }
+    displayObjective = false
 
 
     textWrap(WORD)
@@ -1931,6 +2046,7 @@ function draw() {
       textAlign(LEFT, CENTER)
       text(currentDialogue, -195, 465, 750)
 
+
     }
 
     if (displayingChoice == true) {
@@ -1953,6 +2069,14 @@ function draw() {
     }
 
 
+
+  } else if (followUpDialogue[0] != null) {
+
+    displayingDialogue = true
+    dialogueToDisplay = followUpDialogue[0]
+    dialogueType = followUpDialogue[1]
+    followUpDialogue = [null, null]
+  
   } else {
 
     charTyped = 0
@@ -1965,6 +2089,7 @@ function draw() {
       quinnMovable = false
     }
 
+
   }
 
   pop()
@@ -1972,7 +2097,9 @@ function draw() {
   //check whether the mouse is hovering over anything interactable
   checkMouseHover()
 
-
+if (currentObjective != null && displayObjective == true) {
+  objectiveBoxes[currentObjective].displayObjective()
+}
 
 if (quinnMovable == true) {
   checkKeyPress()
