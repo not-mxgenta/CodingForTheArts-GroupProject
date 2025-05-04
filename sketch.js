@@ -1734,27 +1734,27 @@ function mouseClicked() {
             displayingDialogue = false
             displayingChoice = false
           }
-          if (dialogueToDisplay == 2 && dialogueType == 'story') {
+          if (dialogueToDisplay == 22 && dialogueType == 'interact') {
             displayObjective = true
             currentObjective = 2
             currentPlayStage = 2
             playStageInteractCounter = 0
           }
         } else {
-          if ((dialogueToDisplay == 44 && dialogueType == 'interact') || (dialogueToDisplay == 15 && dialogueType == 'interact') || goingToSleep == true || (dialogueToDisplay == 48 && branchCodeArray[6][1] == true) || (dialogueToDisplay == 22 && dialogueType == 'interact')) {
-            if(dialogueToDisplay == 44) {
-              followUpDialogue = [48, 'interact']
-            } else if (dialogueToDisplay == 15) {
-              followUpDialogue = [68, 'interact']
-            } else if (goingToSleep == true) {
-              followUpDialogue = [33, 'interact']
-              goingToSleep = false
-            } else if (dialogueToDisplay == 48) {
-              followUpDialogue = [53, 'interact']
-            } else if (dialogueToDisplay == 22) {
-              followUpDialogue = [2, 'story']
-            }
-          }
+          // if ((dialogueToDisplay == 44 && dialogueType == 'interact') || (dialogueToDisplay == 15 && dialogueType == 'interact') || goingToSleep == true || (dialogueToDisplay == 48 && branchCodeArray[6][1] == true) || (dialogueToDisplay == 22 && dialogueType == 'interact')) {
+          //   if(dialogueToDisplay == 44) {
+          //     followUpDialogue = [48, 'interact']
+          //   } else if (dialogueToDisplay == 15) {
+          //     followUpDialogue = [68, 'interact']
+          //   } else if (goingToSleep == true) {
+          //     followUpDialogue = [33, 'interact']
+          //     goingToSleep = false
+          //   } else if (dialogueToDisplay == 48) {
+          //     followUpDialogue = [53, 'interact']
+          //   } else if (dialogueToDisplay == 22) {
+          //     followUpDialogue = [2, 'story']
+          //   }
+          // }
           displayingDialogue = false
           if (currentPlayStage == 0 && currentGameState == 2) {
             currentPlayStage = 1
@@ -1834,6 +1834,11 @@ function mouseClicked() {
 
             if (currentPlayStage == 2) {
               playStageInteractCounter ++
+              if (playStageInteractCounter == 8) {
+                currentPlayStage = 2.5
+                displayObjective = true
+                currentObjective = 3
+              }
             }
 
 
@@ -2111,6 +2116,10 @@ function draw() {
       text(toType, -195, 465, 750)
 
       charTyped++ 
+      
+      console.log(currentDialogue)
+      console.log(charTyped)
+      console.log(toType)
       
     } else if (charTyped == currentDialogue.length) {
 
