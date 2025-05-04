@@ -74,19 +74,19 @@
     },
     {
       "id": 12,
-      "text": "---",
+      "text": null,
       "choices": null,
       "hover": "front window"
     },
     {
       "id": 13,
-      "text": "---",
+      "text": null,
       "choices": null,
       "hover": "drawer"
     },
     {
       "id": 14,
-      "text": "---",
+      "text": null,
       "choices": null,
       "hover": "drawer"
     },
@@ -116,8 +116,8 @@
     },
     {
       "id": 19,
-      "text": "---",
-      "choices": null,
+      "text": "Nothing interesting on, ugh.",
+      "choices": ["watch old horror movie", "watch crappy rom-com"],
       "hover": "TV"
     },
     {
@@ -164,7 +164,7 @@
     },
     {
       "id": 27,
-      "text": "---",
+      "text": null,
       "choices": null,
       "hover": "mirror",
       "alternate": false
@@ -189,7 +189,7 @@
     },
     {
       "id": 31,
-      "text": "---",
+      "text": null,
       "choices": null,
       "hover": "shower curtain"
     },
@@ -226,7 +226,7 @@
     {
       "id": 37,
       "text": "'You're not supposed to die tonight'... comforting, I guess.",
-      "choices": null,
+      "choices": ["flick through", "put it back"],
       "hover": "book"
     },
     {
@@ -243,7 +243,7 @@
     },
     {
       "id": 40,
-      "text": "---",
+      "text": null,
       "choices": null,
       "hover": "cabinet"
     },
@@ -255,31 +255,31 @@
     },
     {
       "id": 42,
-      "text": "Could really do with a clean. But today is NOT the day.",
+      "text": "It's locked.",
       "choices": null,
       "hover": null
     },
     {
       "id": 43,
-      "text": "Just checking it's all locked up.",
+      "text": "Double locked.",
       "choices": null,
       "hover": null
     },
     {
       "id": 44,
-      "text": "Better lock this.",
-      "choices": ["lock the door", "leave it"],
+      "text": "9 - 9 - 9 ---  *click* -- - brrrrrrrrrrr",
+      "choices": null,
       "hover": null
     },
     {
       "id": 45,
-      "text": "Little extra security couldn't hurt",
-      "choices": ["secure the chain", "leave it"],
+      "text": "---",
+      "choices": null,
       "hover": null
     },
     {
       "id": 46,
-      "text": "---",
+      "text": "It's definitely not in here. I'll sort it out in the morning, I can't deal with this tonight.",
       "choices": null,
       "hover": null
     },
@@ -291,37 +291,37 @@
     },
     {
       "id": 48,
-      "text": "These are a tripping hazard, I should move them out of the way before it comes back to bite me on the ass.",
-      "choices": ["tuck them under the bench", "leave them where they are"],
+      "text": "Shiiit it's not connecting-",
+      "choices": ["try again", "give up"],
       "hover": null
     },
     {
       "id": 49,
-      "text": "---",
+      "text": "Yes! There's a knife left in here! I knew *not* doing the washing up would have its merits!",
       "choices": null,
       "hover": null
     },
     {
       "id": 50,
-      "text": null,
-      "choices": null,
+      "text": "I could hide in here, better decide quickly though.",
+      "choices": ["hide", "find somewhere else"],
       "hover": null
     },
     {
       "id": 51,
-      "text": null,
-      "choices": null,
+      "text": "Finally time to go to bed?",
+      "choices": ["go to sleep", "still more to do"],
       "hover": null
     },
     {
       "id": 52,
-      "text": "---",
+      "text": "Idiots, why do they ALWAYS hide under the bed, it's *so* OBVIOUS!",
       "choices": null,
       "hover": null
     },
     {
       "id": 53,
-      "text": "Shit! It's not connecting - has the line been... cut?",
+      "text": "It's still not connecting - has the line been... cut?",
       "choices": null,
       "hover": null
     },
@@ -333,7 +333,7 @@
     },
     {
       "id": 55,
-      "text": "---",
+      "text": "Nothing of use in here, I cleaned it all up earlier.",
       "choices": null,
       "hover": null
     },
@@ -387,6 +387,42 @@
     },
     {
       "id": 64,
+      "text": "---",
+      "choices": null,
+      "hover": null
+    },
+    {
+      "id": 65,
+      "text": "---",
+      "choices": null,
+      "hover": null
+    },
+    {
+      "id": 66,
+      "text": "---",
+      "choices": null,
+      "hover": null
+    },
+    {
+      "id": 67,
+      "text": "---",
+      "choices": null,
+      "hover": null
+    },
+    {
+      "id": 68,
+      "text": "---",
+      "choices": null,
+      "hover": null
+    },
+    {
+      "id": 69,
+      "text": "---",
+      "choices": null,
+      "hover": null
+    },
+    {
+      "id": 70,
       "text": "---",
       "choices": null,
       "hover": null
