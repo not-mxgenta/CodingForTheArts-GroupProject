@@ -84,6 +84,8 @@ let scanLineY = 0;
 let dialogueToDisplay = 0;
 let followUpDialogue = [null, null];
 
+let noInteractDialogue = false;
+
 let branchCodeArray = [
   ['SP_lend', null],
   ['SP_fdLock', null],
@@ -134,6 +136,9 @@ let SPRleftAmount = 0;
 let quinnFacing = -1;
 let walkingXpos = 0;
 let BGscrollAmount = 0;
+
+let MIRanimTick = 0;
+let MIRdisplay = false;
 
 // ===== JSON DIALOGUE SYSTEM: Add variable to store loaded JSON data =====
 let dialogueData;
@@ -489,16 +494,21 @@ function preload() {
 
   //other
   BLANKtile = loadImage("assets/BLANKtile.png")
-  SCNmanFigure = loadImage("assets/SCN_ManFigure.png")
-  SCNmanRevealed = loadImage("assets/SCN_ManRevealed.png")
-  SCNmanHappy = loadImage("assets/SCN_manHappy.png")
-  SCNmanAngry = loadImage("assets/SCN_manAngry.png")
+  MIRleft = loadImage("assets/MIR_left.png")
+  MIRright = loadImage("assets/MIR_right.png")
+
 
   // ===== JSON DIALOGUE SYSTEM: Load dialogue data from JSON file =====
   dialogueData = loadJSON("dialogueData.json")
 
   //character sprites
   SPRquinnStanding = loadImage("assets/SPRITE_quinnStanding.png")
+  SCNmanFigure = loadImage("assets/SCN_ManFigure.png")
+  SCNmanRevealed = loadImage("assets/SCN_ManRevealed.png")
+  SCNmanHappy = loadImage("assets/SCN_manHappy.png")
+  SCNmanAngry = loadImage("assets/SCN_manAngry.png")
+  MIRquinnLookForward = loadImage("assets/MIR_quinnLookForward.png")
+  MIRquinnLookSide = loadImage("assets/MIR_quinnLookSide.png")
 
   //Quinn's walking animation
   SPRquinnWalk1 = loadImage("assets/quinn_walking_animation/SPRITE_quinnWalkingAnim1.png")
@@ -1721,6 +1731,9 @@ function mouseClicked() {
     intermediateGameState = 1
     fadingInit = true
     fadingForward = true
+
+  } else if (MIRdisplay == true) {
+    MIRdisplay = false
   } else if (currentGameState == 2 || currentGameState == 1) {
     if (inputBlocked == false) {
       if (displayingDialogue == true) {
@@ -1793,16 +1806,22 @@ function mouseClicked() {
             intermediateFocus = 3
           } else if (interactID != 0) {
 
-            if (alternativeInteractText == null) {
-              displayingDialogue = true
-              dialogueToDisplay = interactID - 1
-              dialogueType = 'interact'
-            } else {
-              displayingDialogue = true
-              dialogueToDisplay = alternativeInteractText
-              dialogueType = 'interact'
-              alternativeInteractText = null
+            checkNoInteractDialogue()
+            if (noInteractDialogue == false) {
+
+              if (alternativeInteractText == null) {
+                displayingDialogue = true
+                dialogueToDisplay = interactID - 1
+                dialogueType = 'interact'
+              } else {
+                displayingDialogue = true
+                dialogueToDisplay = alternativeInteractText
+                dialogueType = 'interact'
+                alternativeInteractText = null
+              }
+
             }
+
 
             holdInteractCount = interactionCounts[interactID-1]
             holdInteractCount++
@@ -1814,6 +1833,7 @@ function mouseClicked() {
                 currentPlayStage = 2.5
                 displayObjective = true
                 currentObjective = 3
+                playStageInteractCounter = 0
               }
             }
 
@@ -1840,7 +1860,64 @@ function manageObjectiveShown() {
     currentPlayStage = 2
     displayObjective = true
     currentObjective = 2
+  } else if (dialogueToDisplay == 56 && dialogueToDisplay == 'interact') {
+    currentPlayStage = 3
+    displayObjective = true
+    currentObjective = 4
   }
+}
+
+function checkNoInteractDialogue() {
+  if (interactID == 28 || alternativeInteractText == 60) {
+    noInteractDialogue = true
+    MIRdisplay = true
+  } else if (interactID == 11) {
+    noInteractDialogue = true
+  } else if (interactID == 13) {
+    noInteractDialogue = true
+  } else if (interactID == 14) {
+    noInteractDialogue = true
+  } else if (interactID == 15) {
+    noInteractDialogue = true
+  } else if (interactID == 32) {
+    noInteractDialogue = true
+  } else if (interactID == 41) {
+    noInteractDialogue = true
+  } else if (alternativeInteractText == 64) {
+    noInteractDialogue = true
+  } else if (alternativeInteractText == 65) {
+    noInteractDialogue = true
+  } else {
+    noInteractDialogue = false
+  }
+}
+
+function bathroomMirrorInteract() {
+
+  push()
+
+  image(MIRleft, -256, 0)
+  image(MIRright, 384, 0)
+
+  if (MIRanimTick < 24) {
+    image(MIRquinnLookForward, 0, 0, 768, 768)
+  } else {
+    image(MIRquinnLookSide, 0, 0, 768, 768)
+  }
+
+  if (MIRanimTick < 48) {
+    MIRanimTick += 0.5
+  } else {
+    MIRanimTick = 0
+  }
+
+  tint(255, 100)
+
+  image(MIRleft, -256, 0)
+  image(MIRright, 384, 0)
+
+  pop()
+
 }
 
 function manageFade() {
@@ -2181,6 +2258,9 @@ if (fadingInit == true) {
   manageFade()
 }
 
+if (MIRdisplay == true) {
+  bathroomMirrorInteract()
+}
 
 push()
 translate(0, 256/4)
@@ -2204,6 +2284,7 @@ stroke(150, 150, 150)
 rect(0, 256/4, 1550, 1024)
 
 pop()
+
 
 
   
