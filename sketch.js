@@ -140,6 +140,9 @@ let BGscrollAmount = 0;
 let MIRanimTick = 0;
 let MIRdisplay = false;
 
+let ITMcollectAnimTick = 0;
+let ITMcollectedType = null;
+
 // ===== JSON DIALOGUE SYSTEM: Add variable to store loaded JSON data =====
 let dialogueData;
 
@@ -542,6 +545,12 @@ function preload() {
   MMlr2 = loadImage("assets/minimap/MM_lr2.png")
   MMlr3 = loadImage("assets/minimap/MM_lr3.png")
 
+  //Items
+  ITMknife1 = loadImage("assets/items/ITM_knife1.png")
+  ITMknife2 = loadImage("assets/items/ITM_knife2.png")
+  ITMknife3 = loadImage("assets/items/ITM_knife3.png")
+  ITMknife4 = loadImage("assets/items/ITM_knife4.png")
+
 }
 
 //Extra VHS-style effects
@@ -584,6 +593,8 @@ function setup() {
   for (let addArrayCount = 0; addArrayCount < 42; addArrayCount ++) {
     interactionCounts.push(0)
   }
+
+  ITMknifeAnim = [ITMknife4, ITMknife4, ITMknife3, ITMknife3, ITMknife2, ITMknife2, ITMknife1, ITMknife1, ITMknife1, ITMknife1, ITMknife2, ITMknife2, ITMknife3, ITMknife3, ITMknife4, ITMknife4]
 
 }
 
@@ -1288,6 +1299,22 @@ function rightNavClicked() {
   }
 }
 
+function ITMcollected(itemType) {
+
+  if (itemType == 'knife') {
+
+    image(ITMknifeAnim[ITMcollectAnimTick], 0, 0)
+
+    if (ITMcollectAnimTick == 14) {
+      ITMcollectAnimTick = 0
+    } else {
+      ITMcollectAnimTick ++
+    }
+
+  }
+
+}
+
 
 function checkMouseHover() {
 
@@ -1734,6 +1761,9 @@ function mouseClicked() {
 
   } else if (MIRdisplay == true) {
     MIRdisplay = false
+
+  } else if (ITMcollectedType != null) {
+    ITMcollectedType = null
   } else if (currentGameState == 2 || currentGameState == 1) {
     if (inputBlocked == false) {
       if (displayingDialogue == true) {
@@ -1756,7 +1786,10 @@ function mouseClicked() {
           }
           manageObjectiveShown()
         }
-
+        
+        if (dialogueToDisplay == 49 && dialogueType == 'interact') {
+          ITMcollectedType = 'knife'
+        }
   
       } else {
         if (-740 < newMouseX && newMouseX < -670 && -80 < newMouseY && newMouseY < 10) {
@@ -1842,7 +1875,6 @@ function mouseClicked() {
         }
       }
     }
-    console.log(branchCodeArray)
   }
 }
 
@@ -2261,6 +2293,11 @@ if (fadingInit == true) {
 if (MIRdisplay == true) {
   bathroomMirrorInteract()
 }
+
+if (ITMcollectedType != null) {
+  ITMcollected(ITMcollectedType)
+}
+
 
 push()
 translate(0, 256/4)
