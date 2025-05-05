@@ -1734,40 +1734,16 @@ function mouseClicked() {
             displayingDialogue = false
             displayingChoice = false
           }
-          if (dialogueToDisplay == 22 && dialogueType == 'interact') {
-            displayObjective = true
-            currentObjective = 2
-            currentPlayStage = 2
-            playStageInteractCounter = 0
-          }
+          manageObjectiveShown()
         } else {
-          // if ((dialogueToDisplay == 44 && dialogueType == 'interact') || (dialogueToDisplay == 15 && dialogueType == 'interact') || goingToSleep == true || (dialogueToDisplay == 48 && branchCodeArray[6][1] == true) || (dialogueToDisplay == 22 && dialogueType == 'interact')) {
-          //   if(dialogueToDisplay == 44) {
-          //     followUpDialogue = [48, 'interact']
-          //   } else if (dialogueToDisplay == 15) {
-          //     followUpDialogue = [68, 'interact']
-          //   } else if (goingToSleep == true) {
-          //     followUpDialogue = [33, 'interact']
-          //     goingToSleep = false
-          //   } else if (dialogueToDisplay == 48) {
-          //     followUpDialogue = [53, 'interact']
-          //   } else if (dialogueToDisplay == 22) {
-          //     followUpDialogue = [2, 'story']
-          //   }
-          // }
           displayingDialogue = false
           if (currentPlayStage == 0 && currentGameState == 2) {
             currentPlayStage = 1
             cutScenes[0] = false
           }
-          if ((dialogueToDisplay == 4 || dialogueToDisplay == 10) && dialogueType == 'story') {
-            displayObjective = true
-            currentObjective = 0
-          } else if (dialogueToDisplay == 0 && dialogueType == 'story') {
-            displayObjective = true
-            currentObjective = 1
-          }
+          manageObjectiveShown()
         }
+
   
       } else {
         if (-740 < newMouseX && newMouseX < -670 && -80 < newMouseY && newMouseY < 10) {
@@ -1846,6 +1822,24 @@ function mouseClicked() {
         }
       }
     }
+    console.log(branchCodeArray)
+  }
+}
+
+function manageObjectiveShown() {
+  if ((dialogueToDisplay == 4 || dialogueToDisplay == 10) && dialogueType == 'story') {
+    displayObjective = true
+    currentObjective = 0
+  } else if (dialogueToDisplay == 0 && dialogueType == 'story') {
+    displayObjective = true
+    currentObjective = 1
+  } else if (dialogueToDisplay == 24 && dialogueType == 'interact') {
+    displayObjective = true
+    currentObjective = 1
+  } else if (dialogueToDisplay == 22 && dialogueType == 'interact') {
+    currentPlayStage = 2
+    displayObjective = true
+    currentObjective = 2
   }
 }
 
@@ -2081,14 +2075,14 @@ function draw() {
   }
 
 
-  if (followUpDialogue[0] != null && displayingDialogue == false) {
+  // if (followUpDialogue[0] != null && displayingDialogue == false) {
 
-    displayingDialogue = true
-    dialogueToDisplay = followUpDialogue[0]
-    dialogueType = followUpDialogue[1]
-    followUpDialogue = [null, null]
+  //   displayingDialogue = true
+  //   dialogueToDisplay = followUpDialogue[0]
+  //   dialogueType = followUpDialogue[1]
+  //   followUpDialogue = [null, null]
 
-  }
+  // }
 
 
   if (displayingDialogue == true) {
@@ -2117,9 +2111,6 @@ function draw() {
 
       charTyped++ 
       
-      console.log(currentDialogue)
-      console.log(charTyped)
-      console.log(toType)
       
     } else if (charTyped == currentDialogue.length) {
 
