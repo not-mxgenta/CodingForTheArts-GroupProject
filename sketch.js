@@ -112,6 +112,23 @@ let branchCodeArray = [
 
 let SP_hidingArray = [];
 
+let branchDiagramUnlocks = [
+  ['Ending', 'status', 'image'],
+  ["UNO reverse", false, null],
+  ["Hey! I'm hidin' here!", false, null],
+  ["Slippery when Dead", false, null],
+  ["Bless you", false, null],
+  ["I told you", false, null],
+  ["Call failed", false, null],
+  ["Better safe than... oh.", false, null],
+  ["Have a nice trip!", false, null],
+  ["Snooze and lose", false, null],
+  ["Not today, Murder Man", false, null],
+  ["Stalk the Stalker", false, null],
+  ["Radio Silence", false, null],
+  ["eepy", false, null]
+]
+
 let goingToSleep = false;
 
 let interactionCounts = [];
@@ -142,6 +159,8 @@ let MIRdisplay = false;
 
 let ITMcollectAnimTick = 0;
 let ITMcollectedType = null;
+
+let ITMarray = [];
 
 // ===== JSON DIALOGUE SYSTEM: Add variable to store loaded JSON data =====
 let dialogueData;
@@ -551,6 +570,11 @@ function preload() {
   ITMknife3 = loadImage("assets/items/ITM_knife3.png")
   ITMknife4 = loadImage("assets/items/ITM_knife4.png")
 
+  ITMphone1 = loadImage("assets/items/ITMphone1.png")
+  ITMphone2 = loadImage("assets/items/ITMphone2.png")
+  ITMphone3 = loadImage("assets/items/ITMphone3.png")
+  ITMphone4 = loadImage("assets/items/ITMphone4.png")
+
 }
 
 //Extra VHS-style effects
@@ -595,6 +619,7 @@ function setup() {
   }
 
   ITMknifeAnim = [ITMknife4, ITMknife4, ITMknife3, ITMknife3, ITMknife2, ITMknife2, ITMknife1, ITMknife1, ITMknife1, ITMknife1, ITMknife2, ITMknife2, ITMknife3, ITMknife3, ITMknife4, ITMknife4]
+  ITMphoneAnim = [ITMphone1, ITMphone1, ITMphone2, ITMphone2, ITMphone3, ITMphone3, ITMphone4, ITMphone4, ITMphone4, ITMphone4, ITMphone3, ITMphone3, ITMphone2, ITMphone2, ITMphone1, ITMphone1]
 
 }
 
@@ -1305,12 +1330,16 @@ function ITMcollected(itemType) {
 
     image(ITMknifeAnim[ITMcollectAnimTick], 0, 0)
 
-    if (ITMcollectAnimTick == 14) {
-      ITMcollectAnimTick = 0
-    } else {
-      ITMcollectAnimTick ++
-    }
+  } else if (itemType == 'phone') {
 
+    image(ITMphoneAnim[ITMcollectAnimTick], 0, 0)
+
+  }
+
+  if (ITMcollectAnimTick == 14) {
+    ITMcollectAnimTick = 0
+  } else {
+    ITMcollectAnimTick ++
   }
 
 }
@@ -1684,14 +1713,30 @@ function choiceMade(optionChosen) {
     } else if (dialogueToDisplay == 19) {
       if (optionChosen == 1) {
         branchCodeArray[11][1] = 'horror'
+        fadingInit = true
+        fadingForward = true
+        postFadeDialogue = true
+        postFadeDialogueIndex = 14
       } else {
         branchCodeArray[11][1] = 'romcom'
+        fadingInit = true
+        fadingForward = true
+        postFadeDialogue = true
+        postFadeDialogueIndex = 15
       }
     } else if (dialogueToDisplay == 20) {
       if (optionChosen == 1) {
         branchCodeArray[12][1] = 'table'
+        fadingInit = true
+        fadingForward = true
+        postFadeDialogue = true
+        postFadeDialogueIndex = 11
+        currentPlayStage = 4
       } else {
         branchCodeArray[12][1] = 'sofa'
+        displayObjective = true
+        currentObjective = 4
+        currentPlayStage = 3
       }
     } else if (dialogueToDisplay == 25) {
       if (optionChosen == 1) {
@@ -1763,7 +1808,19 @@ function mouseClicked() {
     MIRdisplay = false
 
   } else if (ITMcollectedType != null) {
+    ITMarray.push(ITMcollectedType)
+
+    if ((ITMcollectedType == 'phone') && (ITMarray.filter(item => item === 'phone').length == 1)) {
+      displayingDialogue = true
+      dialogueToDisplay = 12
+      dialogueType = 'story'
+    } else if (ITMcollectedType == 'phone') {
+      displayingDialogue = true
+      dialogueToDisplay = 13
+      dialogueType = 'story'
+    }
     ITMcollectedType = null
+
   } else if (currentGameState == 2 || currentGameState == 1) {
     if (inputBlocked == false) {
       if (displayingDialogue == true) {
@@ -1789,6 +1846,7 @@ function mouseClicked() {
         
         if (dialogueToDisplay == 49 && dialogueType == 'interact') {
           ITMcollectedType = 'knife'
+          branchCodeArray[20][1] = true
         }
   
       } else {
@@ -1862,12 +1920,6 @@ function mouseClicked() {
 
             if (currentPlayStage == 2) {
               playStageInteractCounter ++
-              if (playStageInteractCounter == 8) {
-                currentPlayStage = 2.5
-                displayObjective = true
-                currentObjective = 3
-                playStageInteractCounter = 0
-              }
             }
 
 
@@ -1892,10 +1944,25 @@ function manageObjectiveShown() {
     currentPlayStage = 2
     displayObjective = true
     currentObjective = 2
-  } else if (dialogueToDisplay == 56 && dialogueToDisplay == 'interact') {
+  } else if (dialogueToDisplay == 56 && dialogueType == 'interact') {
     currentPlayStage = 3
     displayObjective = true
     currentObjective = 4
+  } else if (dialogueToDisplay == 3 && dialogueType == 'story') {
+    displayObjective = true
+    currentObjective = 3
+  } else if (dialogueToDisplay == 11 && dialogueType == 'story') {
+    displayObjective = true
+    currentObjective = 5
+  } else if (dialogueToDisplay == 14 && dialogueType == 'story') {
+    displayObjective = true
+    currentObjective = 5
+  } else if (dialogueToDisplay == 15 && dialogueType == 'story') {
+    displayObjective = true
+    currentObjective = 5
+  }
+  if (currentObjective != null) {
+    displayObjective = true
   }
 }
 
@@ -1911,10 +1978,12 @@ function checkNoInteractDialogue() {
     noInteractDialogue = true
   } else if (interactID == 15) {
     noInteractDialogue = true
+    ITMcollectedType = 'phone'
   } else if (interactID == 32) {
     noInteractDialogue = true
   } else if (interactID == 41) {
     noInteractDialogue = true
+    ITMcollectedType = 'phone'
   } else if (alternativeInteractText == 64) {
     noInteractDialogue = true
   } else if (alternativeInteractText == 65) {
@@ -2033,6 +2102,8 @@ function draw() {
   
   frameRate(24)
 
+  console.log(ITMcollectedType)
+
   //Calculates new mouse coordinates based on center of screen instead of default top left corner, thus allowing coordinates to remain same regardless of window resizing - crucial when calculating mouse click position across different window sizes
   newMouseX = mouseX - (windowWidth/2)
   newMouseY = mouseY - (windowHeight/2)
@@ -2094,6 +2165,7 @@ function draw() {
 
 
   } else if (currentGameState == 2) {
+
 
     quinnMovable = false
 
@@ -2182,17 +2254,6 @@ function draw() {
   } else {
     scanLineY = scanLineY + 2
   }
-
-
-  // if (followUpDialogue[0] != null && displayingDialogue == false) {
-
-  //   displayingDialogue = true
-  //   dialogueToDisplay = followUpDialogue[0]
-  //   dialogueType = followUpDialogue[1]
-  //   followUpDialogue = [null, null]
-
-  // }
-
 
   if (displayingDialogue == true) {
 
@@ -2298,6 +2359,15 @@ if (ITMcollectedType != null) {
   ITMcollected(ITMcollectedType)
 }
 
+if (playStageInteractCounter > 8 && currentPlayStage == 2 && displayingDialogue == false) {
+  currentPlayStage = 2.5
+  playStageInteractCounter = 0
+  displayingDialogue = true
+  dialogueToDisplay = 3
+  dialogueType = 'story'
+}
+
+
 
 push()
 translate(0, 256/4)
@@ -2321,7 +2391,6 @@ stroke(150, 150, 150)
 rect(0, 256/4, 1550, 1024)
 
 pop()
-
 
 
   

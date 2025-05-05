@@ -123,7 +123,7 @@
     {
       "id": 20,
       "text": "I usually eat my dinner here. But it's been a long day... maybe I deserve a treat?",
-      "choices": ["eat at the table", "eat on the sofa"],
+      "choices": ["eat at the table", "eat in front of TV"],
       "hover": "dining chair"
     },
     {
@@ -477,6 +477,31 @@
     {
       "id": 10,
       "text": "Well, he was... friendly.",
+      "choices": null
+    },
+    {
+      "id": 11,
+      "text": "I should finish up anything else I need to do tonight, then I can finally go to bed, thank god.",
+      "choices": null
+    },
+    {
+      "id": 12,
+      "text": "Oh! My old walkie talkie! Or... one of them at least. Useless if I can't find the other though.",
+      "choices": null
+    },
+    {
+      "id": 13,
+      "text": "Ah, the second walkie talkie. Keep that in mind next time my nephew wants to play spies.",
+      "choices": null
+    },
+    {
+      "id": 14,
+      "text": "-huh!? Oh, I fell asleep on the couch, damn. Bloody horror movie must have woken me up.",
+      "choices": null
+    },
+    {
+      "id": 15,
+      "text": "-huh!? I fell asleep on the couch, damn. Wonder what woke me up...",
       "choices": null
     }
   ]
