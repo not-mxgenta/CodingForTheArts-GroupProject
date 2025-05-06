@@ -112,22 +112,7 @@ let branchCodeArray = [
 
 let SP_hidingArray = [];
 
-let branchDiagramUnlocks = [
-  ['Ending', 'status', 'image'],
-  ["UNO reverse", false, null],
-  ["Hey! I'm hidin' here!", false, null],
-  ["Slippery when Dead", false, null],
-  ["Bless you", false, null],
-  ["I told you", false, null],
-  ["Call failed", false, null],
-  ["Better safe than... oh.", false, null],
-  ["Have a nice trip!", false, null],
-  ["Snooze and lose", false, null],
-  ["Not today, Murder Man", false, null],
-  ["Stalk the Stalker", false, null],
-  ["Radio Silence", false, null],
-  ["eepy", false, null]
-]
+let branchDiagramUnlocks = [];
 
 let goingToSleep = false;
 
@@ -575,6 +560,21 @@ function preload() {
   ITMphone3 = loadImage("assets/items/ITMphone3.png")
   ITMphone4 = loadImage("assets/items/ITMphone4.png")
 
+  //endings
+  ENDbetterSafe = loadImage("assets/endings/END_betterSafe.png")
+  ENDblessYou = loadImage("assets/endings/END_blessYou.png")
+  ENDcallFailed = loadImage("assets/endings/END_callFailed.png")
+  ENDeepy = loadImage("assets/endings/END_eepy.png")
+  ENDhiding = loadImage("assets/endings/END_hiding.png")
+  ENDmurderMan = loadImage("assets/endings/END_murderMan.png")
+  ENDradio = loadImage("assets/endings/END_radio.png")
+  ENDslippery = loadImage("assets/endings/END_slippery.png")
+  ENDsnooze = loadImage("assets/endings/END_snooze.png")
+  ENDstalk = loadImage("assets/endings/END_stalkTheStalker.png")
+  ENDtoldYou = loadImage("assets/endings/END_toldYou.png")
+  ENDtrip = loadImage("assets/endings/END_trip.png")
+  ENDuno = loadImage("assets/endings/END_unoReverse.png")
+
 }
 
 //Extra VHS-style effects
@@ -620,6 +620,22 @@ function setup() {
 
   ITMknifeAnim = [ITMknife4, ITMknife4, ITMknife3, ITMknife3, ITMknife2, ITMknife2, ITMknife1, ITMknife1, ITMknife1, ITMknife1, ITMknife2, ITMknife2, ITMknife3, ITMknife3, ITMknife4, ITMknife4]
   ITMphoneAnim = [ITMphone1, ITMphone1, ITMphone2, ITMphone2, ITMphone3, ITMphone3, ITMphone4, ITMphone4, ITMphone4, ITMphone4, ITMphone3, ITMphone3, ITMphone2, ITMphone2, ITMphone1, ITMphone1]
+
+  branchDiagramUnlocks = [
+  ["UNO reverse", false, ENDuno],
+  ["Hey! I'm hidin' here!", false, ENDhiding],
+  ["Slippery when Dead", false, ENDslippery],
+  ["Bless you", false, ENDblessYou],
+  ["I told you", false, ENDtoldYou],
+  ["Call failed", false, ENDcallFailed],
+  ["Better safe than... oh.", false, ENDbetterSafe],
+  ["Have a nice trip!", false, ENDtrip],
+  ["Snooze and lose", false, ENDsnooze],
+  ["Not today, Murder Man", false, ENDmurderMan],
+  ["Stalk the Stalker", false, ENDstalk],
+  ["Radio Silence", false, ENDradio],
+  ["eepy", false, ENDeepy]
+  ]
 
 }
 
