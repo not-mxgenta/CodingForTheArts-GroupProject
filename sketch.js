@@ -25,6 +25,12 @@ let postFadeDialogueIndex = null;
 let newMouseX;
 let newMouseY;
 
+let driftX = 0;
+let driftY = 0;
+let instabilityX = 0;
+let instabilityY = 0;
+let useGroggyMouse = false;
+
 //tracking whether nav buttons are hovered
 let leftNavHovered = false;
 let rightNavHovered = true;
@@ -118,14 +124,17 @@ let branchDiagramUnlocks = [];
 
 let ENDanimationFrames = [];
 let ENDanimationTick = 0;
+let ENDdisplayingUnlock = false;
 
-let goingToSleep = false;
+let unlockCount = 0;
+
 
 let interactionCounts = [];
 let holdInteractCount = 0;
 let alternativeInteractText = null;
 
 let dialogueType = null;
+
 
 let outsideIntTextPositionX = 0;
 let outsideIntID = 0;
@@ -443,8 +452,9 @@ function preload() {
   //menu assets
   STALKlogo = loadImage("assets/STALKlogo.png")
 
-  //overlay video
+  //overlay videos
   VHSoverlay = createVideo("assets/vhsOverlay.mp4")
+  groggyOverlay = createVideo("assets/groggyOverlay.mp4")
 
   //font
   VT323Font = loadFont("assets/fonts/VT323-Regular.ttf")
@@ -1232,7 +1242,7 @@ function displayInteractText(interactIDinput) {
 
   let hoverText = dialogueData.interactDialogue.find(item => item.id === interactIDinput-1)
 
-  text(hoverText.hover, newMouseX, newMouseY - 20)
+  text(hoverText.hover, newMouseX, newMouseY - 30)
 
 }
 
@@ -1768,6 +1778,7 @@ function choiceMade(optionChosen) {
         branchCodeArray[11][1] = 'horror'
         fadingInit = true
         fadingForward = true
+        currentPlayStage = 6
         postFadeDialogue = true
         postFadeDialogueIndex = 14
       } else {
@@ -1775,6 +1786,7 @@ function choiceMade(optionChosen) {
         branchCodeArray[11][1] = 'romcom'
         fadingInit = true
         fadingForward = true
+        currentPlayStage = 6
         postFadeDialogue = true
         postFadeDialogueIndex = 15
       }
@@ -1787,6 +1799,7 @@ function choiceMade(optionChosen) {
         postFadeDialogue = true
         postFadeDialogueIndex = 11
         currentPlayStage = 4
+        playStageInteractCounter = 0
       } else {
         manageActionOrder(12)
         branchCodeArray[12][1] = 'sofa'
@@ -1803,6 +1816,11 @@ function choiceMade(optionChosen) {
       if (optionChosen == 1) {
         manageActionOrder(15)
         branchCodeArray[15][1] = true
+        fadingInit = true
+        fadingForward = true
+        postFadeDialogue = true
+        postFadeDialogueIndex = 17
+        currentPlayStage = 5
       } else {
         manageActionOrder(15)
         branchCodeArray[15][1] = false
@@ -1836,7 +1854,13 @@ function choiceMade(optionChosen) {
       }
     } else if (dialogueToDisplay == 51) {
       if (optionChosen == 1) {
-        goingToSleep = true
+        fadingInit = true
+        fadingForward = true
+        currentPlayStage = 5
+        postFadeDialogue = true
+        postFadeDialogueIndex = 18
+        playStageInteractCounter = 0
+
       }
     } else if (dialogueToDisplay == 62) {
       if (optionChosen == 1) {
@@ -1850,8 +1874,10 @@ function choiceMade(optionChosen) {
   } else {
     if (cutScenes[1] == true) {
       if (optionChosen == 1) {
+        manageActionOrder(18)
         branchCodeArray[0][1] = true
       } else if (optionChosen == 2) {
+        manageActionOrder(18)
         branchCodeArray[0][1] = false
       }
     }
@@ -1910,6 +1936,7 @@ function mouseClicked() {
         
         if (dialogueToDisplay == 49 && dialogueType == 'interact') {
           ITMcollectedType = 'knife'
+          manageActionOrder(18)
           branchCodeArray[20][1] = true
         }
   
@@ -1984,6 +2011,8 @@ function mouseClicked() {
 
             if (currentPlayStage == 2) {
               playStageInteractCounter ++
+            } else if (currentPlayStage == 4) {
+              playStageInteractCounter ++
             }
 
 
@@ -2024,6 +2053,12 @@ function manageObjectiveShown() {
   } else if (dialogueToDisplay == 15 && dialogueType == 'story') {
     displayObjective = true
     currentObjective = 5
+  } else if (dialogueToDisplay == 18 && dialogueToDisplay == 'story') {
+    currentPlayStage = 6
+    fadingForward = true
+    fadingInit = true
+    postFadeDialogue = true
+    postFadeDialogueIndex = 16
   }
   if (currentObjective != null) {
     displayObjective = true
@@ -2143,6 +2178,9 @@ function manageFade() {
         currentFocus = intermediateFocus
         intermediateFocus = null
       }
+      if (branchCodeArray[15][1] == true) {
+        useGroggyMouse = true
+      }
     } else {
       fadeHold += fadeSpeed
     }
@@ -2168,10 +2206,15 @@ function drawEndingAnimation(endingUnlocked) {
   let endingImageOffset = 0;
   let endingImageTint = 0;
   let unlockFadeOpacity = 0;
+  let showText = false;
 
   push() 
 
   scale(1.5, 1.5)
+
+  if (ENDanimationTick == 0) {
+    branchDiagramUnlocks[endingUnlocked][1] = true
+  }
 
   if (ENDanimationTick < 20) {
     imageToUse = ENDanimationFrames[ENDanimationTick]
@@ -2188,12 +2231,15 @@ function drawEndingAnimation(endingUnlocked) {
   } else {
     imageToUse = ENDanimationFrames[70]
     endingImageOffset = 0
+    showText = true
   }
 
   image(imageToUse, 0, 0)
 
-  if (ENDanimationTick == 120) {
+  if (ENDanimationTick == 148) {
     ENDanimationTick = 0
+    ENDdisplayingUnlock = false
+
   } else {
     
     ENDanimationTick ++
@@ -2232,6 +2278,27 @@ function drawEndingAnimation(endingUnlocked) {
 
   pop()
 
+
+
+  if (showText == true) {
+
+    unlockCount = 0
+    for (let x = 0; x < 13; x++) {
+      if (branchDiagramUnlocks[x][1] == true) {
+        unlockCount ++
+      }
+    }
+    
+    push()
+    fill('white')
+    textFont(VT323Font, 90)
+    textAlign(CENTER, CENTER)
+    text(branchDiagramUnlocks[endingUnlocked][0], 0, -390)
+    text((unlockCount + "/12 unlocked"), 0, 350)
+    pop()
+
+  }
+
   push()
   fill(255, 255, 255, unlockFadeOpacity)
   rect(0, 0, 1152, 1152)
@@ -2242,20 +2309,41 @@ function drawEndingAnimation(endingUnlocked) {
   strokeWeight(0)
   rect(675, 50, 200, 900)
   rect(-675, 50, 200, 900)
-
   push()
+
+}
+
+function groggyMouse() {
+
+  driftX += random(-1, 1)
+  driftY += random(-1, 1)
+
+  instabilityX += random(-3, 3)
+  instabilityY += random(-3, 3)
+
+  newMouseX = lerp(newMouseX, newMouseX + driftX, 0.05)
+  newMouseY = lerp(newMouseY, newMouseY + driftY, 0.05)
+
+  newMouseX += instabilityX
+  newMouseY += instabilityY
+
 
 }
 
 
 function draw() {
   background('black')
+  noCursor()
   
   frameRate(24)
 
   //Calculates new mouse coordinates based on center of screen instead of default top left corner, thus allowing coordinates to remain same regardless of window resizing - crucial when calculating mouse click position across different window sizes
   newMouseX = mouseX - (windowWidth/2)
   newMouseY = mouseY - (windowHeight/2)
+
+  if (useGroggyMouse == true) {
+    groggyMouse()
+  }
 
   BGtiles()
   NAVtiles()
@@ -2514,11 +2602,35 @@ if (playStageInteractCounter > 8 && currentPlayStage == 2 && displayingDialogue 
   displayingDialogue = true
   dialogueToDisplay = 3
   dialogueType = 'story'
+} else if (playStageInteractCounter > 8 && currentPlayStage == 4 && displayingDialogue == false) {
+  currentPlayStage = 5
+  playStageInteractCounter = 0
+  displayingDialogue = true
+  dialogueToDisplay = 1
+  dialogueType = 'story'
 }
 
-drawEndingAnimation(1)
 
+if (ENDdisplayingUnlock == true) {
+  drawEndingAnimation(1)
+}
 
+if (quinnMovable == false) { 
+push()
+fill('white')
+ellipse(newMouseX, newMouseY, 15, 15)
+pop()
+}
+
+if (useGroggyMouse == true) {
+  push()
+  translate(0, 256/4)
+  tint(255, 100);
+  image(groggyOverlay, 0, 0, 1550, 1024);
+  groggyOverlay.play()
+  groggyOverlay.loop()
+  pop()
+}
 
 push()
 translate(0, 256/4)

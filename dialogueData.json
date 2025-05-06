@@ -503,6 +503,22 @@
       "id": 15,
       "text": "-huh!? I fell asleep on the couch, damn. Wonder what woke me up...",
       "choices": null
+    },
+    {
+      "id": 16,
+      "text": "-huh!? Something woke me up, but I have no idea what...",
+      "choices": null
+    },
+    {
+      "id": 17,
+      "text": "Better head back to bed and wait for the pills to kick in.",
+      "choices": null
+    },
+    {
+      "id": 18,
+      "text": "*honk shoo*...                 *honk shoo*...          *honk-*",
+      "choices": null
     }
+    
   ]
 }
