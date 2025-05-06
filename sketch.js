@@ -168,7 +168,7 @@ let cutScenes = [false, false]
 let appearStage = 0
 let appearBlend = 1
 
-let objectiveArray = ['walk home', 'cook dinner', 'wait for food', 'get dinner', 'eat dinner', 'get ready for bed', 'go to bed'];
+let objectiveArray = ['walk home', 'cook dinner', 'wait for food', 'get dinner', 'eat dinner', 'get ready for bed', 'go to bed', 'investigate noise', 'HIDE!', 'ESCAPE!'];
 let currentObjective = null;
 let objectiveBoxes = [];
 let displayObjective = false;
@@ -2053,12 +2053,15 @@ function manageObjectiveShown() {
   } else if (dialogueToDisplay == 15 && dialogueType == 'story') {
     displayObjective = true
     currentObjective = 5
-  } else if (dialogueToDisplay == 18 && dialogueToDisplay == 'story') {
+  } else if (dialogueToDisplay == 18 && dialogueType == 'story') {
     currentPlayStage = 6
     fadingForward = true
     fadingInit = true
     postFadeDialogue = true
     postFadeDialogueIndex = 16
+  } else if (dialogueToDisplay == 16 && dialogueType == 'story') {
+    displayObjective = true
+    currentObjective = 7
   }
   if (currentObjective != null) {
     displayObjective = true
@@ -2330,6 +2333,10 @@ function groggyMouse() {
 
 }
 
+function gameEnd() {
+
+}
+
 
 function draw() {
   background('black')
@@ -2476,12 +2483,12 @@ function draw() {
 
 
   //track mouse coordinates on screen (useful for tracking click position later, remove when submitting final game)
-  fill('white')
-  textFont(VT323Font, 30)
-  textAlign(CENTER, CENTER)
-  text(newMouseX, newMouseX+50, newMouseY)
-  text(newMouseY, newMouseX+50, newMouseY + 30)
-  text(interactID, newMouseX+50, newMouseY + 60)
+  // fill('white')
+  // textFont(VT323Font, 30)
+  // textAlign(CENTER, CENTER)
+  // text(newMouseX, newMouseX+50, newMouseY)
+  // text(newMouseY, newMouseX+50, newMouseY + 30)
+  // text(interactID, newMouseX+50, newMouseY + 60)
 
 
   push()
@@ -2608,6 +2615,12 @@ if (playStageInteractCounter > 8 && currentPlayStage == 2 && displayingDialogue 
   displayingDialogue = true
   dialogueToDisplay = 1
   dialogueType = 'story'
+} else if (currentPlayStage == 6 && branchCodeArray[10][1] != true && displayingDialogue == false) {
+
+}
+
+if (currentPlayStage == 8) {
+
 }
 
 
@@ -2654,7 +2667,6 @@ stroke(150, 150, 150)
 rect(0, 256/4, 1550, 1024)
 
 pop()
-
 
   
 }
