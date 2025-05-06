@@ -128,6 +128,12 @@ let ENDdisplayingUnlock = false;
 
 let unlockCount = 0;
 
+let lockPinPositions = [0, 0, 0, 0, 0];
+let lockPinDirections = [1, 1, 1, 1, 1];
+
+let lockCharacterPositionX = 113;
+let lockCharacterPositionY = -312;
+
 
 let interactionCounts = [];
 let holdInteractCount = 0;
@@ -603,6 +609,20 @@ function preload() {
   ENDtoldYouGS = loadImage("assets/endings/END_toldYouGS.png")
   ENDtripGS = loadImage("assets/endings/END_tripGS.png")
   ENDunoGS = loadImage("assets/endings/END_unoReverseGS.png")
+
+  //minigames
+  MGarrow1 = loadImage("assets/minigames/MG_arrow1.png")
+  MGarrow2 = loadImage("assets/minigames/MG_arrow2.png")
+  MGarrow3 = loadImage("assets/minigames/MG_arrow3.png")
+  MGarrow4 = loadImage("assets/minigames/MG_arrow4.png")
+  MGchain0 = loadImage("assets/minigames/MG_chain0.png")
+  MGchain1 = loadImage("assets/minigames/MG_chain1.png")
+  MGchain2 = loadImage("assets/minigames/MG_chain2.png")
+  MGchain3 = loadImage("assets/minigames/MG_chain3.png")
+  MGchainFull = loadImage("assets/minigames/MG_chainFull.png")
+  MGlockBG = loadImage("assets/minigames/MG_lockBackground.png")
+  MGlockHolder = loadImage("assets/minigames/MG_lockHolder.png")
+  MGlockPin = loadImage("assets/minigames/MG_lockPin.png")
 
 
   //ending animation unlock frames
@@ -2337,6 +2357,115 @@ function gameEnd() {
 
 }
 
+function moveLockCharacter() {
+
+  let characterSpeed = 2;
+
+  if (useGroggyMouse == true) {
+    characterSpeed = characterSpeed * (-1)
+  }
+
+  if (keyIsDown(68) || keyIsDown(RIGHT_ARROW)) {
+    lockCharacterPositionX += characterSpeed
+  }
+  if (keyIsDown(87) || keyIsDown(UP_ARROW)) {
+    lockCharacterPositionY -= characterSpeed
+  }
+  if (keyIsDown(83) || keyIsDown(DOWN_ARROW)) {
+    lockCharacterPositionY += characterSpeed
+  }
+  if (keyIsDown(65) || keyIsDown(LEFT_ARROW)) {
+    lockCharacterPositionX -= characterSpeed
+  }
+
+}
+
+function lockGame1() {
+
+  let lockSpeeds = [4, 2, 6, 4, 8];
+
+
+  for (item in lockPinPositions) {
+    if (lockPinDirections[item] == 1 && (lockPinPositions[item] - lockSpeeds[item]) <= -16) {
+      lockPinPositions[item] = lockPinPositions[item] + lockSpeeds[item]
+    } else if (lockPinDirections[item] == 1) {
+      lockPinDirections[item] = -1
+      lockPinPositions[item] = lockPinPositions[item] - lockSpeeds[item]
+    } else if (lockPinDirections[item] == -1 && (lockPinPositions[item] - lockSpeeds[item]) >= -140) {
+      lockPinPositions[item] = lockPinPositions[item] - lockSpeeds[item]
+    } else {
+      lockPinDirections[item] = 1
+      lockPinPositions[item] = lockPinPositions[item] + lockSpeeds[item]
+    }
+  }
+
+  push()
+  image(MGlockBG, 0, 0)
+  translate(-16, 0)
+  image(MGlockPin, lockPinPositions[0], 0)
+  image(MGlockPin, lockPinPositions[1], 112)
+  push()
+  scale(1, 0.8)
+  image(MGlockPin, lockPinPositions[2], 216)
+  pop()
+  image(MGlockPin, lockPinPositions[3], 320)
+  image(MGlockPin, lockPinPositions[4], 432)
+  image(MGlockHolder, 0, 0)
+  pop()
+
+  if (lockCharacterPositionY > -250 && lockCharacterPositionY < -180) {
+    if (lockCharacterPositionX <= (lockPinPositions[0] + 195)) {
+      lockCharacterPositionX = 113
+      lockCharacterPositionY = -312
+    } else {
+      moveLockCharacter()
+    }
+  } else if (lockCharacterPositionY > -140 && lockCharacterPositionY < -65) {
+    if (lockCharacterPositionX <= (lockPinPositions[1] + 195)) {
+      lockCharacterPositionX = 113
+      lockCharacterPositionY = -312
+    } else {
+      moveLockCharacter()
+    }
+  } else if (lockCharacterPositionY > -30 && lockCharacterPositionY < 30) {
+    if (lockCharacterPositionX <= (lockPinPositions[2] + 195)) {
+      lockCharacterPositionX = 113
+      lockCharacterPositionY = -312
+    } else {
+      moveLockCharacter()
+    }
+  } else if (lockCharacterPositionY > 65 && lockCharacterPositionY < 140) {
+    if (lockCharacterPositionX <= (lockPinPositions[3] + 195)) {
+      lockCharacterPositionX = 113
+      lockCharacterPositionY = -312
+    } else {
+      moveLockCharacter()
+    }
+  } else if (lockCharacterPositionY > 180 && lockCharacterPositionY < 250) {
+    if (lockCharacterPositionX <= (lockPinPositions[4] + 195)) {
+      lockCharacterPositionX = 113
+      lockCharacterPositionY = -312
+    } else {
+      moveLockCharacter()
+    }
+  } else {
+    moveLockCharacter()
+  }
+
+
+  push()
+  fill(255, 0, 0)
+  ellipse(lockCharacterPositionX, lockCharacterPositionY, 15, 15)
+  pop()
+
+}
+
+function lockGame2() {
+
+
+
+}
+
 
 function draw() {
   background('black')
@@ -2347,6 +2476,8 @@ function draw() {
   //Calculates new mouse coordinates based on center of screen instead of default top left corner, thus allowing coordinates to remain same regardless of window resizing - crucial when calculating mouse click position across different window sizes
   newMouseX = mouseX - (windowWidth/2)
   newMouseY = mouseY - (windowHeight/2)
+
+  //useGroggyMouse = true
 
   if (useGroggyMouse == true) {
     groggyMouse()
@@ -2479,16 +2610,6 @@ function draw() {
   if (cutScenes[1] == true) {
     outdoorsStoryPointTrigger()
   }
-
-
-
-  //track mouse coordinates on screen (useful for tracking click position later, remove when submitting final game)
-  // fill('white')
-  // textFont(VT323Font, 30)
-  // textAlign(CENTER, CENTER)
-  // text(newMouseX, newMouseX+50, newMouseY)
-  // text(newMouseY, newMouseX+50, newMouseY + 30)
-  // text(interactID, newMouseX+50, newMouseY + 60)
 
 
   push()
@@ -2627,6 +2748,17 @@ if (currentPlayStage == 8) {
 if (ENDdisplayingUnlock == true) {
   drawEndingAnimation(1)
 }
+
+lockGame1()
+lockGame2()
+
+//track mouse coordinates on screen (useful for tracking click position later, remove when submitting final game)
+fill('white')
+textFont(VT323Font, 30)
+textAlign(CENTER, CENTER)
+text(newMouseX, newMouseX+50, newMouseY)
+text(newMouseY, newMouseX+50, newMouseY + 30)
+text(interactID, newMouseX+50, newMouseY + 60)
 
 if (quinnMovable == false) { 
 push()
