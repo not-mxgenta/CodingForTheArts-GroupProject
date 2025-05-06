@@ -87,32 +87,37 @@ let followUpDialogue = [null, null];
 let noInteractDialogue = false;
 
 let branchCodeArray = [
-  ['SP_lend', null],
-  ['SP_fdLock', null],
-  ['SP_fdChain', null],
-  ['SP_shoes', null],
-  ['SP_satchel', null],
-  ['SP_hallDrawer', null],
-  ['SP_phone', null],
-  ['SP_lrWindow', null],
-  ['SP_lrUpperDrawer', null],
-  ['SP_lrLowerDrawer', null],
-  ['SP_radio', null],
-  ['SP_TV', null],
-  ['SP_diningChair', null],
-  ['SP_kitchenSink', null],
-  ['SP_bath', null],
-  ['SP_bathroomCabinet', null],
-  ['SP_showerCurtain', null],
-  ['SP_bedroomWindow', null],
-  ['SP_book', null],
-  ['SP_bedroomCabinet', null],
-  ['SP_weapon', null]
+  ['SP_lend', null, 0, null],
+  ['SP_fdLock', null, 0, null],
+  ['SP_fdChain', null, 0,  null],
+  ['SP_shoes', null, 0, null],
+  ['SP_satchel', null, 0, null],
+  ['SP_hallDrawer', null, 0, null],
+  ['SP_phone', null, 0, null],
+  ['SP_lrWindow', null, 0, null],
+  ['SP_lrUpperDrawer', null, 0, null],
+  ['SP_lrLowerDrawer', null, 0, null],
+  ['SP_radio', null, 0, null],
+  ['SP_TV', null, 0, null],
+  ['SP_diningChair', null, 0, null],
+  ['SP_kitchenSink', null, 0, null],
+  ['SP_bath', null, 0, null],
+  ['SP_bathroomCabinet', null, 0, null],
+  ['SP_showerCurtain', null, 0, null],
+  ['SP_bedroomWindow', null, 0, null],
+  ['SP_book', null, 0, null],
+  ['SP_bedroomCabinet', null, 0, null],
+  ['SP_weapon', null, 0, null]
 ]
+
+let actionOrder = 0;
 
 let SP_hidingArray = [];
 
 let branchDiagramUnlocks = [];
+
+let ENDanimationFrames = [];
+let ENDanimationTick = 0;
 
 let goingToSleep = false;
 
@@ -575,6 +580,27 @@ function preload() {
   ENDtrip = loadImage("assets/endings/END_trip.png")
   ENDuno = loadImage("assets/endings/END_unoReverse.png")
 
+  ENDbetterSafeGS = loadImage("assets/endings/END_betterSafeGS.png")
+  ENDblessYouGS = loadImage("assets/endings/END_blessYouGS.png")
+  ENDcallFailedGS = loadImage("assets/endings/END_callFailedGS.png")
+  ENDeepyGS = loadImage("assets/endings/END_eepyGS.png")
+  ENDhidingGS = loadImage("assets/endings/END_hidingGS.png")
+  ENDmurderManGS = loadImage("assets/endings/END_murderManGS.png")
+  ENDradioGS = loadImage("assets/endings/END_radioGS.png")
+  ENDslipperyGS = loadImage("assets/endings/END_slipperyGS.png")
+  ENDsnoozeGS = loadImage("assets/endings/END_snoozeGS.png")
+  ENDstalkGS = loadImage("assets/endings/END_stalkTheStalkerGS.png")
+  ENDtoldYouGS = loadImage("assets/endings/END_toldYouGS.png")
+  ENDtripGS = loadImage("assets/endings/END_tripGS.png")
+  ENDunoGS = loadImage("assets/endings/END_unoReverseGS.png")
+
+
+  //ending animation unlock frames
+
+  for (let i = 1; i < 72; i++) {
+    ENDanimationFrames[i-1] = loadImage(`assets/endingAnim/frame${i}.gif`)
+  }
+
 }
 
 //Extra VHS-style effects
@@ -622,19 +648,19 @@ function setup() {
   ITMphoneAnim = [ITMphone1, ITMphone1, ITMphone2, ITMphone2, ITMphone3, ITMphone3, ITMphone4, ITMphone4, ITMphone4, ITMphone4, ITMphone3, ITMphone3, ITMphone2, ITMphone2, ITMphone1, ITMphone1]
 
   branchDiagramUnlocks = [
-  ["UNO reverse", false, ENDuno],
-  ["Hey! I'm hidin' here!", false, ENDhiding],
-  ["Slippery when Dead", false, ENDslippery],
-  ["Bless you", false, ENDblessYou],
-  ["I told you", false, ENDtoldYou],
-  ["Call failed", false, ENDcallFailed],
-  ["Better safe than... oh.", false, ENDbetterSafe],
-  ["Have a nice trip!", false, ENDtrip],
-  ["Snooze and lose", false, ENDsnooze],
-  ["Not today, Murder Man", false, ENDmurderMan],
-  ["Stalk the Stalker", false, ENDstalk],
-  ["Radio Silence", false, ENDradio],
-  ["eepy", false, ENDeepy]
+  ["UNO reverse", false, ENDuno, ENDunoGS],
+  ["Hey! I'm hidin' here!", false, ENDhiding, ENDhidingGS],
+  ["Slippery when Dead", false, ENDslippery, ENDslipperyGS],
+  ["Bless you", false, ENDblessYou, ENDblessYouGS],
+  ["I told you", false, ENDtoldYou, ENDtoldYouGS],
+  ["Call failed", false, ENDcallFailed, ENDcallFailedGS],
+  ["Better safe than... oh.", false, ENDbetterSafe, ENDbetterSafeGS],
+  ["Have a nice trip!", false, ENDtrip, ENDtripGS],
+  ["Snooze and lose", false, ENDsnooze, ENDsnoozeGS],
+  ["Not today, Murder Man", false, ENDmurderMan, ENDmurderManGS],
+  ["Stalk the Stalker", false, ENDstalk, ENDstalkGS],
+  ["Radio Silence", false, ENDradio, ENDradioGS],
+  ["eepy", false, ENDeepy, ENDeepyGS]
   ]
 
 }
@@ -1360,6 +1386,13 @@ function ITMcollected(itemType) {
 
 }
 
+function manageActionOrder(branchToChange) {
+
+  branchCodeArray[branchToChange][2] = actionOrder
+  actionOrder ++
+  branchCodeArray[branchToChange][3] = currentPlayStage
+
+}
 
 function checkMouseHover() {
 
@@ -1716,24 +1749,29 @@ function choiceMade(optionChosen) {
   if (dialogueType == 'interact') {
     if (dialogueToDisplay == 2) {
       if (optionChosen == 1) {
+        manageActionOrder(1)
         branchCodeArray[1][1] = true
       }
     } else if (dialogueToDisplay == 3) {
       if (optionChosen == 1) {
+        manageActionOrder(2)
         branchCodeArray[2][1] = true
       }
     } else if (dialogueToDisplay == 6) {
       if (optionChosen == 1) {
+        manageActionOrder(3)
         branchCodeArray[3][1] = true
       }
     } else if (dialogueToDisplay == 19) {
       if (optionChosen == 1) {
+        manageActionOrder(11)
         branchCodeArray[11][1] = 'horror'
         fadingInit = true
         fadingForward = true
         postFadeDialogue = true
         postFadeDialogueIndex = 14
       } else {
+        manageActionOrder(11)
         branchCodeArray[11][1] = 'romcom'
         fadingInit = true
         fadingForward = true
@@ -1742,6 +1780,7 @@ function choiceMade(optionChosen) {
       }
     } else if (dialogueToDisplay == 20) {
       if (optionChosen == 1) {
+        manageActionOrder(12)
         branchCodeArray[12][1] = 'table'
         fadingInit = true
         fadingForward = true
@@ -1749,6 +1788,7 @@ function choiceMade(optionChosen) {
         postFadeDialogueIndex = 11
         currentPlayStage = 4
       } else {
+        manageActionOrder(12)
         branchCodeArray[12][1] = 'sofa'
         displayObjective = true
         currentObjective = 4
@@ -1756,30 +1796,38 @@ function choiceMade(optionChosen) {
       }
     } else if (dialogueToDisplay == 25) {
       if (optionChosen == 1) {
+        manageActionOrder(13)
         branchCodeArray[13][1] = true
       }
     } else if (dialogueToDisplay == 28) {
       if (optionChosen == 1) {
-        branchCodeArray[13][1] = true
+        manageActionOrder(15)
+        branchCodeArray[15][1] = true
       } else {
-        branchCodeArray[13][1] = false
+        manageActionOrder(15)
+        branchCodeArray[15][1] = false
       }
     } else if (dialogueToDisplay == 30) {
       if (optionChosen == 1) {
+        manageActionOrder(14)
         branchCodeArray[14][1] = true
       }
     } else if (dialogueToDisplay == 35) {
       if (optionChosen == 1) {
+        manageActionOrder(17)
         branchCodeArray[17][1] = true
       }
     } else if (dialogueToDisplay == 37) {
       if (optionChosen == 1) {
+        manageActionOrder(18)
         branchCodeArray[18][1] = true
       }
     } else if (dialogueToDisplay == 48) {
       if (optionChosen == 1) {
+        manageActionOrder(6)
         branchCodeArray[6][1] = true
       } else {
+        manageActionOrder(6)
         branchCodeArray[6][1] = false
       }
     } else if (dialogueToDisplay == 50) {
@@ -2112,13 +2160,98 @@ function postFadeDialogueManager() {
 
 }
 
+function drawEndingAnimation(endingUnlocked) {
+
+  let imageToUse = null;
+  let endingImageToDisplay = null;
+  let endingImageToDisplayGS = null;
+  let endingImageOffset = 0;
+  let endingImageTint = 0;
+  let unlockFadeOpacity = 0;
+
+  push() 
+
+  scale(1.5, 1.5)
+
+  if (ENDanimationTick < 20) {
+    imageToUse = ENDanimationFrames[ENDanimationTick]
+    endingImageOffset = 976 - (16 * ENDanimationTick)
+  } else if (ENDanimationTick < 44) {
+    imageToUse = ENDanimationFrames[20]
+    endingImageOffset = 976 - (16 * 21)
+  } else if (ENDanimationTick < 94) {
+    imageToUse = ENDanimationFrames[ENDanimationTick - 24]
+    endingImageOffset = 976 - (16 * (ENDanimationTick - 24))
+    if (endingImageOffset <= 0) {
+      endingImageOffset = 0
+    }
+  } else {
+    imageToUse = ENDanimationFrames[70]
+    endingImageOffset = 0
+  }
+
+  image(imageToUse, 0, 0)
+
+  if (ENDanimationTick == 120) {
+    ENDanimationTick = 0
+  } else {
+    
+    ENDanimationTick ++
+
+  }
+
+  endingImageToDisplay = branchDiagramUnlocks[endingUnlocked][2]
+  endingImageToDisplayGS = branchDiagramUnlocks[endingUnlocked][3]
+
+  if (ENDanimationTick < (49+24)) {
+    endingImageTint = 0
+    unlockFadeOpacity = 0
+  } else if (ENDanimationTick < 94) {
+    endingImageTint = (12.75 * (ENDanimationTick - 74))
+    if (ENDanimationTick < 84) {
+      unlockFadeOpacity = 25.5 * (ENDanimationTick - 74)
+    } else {
+      unlockFadeOpacity = 255 - (25.5 * (ENDanimationTick - 84))
+    }
+  } else {
+    endingImageTint = 255
+    unlockFadeOpacity = 0
+  }
+
+
+  push()
+  translate(endingImageOffset, 0)
+  image(endingImageToDisplayGS, 8, -8)
+  pop()
+
+  push()
+  translate(endingImageOffset, 0)
+  tint(255, endingImageTint)
+  image(endingImageToDisplay, 8, -8)
+  pop()
+
+  pop()
+
+  push()
+  fill(255, 255, 255, unlockFadeOpacity)
+  rect(0, 0, 1152, 1152)
+  pop()
+
+
+  fill(0, 0, 0)
+  strokeWeight(0)
+  rect(675, 50, 200, 900)
+  rect(-675, 50, 200, 900)
+
+  push()
+
+}
+
 
 function draw() {
   background('black')
   
   frameRate(24)
-
-  console.log(ITMcollectedType)
 
   //Calculates new mouse coordinates based on center of screen instead of default top left corner, thus allowing coordinates to remain same regardless of window resizing - crucial when calculating mouse click position across different window sizes
   newMouseX = mouseX - (windowWidth/2)
@@ -2382,6 +2515,8 @@ if (playStageInteractCounter > 8 && currentPlayStage == 2 && displayingDialogue 
   dialogueToDisplay = 3
   dialogueType = 'story'
 }
+
+drawEndingAnimation(1)
 
 
 
