@@ -543,8 +543,9 @@ function preload() {
   MIRright = loadImage("assets/MIR_right.png")
 
 
-  // ===== JSON DIALOGUE SYSTEM: Load dialogue data from JSON file =====
+  //JSONs
   dialogueData = loadJSON("dialogueData.json")
+  playerData = loadJSON("playerData.json")
 
   //character sprites
   SPRquinnStanding = loadImage("assets/SPRITE_quinnStanding.png")
@@ -3077,6 +3078,14 @@ if (minigame2Progress == 5) {
 
 }
 
+function checkEscape() {
+
+  if (keyIsDown(27)) {
+    //pause menu stuff
+  }
+
+}
+
 
 function draw() {
   background('black')
@@ -3093,6 +3102,9 @@ function draw() {
   if (useGroggyMouse == true) {
     groggyMouse()
   }
+
+  //add logic to prevent pausing during key points
+  checkEscape()
 
   BGtiles()
   NAVtiles()
