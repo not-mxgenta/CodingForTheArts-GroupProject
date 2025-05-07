@@ -134,6 +134,9 @@ let lockPinDirections = [1, 1, 1, 1, 1];
 let lockCharacterPositionX = 113;
 let lockCharacterPositionY = -312;
 
+let minigameStartTime = 0;
+let minigame1Duration = 45000;
+let minigame1success = null;
 
 let interactionCounts = [];
 let holdInteractCount = 0;
@@ -174,7 +177,7 @@ let cutScenes = [false, false]
 let appearStage = 0
 let appearBlend = 1
 
-let objectiveArray = ['walk home', 'cook dinner', 'wait for food', 'get dinner', 'eat dinner', 'get ready for bed', 'go to bed', 'investigate noise', 'HIDE!', 'ESCAPE!'];
+let objectiveArray = ['walk home', 'cook dinner', 'wait for food', 'get dinner', 'eat dinner', 'get ready for bed', 'go to bed', 'investigate noise', 'HIDE!', 'ESCAPE!', 'unlock, QUICK!'];
 let currentObjective = null;
 let objectiveBoxes = [];
 let displayObjective = false;
@@ -2359,22 +2362,93 @@ function gameEnd() {
 
 function moveLockCharacter() {
 
-  let characterSpeed = 2;
+  let characterSpeed = 3;
+
+  let lockMoveLeft = true;
+  let lockMoveRight = true;
+  let lockMoveUp = true;
+  let lockMoveDown = true;
+
+  let currentPinSlot = null;
+
+  let pinSlotBoundaries = [
+    [-250, -180],
+    [-140, -65],
+    [-30, 30],
+    [65, 140],
+    [180, 250]
+  ]
 
   if (useGroggyMouse == true) {
     characterSpeed = characterSpeed * (-1)
   }
 
-  if (keyIsDown(68) || keyIsDown(RIGHT_ARROW)) {
+  for (let pinNumber = 0; pinNumber < 5; pinNumber++) {
+
+    let pinSlotUpperBoundary = pinSlotBoundaries[pinNumber][0]
+    let pinSlotLowerBoundary = pinSlotBoundaries[pinNumber][1]
+    
+
+    if (lockCharacterPositionY >= pinSlotUpperBoundary && lockCharacterPositionY <= pinSlotLowerBoundary) {
+
+      if (lockCharacterPositionX < 10) {
+        lockMoveLeft = false
+      } else if (lockCharacterPositionX > 270) {
+        lockMoveRight = false
+      }
+
+    currentPinSlot = pinNumber
+    
+    }
+  }
+
+  if (currentPinSlot != null && lockCharacterPositionX > 200) {
+
+
+    if ((lockCharacterPositionY - characterSpeed) < pinSlotBoundaries[currentPinSlot][0]) {
+      lockMoveUp = false
+    }
+
+    if ((lockCharacterPositionY + characterSpeed) > pinSlotBoundaries[currentPinSlot][1]) {
+      lockMoveDown = false
+    }
+
+  } else {
+
+    if ((lockCharacterPositionY + characterSpeed) > 280) {
+      lockMoveDown = false
+    } else if (lockCharacterPositionY < -285) {
+      if (lockCharacterPositionX < 70) {
+        lockMoveLeft = false
+      } else if (lockCharacterPositionX > 150) {
+        lockMoveRight = false
+      }
+      if (lockCharacterPositionY < -345) {
+        lockMoveUp = false
+      }
+    } else {
+
+      if (lockCharacterPositionX < 10) {
+        lockMoveLeft = false
+      } else if (lockCharacterPositionX > 200) {
+        lockMoveRight = false
+      }
+
+    }
+  }
+
+
+
+  if ((keyIsDown(68) || keyIsDown(RIGHT_ARROW)) && lockMoveRight == true) {
     lockCharacterPositionX += characterSpeed
   }
-  if (keyIsDown(87) || keyIsDown(UP_ARROW)) {
+  if ((keyIsDown(87) || keyIsDown(UP_ARROW)) && lockMoveUp == true) {
     lockCharacterPositionY -= characterSpeed
   }
-  if (keyIsDown(83) || keyIsDown(DOWN_ARROW)) {
+  if ((keyIsDown(83) || keyIsDown(DOWN_ARROW)) && lockMoveDown == true) {
     lockCharacterPositionY += characterSpeed
   }
-  if (keyIsDown(65) || keyIsDown(LEFT_ARROW)) {
+  if ((keyIsDown(65) || keyIsDown(LEFT_ARROW)) && lockMoveLeft == true) {
     lockCharacterPositionX -= characterSpeed
   }
 
@@ -2383,6 +2457,11 @@ function moveLockCharacter() {
 function lockGame1() {
 
   let lockSpeeds = [4, 2, 6, 4, 8];
+  let timeRemaining = 0;
+  let timeElapsed = 0;
+
+  displayObjective = true
+  currentObjective = 10
 
 
   for (item in lockPinPositions) {
@@ -2414,35 +2493,35 @@ function lockGame1() {
   pop()
 
   if (lockCharacterPositionY > -250 && lockCharacterPositionY < -180) {
-    if (lockCharacterPositionX <= (lockPinPositions[0] + 195)) {
+    if (lockCharacterPositionX <= (lockPinPositions[0] + 205)) {
       lockCharacterPositionX = 113
       lockCharacterPositionY = -312
     } else {
       moveLockCharacter()
     }
   } else if (lockCharacterPositionY > -140 && lockCharacterPositionY < -65) {
-    if (lockCharacterPositionX <= (lockPinPositions[1] + 195)) {
+    if (lockCharacterPositionX <= (lockPinPositions[1] + 205)) {
       lockCharacterPositionX = 113
       lockCharacterPositionY = -312
     } else {
       moveLockCharacter()
     }
   } else if (lockCharacterPositionY > -30 && lockCharacterPositionY < 30) {
-    if (lockCharacterPositionX <= (lockPinPositions[2] + 195)) {
+    if (lockCharacterPositionX <= (lockPinPositions[2] + 205)) {
       lockCharacterPositionX = 113
       lockCharacterPositionY = -312
     } else {
       moveLockCharacter()
     }
   } else if (lockCharacterPositionY > 65 && lockCharacterPositionY < 140) {
-    if (lockCharacterPositionX <= (lockPinPositions[3] + 195)) {
+    if (lockCharacterPositionX <= (lockPinPositions[3] + 205)) {
       lockCharacterPositionX = 113
       lockCharacterPositionY = -312
     } else {
       moveLockCharacter()
     }
   } else if (lockCharacterPositionY > 180 && lockCharacterPositionY < 250) {
-    if (lockCharacterPositionX <= (lockPinPositions[4] + 195)) {
+    if (lockCharacterPositionX <= (lockPinPositions[4] + 205)) {
       lockCharacterPositionX = 113
       lockCharacterPositionY = -312
     } else {
@@ -2457,6 +2536,31 @@ function lockGame1() {
   fill(255, 0, 0)
   ellipse(lockCharacterPositionX, lockCharacterPositionY, 15, 15)
   pop()
+
+  timeElapsed = millis() - minigameStartTime
+  timeRemaining = max(0, (minigame1Duration - timeElapsed) / 1000)
+
+  let timerTextColour = 'white'
+
+  if (timeRemaining <= 11 && ((Math.floor(timeRemaining)) % 2) == 0) {
+    timerTextColour = 'red'
+  } else{
+    timerTextColour = 'white'
+  }
+
+
+  push()
+  fill(timerTextColour)
+  textFont(VT323Font, 70)
+  textAlign(CENTER, CENTER)
+  text(`${timeRemaining.toFixed(1)}s`, -185, -326)
+  pop()
+
+  if (lockCharacterPositionY > 270 && timeRemaining > 0) {
+    minigame1success = true
+  } else if (timeRemaining <=0) {
+    minigame1success = false
+  }
 
 }
 
@@ -2749,7 +2853,10 @@ if (ENDdisplayingUnlock == true) {
   drawEndingAnimation(1)
 }
 
-lockGame1()
+if (minigame1success == null) {
+  lockGame1()
+}
+
 lockGame2()
 
 //track mouse coordinates on screen (useful for tracking click position later, remove when submitting final game)
