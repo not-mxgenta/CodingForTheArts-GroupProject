@@ -118,6 +118,10 @@ let branchCodeArray = [
 
 let actionOrder = 0;
 
+let pickingRewind = false;
+
+let selectedRewindID = null;
+
 let SP_hidingArray = [];
 
 let branchDiagramUnlocks = [];
@@ -702,9 +706,9 @@ function setup() {
   ["Have a nice trip!", false, ENDtrip, ENDtripGS],
   ["Snooze and lose", false, ENDsnooze, ENDsnoozeGS],
   ["Not today, Murder Man", false, ENDmurderMan, ENDmurderManGS],
-  ["Stalk the Stalker", false, ENDstalk, ENDstalkGS],
   ["Radio Silence", false, ENDradio, ENDradioGS],
-  ["eepy", false, ENDeepy, ENDeepyGS]
+  ["eepy", false, ENDeepy, ENDeepyGS],
+  ["Stalk the Stalker", false, ENDstalk, ENDstalkGS]
   ]
 
 }
@@ -1931,6 +1935,11 @@ function mouseClicked() {
   } else if (MIRdisplay == true) {
     MIRdisplay = false
 
+  } else if (pickingRewind == true && selectedRewindID != null) {
+    
+    rewindPlay(selectedRewindID)
+    pickingRewind = false
+
   } else if (minigame2Active == true && minigame2Progress != 4) {
     checkMinigameClick()
 
@@ -2392,6 +2401,338 @@ function gameEnd(endTrigger) {
 }
 
 function pickRewind() {
+
+  let coordOffsetY = 0;
+  let coordOffsetX = 0;
+
+  let hoverColumn = null;
+  let hoverRow = null;
+
+  let endingHoverText = '???'
+
+  push()
+  fill('black')
+  rect(0, 256/4, 1550, 1024)
+  pop()
+
+  for (let endingInArray = 0; endingInArray < 13; endingInArray++) {
+
+    push()
+    scale(0.5, 0.5)
+    if (endingInArray < 3) {
+      coordOffsetY = endingInArray
+      coordOffsetX = -1000
+
+      if (endingInArray == (selectedRewindID - 1)) {
+        fill('white')
+        rect(coordOffsetX, (-600 + (coordOffsetY * 500)), 525, 365)
+      }
+
+      if (branchDiagramUnlocks[endingInArray][1] == true) {
+        fill('black')
+        rect(coordOffsetX, (-600 + (endingInArray * 500)), 496, 336)
+        image(branchDiagramUnlocks[endingInArray][2], coordOffsetX, (-600 + (coordOffsetY * 500)))
+        push()
+        fill('white')
+        textFont(VT323Font, 60)
+        textAlign(CENTER, CENTER)
+        text(branchDiagramUnlocks[endingInArray][0], coordOffsetX, (-380 + (coordOffsetY * 500)))
+        pop()
+      } else {
+        fill('grey')
+        rect(coordOffsetX, (-600 + (endingInArray * 500)), 496, 336)
+        image(branchDiagramUnlocks[endingInArray][3], coordOffsetX, (-600 + (coordOffsetY * 500)))
+        push()
+        fill('white')
+        textFont(VT323Font, 60)
+        textAlign(CENTER, CENTER)
+        text('???', coordOffsetX, (-380 + (coordOffsetY * 500)))
+        pop()
+      }
+    } else if (endingInArray < 6) {
+      coordOffsetY = endingInArray - 3
+      coordOffsetX = -350
+
+      if (endingInArray == (selectedRewindID - 1)) {
+        fill('white')
+        rect(coordOffsetX, (-600 + (coordOffsetY * 500)), 525, 365)
+      }
+
+      if (branchDiagramUnlocks[endingInArray][1] == true) {
+        fill('black')
+        rect(coordOffsetX, (-600 + (coordOffsetY * 500)), 496, 336)
+        image(branchDiagramUnlocks[endingInArray][2], coordOffsetX, (-600 + (coordOffsetY * 500)))
+        push()
+        fill('white')
+        textFont(VT323Font, 60)
+        textAlign(CENTER, CENTER)
+        text(branchDiagramUnlocks[endingInArray][0], coordOffsetX, (-380 + (coordOffsetY * 500)))
+        pop()
+      } else {
+        fill('grey')
+        rect(coordOffsetX, (-600 + (coordOffsetY * 500)), 496, 336)
+        image(branchDiagramUnlocks[endingInArray][3], coordOffsetX, (-600 + (coordOffsetY * 500)))
+        push()
+        fill('white')
+        textFont(VT323Font, 60)
+        textAlign(CENTER, CENTER)
+        text('???', coordOffsetX, (-380 + (coordOffsetY * 500)))
+        pop()
+      }
+    } else if (endingInArray < 9) {
+      coordOffsetY = endingInArray - 6
+      coordOffsetX = 350
+
+      if (endingInArray == (selectedRewindID - 1)) {
+        fill('white')
+        rect(coordOffsetX, (-600 + (coordOffsetY * 500)), 525, 365)
+      }
+
+      if (branchDiagramUnlocks[endingInArray][1] == true) {
+        fill('black')
+        rect(coordOffsetX, (-600 + (coordOffsetY * 500)), 496, 336)
+        image(branchDiagramUnlocks[endingInArray][2], coordOffsetX, (-600 + (coordOffsetY * 500)))
+        push()
+        fill('white')
+        textFont(VT323Font, 60)
+        textAlign(CENTER, CENTER)
+        text(branchDiagramUnlocks[endingInArray][0], coordOffsetX, (-380 + (coordOffsetY * 500)))
+        pop()
+      } else {
+        fill('grey')
+        rect(coordOffsetX, (-600 + (coordOffsetY * 500)), 496, 336)
+        image(branchDiagramUnlocks[endingInArray][3], coordOffsetX, (-600 + (coordOffsetY * 500)))
+        push()
+        fill('white')
+        textFont(VT323Font, 60)
+        textAlign(CENTER, CENTER)
+        text('???', coordOffsetX, (-380 + (coordOffsetY * 500)))
+        pop()
+      }
+    } else if (endingInArray < 12) {
+      coordOffsetY = endingInArray - 9
+      coordOffsetX = 1000
+
+      if (endingInArray == (selectedRewindID - 1)) {
+        fill('white')
+        rect(coordOffsetX, (-600 + (coordOffsetY * 500)), 525, 365)
+      }
+
+      if (branchDiagramUnlocks[endingInArray][1] == true) {
+        fill('black')
+        rect(coordOffsetX, (-600 + (coordOffsetY * 500)), 496, 336)
+        image(branchDiagramUnlocks[endingInArray][2], coordOffsetX, (-600 + (coordOffsetY * 500)))
+        push()
+        fill('white')
+        textFont(VT323Font, 60)
+        textAlign(CENTER, CENTER)
+        text(branchDiagramUnlocks[endingInArray][0], coordOffsetX, (-380 + (coordOffsetY * 500)))
+        pop()
+      } else {
+        fill('grey')
+        rect(coordOffsetX, (-600 + (coordOffsetY * 500)), 496, 336)
+        image(branchDiagramUnlocks[endingInArray][3], coordOffsetX, (-600 + (coordOffsetY * 500)))
+        push()
+        fill('white')
+        textFont(VT323Font, 60)
+        textAlign(CENTER, CENTER)
+        text('???', coordOffsetX, (-380 + (coordOffsetY * 500)))
+        pop()
+      }
+    }
+    pop()
+
+  }
+
+  
+  if (newMouseX > -630 && newMouseX < -370) {
+    hoverColumn = 1
+  } else if (newMouseX > -300 && newMouseX < -50) {
+    hoverColumn = 2
+  } else if (newMouseX > 50 && newMouseX < 300) {
+    hoverColumn = 3
+  } else if (newMouseX > 370 && newMouseX < 630) {
+    hoverColumn = 4
+  } else {
+    hoverColumn = null
+  }
+
+  if (newMouseY > -390 && newMouseY < -210) {
+    hoverRow = 1
+  } else if (newMouseY > -140 && newMouseY < 40) {
+    hoverRow = 2
+  } else if (newMouseY > 110 && newMouseY < 280) {
+    hoverRow = 3
+  } else {
+    hoverRow = null
+  }
+
+
+  if (hoverRow == 1 && hoverColumn == 1) {
+    selectedRewindID = 1
+    if (branchDiagramUnlocks[selectedRewindID-1][1] == true) {
+      endingHoverText = 'B*tch really thought HE was gonna stab YOU? Crazy.'
+    } else {
+      endingHoverText = '???'
+    }
+  } else if (hoverRow == 2 && hoverColumn == 1) {
+    selectedRewindID = 2
+    if (branchDiagramUnlocks[selectedRewindID-1][1] == true) {
+      endingHoverText = 'This wardrobe is occupied, sorry.'
+    } else {
+      endingHoverText = '???'
+    }
+  } else if (hoverRow == 3 && hoverColumn == 1) {
+    selectedRewindID = 3
+    if (branchDiagramUnlocks[selectedRewindID-1][1] == true) {
+      endingHoverText = 'Stalked by a killer and you lost... to a puddle.'
+    } else {
+      endingHoverText = '???'
+    }
+  } else if (hoverRow == 1 && hoverColumn == 2) {
+    selectedRewindID = 4
+    if (branchDiagramUnlocks[selectedRewindID-1][1] == true) {
+      endingHoverText = 'Damn hayfever, always knew it would kill me.'
+    } else {
+      endingHoverText = '???'
+    }
+  } else if (hoverRow == 2 && hoverColumn == 2) {
+    selectedRewindID = 5
+    if (branchDiagramUnlocks[selectedRewindID-1][1] == true) {
+      endingHoverText = 'Moral: always listen to the advice of random men on the street.'
+    } else {
+      endingHoverText = '???'
+    }
+  } else if (hoverRow == 3 && hoverColumn == 2) {
+    selectedRewindID = 6
+    if (branchDiagramUnlocks[selectedRewindID-1][1] == true) {
+      endingHoverText = 'Bloody kids always on they damn phones.'
+    } else {
+      endingHoverText = '???'
+    }
+  } else if (hoverRow == 1 && hoverColumn == 3) {
+    selectedRewindID = 7
+    if (branchDiagramUnlocks[selectedRewindID-1][1] == true) {
+      endingHoverText = 'Good job securing the door. Bad job... un-securing it.'
+    } else {
+      endingHoverText = '???'
+    }
+  } else if (hoverRow == 2 && hoverColumn == 3) {
+    selectedRewindID = 8
+    if (branchDiagramUnlocks[selectedRewindID-1][1] == true) {
+      endingHoverText = 'Lowkey embarassing for him.'
+    } else {
+      endingHoverText = '???'
+    }
+  } else if (hoverRow == 3 && hoverColumn == 3) {
+    selectedRewindID = 9
+    if (branchDiagramUnlocks[selectedRewindID-1][1] == true) {
+      endingHoverText = 'You wanted to sleep, right? How about permanently...'
+    } else {
+      endingHoverText = '???'
+    }
+  } else if (hoverRow == 1 && hoverColumn == 4) {
+    selectedRewindID = 10
+    if (branchDiagramUnlocks[selectedRewindID-1][1] == true) {
+      endingHoverText = 'Good job! Almost as impressive as me surviving all this coding!'
+    } else {
+      endingHoverText = '???'
+    }
+  } else if (hoverRow == 2 && hoverColumn == 4) {
+    selectedRewindID = 11
+    if (branchDiagramUnlocks[selectedRewindID-1][1] == true) {
+      endingHoverText = 'Your life is over. My life is what? over? Radio-talk sucks (over).'
+    } else {
+      endingHoverText = '???'
+    }
+  } else if (hoverRow == 3 && hoverColumn == 4) {
+    selectedRewindID = 12
+    if (branchDiagramUnlocks[selectedRewindID-1][1] == true) {
+      endingHoverText = 'Wow, you are more oblivious than my blind, elderly dog.'
+    } else {
+      endingHoverText = '???'
+    }
+  } else {
+    selectedRewindID = null
+    endingHoverText = null
+  }
+
+  if (endingHoverText != null) {
+    push()
+    fill('white')
+    textFont(VT323Font, 60)
+    textAlign(CENTER, CENTER)
+    text(endingHoverText, 0, 350)
+    pop()
+  }
+
+
+}
+
+function rewindPlay(selectedRewindPoint) {
+  
+  let rewindActionNumber = null;
+  let rewindActionState = null;
+  let branchCodeIndex = null;
+
+  if (selectedRewindPoint == 1) {
+    if (branchCodeArray[13][1] == false) {
+
+      branchCodeIndex = 13
+
+    } else {
+
+      branchCodeIndex = 20
+
+    }
+  } else if (selectedRewindPoint == 2) {
+
+    //hiding places etc
+
+  } else if (selectedRewindPoint == 3) {
+
+    branchCodeIndex = 14
+
+  } else if (selectedRewindPoint == 4) {
+
+    //hiding places etc
+
+  } else if (selectedRewindPoint == 5) {
+
+    //lend money stuff
+
+  } else if (selectedRewindPoint == 6) {
+
+    branchCodeIndex = 6
+
+  } else if (selectedRewindPoint == 7) {
+
+    //door locks
+
+  } else if (selectedRewindPoint == 8) {
+
+    branchCodeIndex = 3
+
+  } else if (selectedRewindPoint == 9) {
+
+    branchCodeIndex = 15
+
+  } else if (selectedRewindPoint == 10) {
+
+    //win
+
+  } else if (selectedRewindPoint == 11) {
+
+    //walkie talkies
+
+  } else if (selectedRewindPoint == 12) {
+
+    //sleepyyyy
+
+  }
+
+  rewindActionNumber = branchCodeArray[branchCodeIndex][2]
+  rewindActionState = branchCodeArray[branchCodeIndex][3]
 
 }
 
@@ -3027,6 +3368,8 @@ if (minigame2Active == true) {
 if (currentObjective != null && displayObjective == true) {
   objectiveBoxes[currentObjective].displayObjective()
 }
+
+pickRewind()
 
 //track mouse coordinates on screen (useful for tracking click position later, remove when submitting final game)
 fill('white')
