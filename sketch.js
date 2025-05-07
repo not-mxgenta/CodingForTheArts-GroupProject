@@ -128,15 +128,25 @@ let ENDdisplayingUnlock = false;
 
 let unlockCount = 0;
 
+let currentUnlockEnd = null;
+
 let lockPinPositions = [0, 0, 0, 0, 0];
 let lockPinDirections = [1, 1, 1, 1, 1];
 
 let lockCharacterPositionX = 113;
 let lockCharacterPositionY = -312;
+let chainArrowPosition = 0
 
 let minigameStartTime = 0;
 let minigame1Duration = 45000;
-let minigame1success = null;
+let minigame1success = 0;
+let minigame2Duration = 45000;
+let minigame2success = 0;
+let minigame2Progress = 0;
+let minigame2Active = false;
+let minigame2ArrowDirection = 1
+let minigame2ArrowSpeed = 1;
+let minigame2FinishTime = 0;
 
 let interactionCounts = [];
 let holdInteractCount = 0;
@@ -622,6 +632,7 @@ function preload() {
   MGchain1 = loadImage("assets/minigames/MG_chain1.png")
   MGchain2 = loadImage("assets/minigames/MG_chain2.png")
   MGchain3 = loadImage("assets/minigames/MG_chain3.png")
+  MGchainPointer = loadImage("assets/minigames/MG_chainPointer.png")
   MGchainFull = loadImage("assets/minigames/MG_chainFull.png")
   MGlockBG = loadImage("assets/minigames/MG_lockBackground.png")
   MGlockHolder = loadImage("assets/minigames/MG_lockHolder.png")
@@ -1472,7 +1483,7 @@ function checkMouseHover() {
             if (currentPlayStage == 2 || currentPlayStage == 4 || currentPlayStage == 6 || currentPlayStage == 7) {
               if (currentPlayStage < 7 && interactionCounts[1] == 0) {
                 interactID = 2
-              } else if (branchCodeArray[1][1] == false && branchCodeArray[2][1] == false) {
+              } else if (branchCodeArray[1][1] == false && branchCodeArray[2][1] == false && currentPlayStage == 7) {
                 interactID = 2
                 alternativeInteractText = 69
               }
@@ -1920,6 +1931,9 @@ function mouseClicked() {
   } else if (MIRdisplay == true) {
     MIRdisplay = false
 
+  } else if (minigame2Active == true && minigame2Progress != 4) {
+    checkMinigameClick()
+
   } else if (ITMcollectedType != null) {
     ITMarray.push(ITMcollectedType)
 
@@ -2111,8 +2125,15 @@ function checkNoInteractDialogue() {
     ITMcollectedType = 'phone'
   } else if (alternativeInteractText == 64) {
     noInteractDialogue = true
+    minigame1success = null
+    minigameStartTime = millis()
   } else if (alternativeInteractText == 65) {
     noInteractDialogue = true
+    minigame2Active = true
+    minigameStartTime = millis()
+  } else if (alternativeInteractText == 69) {
+    noInteractDialogue = true
+    gameEnd('escaped')
   } else {
     noInteractDialogue = false
   }
@@ -2265,6 +2286,7 @@ function drawEndingAnimation(endingUnlocked) {
   if (ENDanimationTick == 148) {
     ENDanimationTick = 0
     ENDdisplayingUnlock = false
+    pickRewind()
 
   } else {
     
@@ -2356,9 +2378,23 @@ function groggyMouse() {
 
 }
 
-function gameEnd() {
+function gameEnd(endTrigger) {
+
+  let newEnding = null;
+
+  if (branchDiagramUnlocks[newEnding][1] == false) {
+    ENDdisplayingUnlock = true
+    currentUnlockEnd = newEnding
+  } else {
+    pickRewind()
+  }
 
 }
+
+function pickRewind() {
+
+}
+
 
 function moveLockCharacter() {
 
@@ -2558,15 +2594,145 @@ function lockGame1() {
 
   if (lockCharacterPositionY > 270 && timeRemaining > 0) {
     minigame1success = true
+    branchCodeArray[1][1] = true
   } else if (timeRemaining <=0) {
     minigame1success = false
+    gameEnd('lock1')
+  }
+
+}
+
+function checkMinigameClick() {
+
+  if (chainArrowPosition < 60 && chainArrowPosition > -60) {
+    minigame2Progress ++
+    if (minigame2Progress == 4) {
+      minigame2FinishTime = millis() - minigameStartTime
+    }
+  } else if (chainArrowPosition < 180 && chainArrowPosition > -180) {
+    //progress remains
+  } else if (chainArrowPosition < 340 && chainArrowPosition > -340) {
+    minigame2Progress --
+  } else {
+    minigame2Progress -= 2
+  }
+  if (minigame2Progress < 0) {
+    minigame2Progress = 0
+    minigameStartTime -= 5000
   }
 
 }
 
 function lockGame2() {
 
+let chainProgressStages = [
+  [MGarrow2, MGchain1],
+  [MGarrow3, MGchain2],
+  [MGarrow4, MGchain3],
+  [MGarrow1, MGchainFull],
+]
 
+let MGbackToUse = null;
+let MGfrontToUse = null;
+
+let timeRemaining = 0;
+let timeElapsed = 0;
+
+displayObjective = true
+currentObjective = 10
+
+
+if (minigame2Progress == 0) {
+  MGbackToUse = MGchain0
+  MGfrontToUse = MGarrow1
+} else if (minigame2Progress < 5) {
+  MGbackToUse = chainProgressStages[minigame2Progress-1][1]
+  MGfrontToUse = chainProgressStages[minigame2Progress-1][0]
+}
+
+
+
+minigame2ArrowSpeed = 8 * (minigame2Progress + 1)
+
+
+if (minigame2ArrowDirection == 1) {
+  if (chainArrowPosition + minigame2ArrowSpeed < 340) {
+    chainArrowPosition += minigame2ArrowSpeed
+  } else {
+    minigame2ArrowDirection = -1
+    chainArrowPosition -= minigame2ArrowSpeed
+  }
+} else {
+  if (chainArrowPosition - minigame2ArrowSpeed > -340) {
+    chainArrowPosition -= minigame2ArrowSpeed
+  } else {
+    minigame2ArrowDirection = 1
+    chainArrowPosition += minigame2ArrowSpeed
+  }
+}
+
+
+push()
+scale(1.25, 1.25)
+image(MGbackToUse, 0, 0)
+image(MGfrontToUse, 0, 0)
+image(MGchainPointer, chainArrowPosition, 0)
+
+if (useGroggyMouse == true) {
+
+  push()
+  for (let groggyDupes = 0; groggyDupes < 5; groggyDupes ++ ){
+    let randomTint = random(100, 255)
+    let randomOffset = random(-100, 100)
+
+    tint(255, randomTint)
+    image(MGchainPointer, chainArrowPosition + randomOffset, 0)
+    noTint()
+  }
+  pop()
+
+}
+
+pop()
+
+timeElapsed = millis() - minigameStartTime
+timeRemaining = max(0, (minigame1Duration - timeElapsed) / 1000)
+
+let timerTextColour = 'white'
+
+if (timeRemaining <= 11 && ((Math.floor(timeRemaining)) % 2) == 0) {
+  timerTextColour = 'red'
+} else{
+  timerTextColour = 'white'
+}
+
+if (timeRemaining >= 0 && minigame2FinishTime != 0) {
+  minigame2Progress = 5
+}
+
+
+push()
+fill(timerTextColour)
+textFont(VT323Font, 70)
+textAlign(CENTER, CENTER)
+text(`${timeRemaining.toFixed(1)}s`, 0, -140)
+pop()
+
+if (minigame2Progress == 5) {
+  fadingInit = true
+  fadingForward = true
+  minigame2success = true
+  minigame2Active = false
+  postFadeDialogue = false
+  branchCodeArray[2][1] = false
+} else if (timeRemaining == 0) {
+  fadingInit = true
+  fadingForward = true
+  minigame2success = false
+  minigame2Active = false
+  postFadeDialogue = false
+  gameEnd('lock2')
+}
 
 }
 
@@ -2806,9 +2972,6 @@ function draw() {
   //check whether the mouse is hovering over anything interactable
   checkMouseHover()
 
-if (currentObjective != null && displayObjective == true) {
-  objectiveBoxes[currentObjective].displayObjective()
-}
 
 if (quinnMovable == true) {
   checkKeyPress()
@@ -2850,14 +3013,20 @@ if (currentPlayStage == 8) {
 
 
 if (ENDdisplayingUnlock == true) {
-  drawEndingAnimation(1)
+  drawEndingAnimation(currentUnlockEnd)
 }
 
 if (minigame1success == null) {
   lockGame1()
 }
 
-lockGame2()
+if (minigame2Active == true) {
+  lockGame2()
+}
+
+if (currentObjective != null && displayObjective == true) {
+  objectiveBoxes[currentObjective].displayObjective()
+}
 
 //track mouse coordinates on screen (useful for tracking click position later, remove when submitting final game)
 fill('white')
