@@ -166,6 +166,14 @@ let outsideStoryPoint = false;
 
 let playStageInteractCounter = 0;
 
+let pickingPlayerData = true;
+let playerDataChoice = null;
+let playerNameInput;
+let enteringNewPlayer = false;
+let selectingExistingPlayer = false;
+let existingPlayerHover = null;
+let currentPlayerData = null;
+
 //variables for Quinn's Walking Animation
 let SPR_quinnWalkAnimArray = [];
 let currentQuinnWalkFrame = 0;
@@ -195,6 +203,8 @@ let objectiveArray = ['walk home', 'cook dinner', 'wait for food', 'get dinner',
 let currentObjective = null;
 let objectiveBoxes = [];
 let displayObjective = false;
+
+let showHUD = false;
 
 //Graphics maps for each environment, dictating placement of tiles for background
 //Oriented weirdly for some reason? Wasn't harming anyone so just left it lol
@@ -1928,7 +1938,36 @@ function choiceMade(optionChosen) {
 //anything to do with clicking the mouse - tracking it's position, recording interaction, playing noise etc
 function mouseClicked() {
 
-  if (currentGameState == 0 && -130 < newMouseX && newMouseX < 130 && 330 < newMouseY && newMouseY < 460) {
+  if (pickingPlayerData == true) {
+    if (playerDataChoice == 'new') {
+
+      enterNewPlayerName()
+      pickingPlayerData = false
+      enteringNewPlayer = true
+
+    } else if (playerDataChoice == 'existing') {
+
+      selectExistingPlayerName()
+      pickingPlayerData = false
+      selectingExistingPlayer = true
+
+    }
+
+  } else if (selectingExistingPlayer == true) {
+
+    if (existingPlayerHover != null) {
+      if (existingPlayerHover < 11) {
+        currentPlayerData = existingPlayerHover - 1
+        selectingExistingPlayer = false
+        loadSelectedPlayerData()
+      } else {
+        playerDataChoice = null
+        selectingExistingPlayer = false
+        pickingPlayerData = true
+      }
+    }
+
+  } else if (currentGameState == 0 && -130 < newMouseX && newMouseX < 130 && 330 < newMouseY && newMouseY < 460) {
     intermediateGameState = 1
     fadingInit = true
     fadingForward = true
@@ -2737,7 +2776,6 @@ function rewindPlay(selectedRewindPoint) {
 
 }
 
-
 function moveLockCharacter() {
 
   let characterSpeed = 3;
@@ -3086,6 +3124,220 @@ function checkEscape() {
 
 }
 
+function createPlayerData() {
+  push()
+
+  translate(0, 100)
+
+  fill('black')
+  rect(0, 256/4, 1550, 1024)
+
+  image(STALKlogo, 0, -200, 600, 600)
+  rect(0, 100, 1000, 500)
+
+  push()
+  fill(231, 229, 216)
+  strokeWeight(0)
+  rect(0, -100, 650, 128)
+  fill('black')
+  rect(0, -100, 640, 120)
+  pop()
+
+  push()
+  fill(231, 229, 216)
+  textFont(VT323Font, 100)
+  textAlign(CENTER, CENTER)
+  text("NEW PLAYER", 0, -110)
+  pop()
+
+  push()
+  fill(231, 229, 216)
+  strokeWeight(0)
+  rect(0, 40, 650, 128)
+  fill('black')
+  rect(0, 40, 640, 120)
+  pop()
+
+  push()
+  fill(231, 229, 216)
+  textFont(VT323Font, 100)
+  textAlign(CENTER, CENTER)
+  text("EXISTING PLAYER", 0, 30)
+  pop()
+
+  pop()
+
+  if (newMouseX > -330 && newMouseX < 330) {
+    if (newMouseY > -65 && newMouseY < 65) {
+      playerDataChoice = 'new'
+    } else if (newMouseY > 75 && newMouseY < 205) {
+      playerDataChoice = 'existing'
+    } else {
+      playerDataChoice = null
+    }
+  } else {
+    playerDataChoice = null
+  }
+}
+
+function enterNewPlayerName() {
+
+  push()
+  fill('black')
+  rect(0, 256/4, 1550, 1024)
+  pop()
+
+
+}
+
+function selectExistingPlayerName() {
+
+  push()
+  fill('black')
+  rect(0, 256/4, 1550, 1024)
+  pop()
+
+  let existingPlayerNames = [];
+  let existingPlayerProgress = [];
+
+  playerData.players.forEach(player => {
+    existingPlayerNames.push(player.name)
+    existingPlayerProgress.push(player.progress.endingsUnlocked)
+  })
+  
+  let playerDataOffsetX = null;
+  let playerDataOffsetY = null;
+  let playerDisplayStyle = null;
+  let dontDisplay = false;
+
+  if (existingPlayerNames.length <= 5) {
+    playerDisplayStyle = 1
+  } else {
+    playerDisplayStyle = 2
+  }
+
+  for (playerDataItem in existingPlayerNames) {
+    if (playerDisplayStyle == 1) {
+      playerDataOffsetX = 0
+      playerDataOffsetY = (15 * (playerDataItem + 1)) - 375
+      dontDisplay = false
+    } else {
+      if (playerDataItem < 5) {
+        playerDataOffsetX = -350
+        playerDataOffsetY = (15 * (playerDataItem + 1)) - 375
+        dontDisplay = false
+      } else if (playerDataItem < 10) {
+        playerDataOffsetX = 350
+        playerDataOffsetY = (15 * (playerDataItem - 4)) - 375
+        dontDisplay = false
+      } else {
+        dontDisplay = true
+      }
+    }
+
+    if (dontDisplay == false) {
+
+      push()
+      fill('white')
+      strokeWeight(0)
+      rect(playerDataOffsetX, playerDataOffsetY, 650, 128)
+      fill('black')
+      rect(playerDataOffsetX, playerDataOffsetY, 640, 120)
+      pop()
+    
+      push()
+      fill('white')
+      textFont(VT323Font, 80)
+      textAlign(CENTER, CENTER)
+      text(existingPlayerNames[playerDataItem], playerDataOffsetX, playerDataOffsetY - 32)
+      pop()
+
+      push()
+      fill('white')
+      textFont(VT323Font, 45)
+      textAlign(CENTER, CENTER)
+      text(existingPlayerProgress[playerDataItem] + '/12 endings unlocked', playerDataOffsetX, playerDataOffsetY + 30)
+      pop()
+
+    }
+
+
+    push()
+    fill('white')
+    strokeWeight(0)
+    rect(0, 400, 300, 75)
+    fill('black')
+    rect(0, 400, 290, 65)
+    pop()
+  
+    push()
+    fill('white')
+    textFont(VT323Font, 50)
+    textAlign(CENTER, CENTER)
+    text('<<< return', 0, 395)
+    pop()
+    
+  }
+
+  if (playerDisplayStyle == 1) {
+    if (newMouseX > -320 && newMouseX < 320) {
+      if (newMouseY > -420 && newMouseY < -300 && (existingPlayerNames.length) >= 1) {
+        existingPlayerHover = 1
+      } else if (newMouseY > -270 && newMouseY < -150 && (existingPlayerNames.length) >= 2) {
+        existingPlayerHover = 2
+      } else if (newMouseY > -120 && newMouseY < -0 && (existingPlayerNames.length) >= 3) {
+        existingPlayerHover = 3
+      } else if (newMouseY > 30 && newMouseY < 150 && (existingPlayerNames.length) >= 4) {
+        existingPlayerHover = 4
+      } else if (newMouseY > 180 && newMouseY < 300 && (existingPlayerNames.length) >= 5) {
+        existingPlayerHover = 5
+      } else {
+        existingPlayerHover = null
+      }
+    }
+  } else {
+    if (newMouseX > -670 && newMouseX < -30) {
+      if (newMouseY > -420 && newMouseY < -300 && (existingPlayerNames.length) >= 1) {
+        existingPlayerHover = 1
+      } else if (newMouseY > -270 && newMouseY < -150 && (existingPlayerNames.length) >= 2) {
+        existingPlayerHover = 2
+      } else if (newMouseY > -120 && newMouseY < -0 && (existingPlayerNames.length) >= 3) {
+        existingPlayerHover = 3
+      } else if (newMouseY > 30 && newMouseY < 150 && (existingPlayerNames.length) >= 4) {
+        existingPlayerHover = 4
+      } else if (newMouseY > 180 && newMouseY < 300 && (existingPlayerNames.length) >= 5) {
+        existingPlayerHover = 5
+      } else {
+        existingPlayerHover = null
+      }
+    } else if (newMouseX < 670 && newMouseX > 30) {
+      if (newMouseY > -420 && newMouseY < -300 && (existingPlayerNames.length) >= 6) {
+        existingPlayerHover = 6
+      } else if (newMouseY > -270 && newMouseY < -150 && (existingPlayerNames.length) >= 7) {
+        existingPlayerHover = 7
+      } else if (newMouseY > -120 && newMouseY < -0 && (existingPlayerNames.length) >= 8) {
+        existingPlayerHover = 8
+      } else if (newMouseY > 30 && newMouseY < 150 && (existingPlayerNames.length) >= 9) {
+        existingPlayerHover = 9
+      } else if (newMouseY > 180 && newMouseY < 300 && (existingPlayerNames.length) >= 10) {
+        existingPlayerHover = 10
+      } else {
+        existingPlayerHover = null
+      }
+    }
+  }
+
+  if (newMouseX > -150 && newMouseX < 150 && newMouseY > 360 && newMouseY < 430) {
+    existingPlayerHover = 11
+  }
+
+}
+
+function loadSelectedPlayerData() {
+
+}
+
+
 
 function draw() {
   background('black')
@@ -3246,7 +3498,7 @@ function draw() {
   if (displayingDialogue == true) {
 
     quinnMovable = false
-    displayObjective = false
+    showHUD = false
 
 
     textWrap(WORD)
@@ -3313,9 +3565,7 @@ function draw() {
       quinnMovable = false
     }
 
-    if (currentGameState == 2) {
-      miniMap()
-    }
+    showHUD = true
 
 
   }
@@ -3360,9 +3610,6 @@ if (playStageInteractCounter > 8 && currentPlayStage == 2 && displayingDialogue 
 
 }
 
-if (currentPlayStage == 8) {
-
-}
 
 
 if (ENDdisplayingUnlock == true) {
@@ -3377,11 +3624,25 @@ if (minigame2Active == true) {
   lockGame2()
 }
 
-if (currentObjective != null && displayObjective == true) {
-  objectiveBoxes[currentObjective].displayObjective()
+if (showHUD == true) {
+  if (currentObjective != null && displayObjective == true) {
+    objectiveBoxes[currentObjective].displayObjective()
+  }
+  if (currentGameState == 2) {
+    miniMap()
+  }
 }
 
-pickRewind()
+if (pickingPlayerData == true) {
+  createPlayerData()
+}
+if (enteringNewPlayer == true) {
+  enterNewPlayerName()
+}
+if (selectingExistingPlayer == true) {
+  selectExistingPlayerName()
+}
+
 
 //track mouse coordinates on screen (useful for tracking click position later, remove when submitting final game)
 fill('white')
