@@ -4,7 +4,7 @@
             "name": "Player1",
             "playerID": 0,
             "currentSessionData": [
-                {"currentGameState": null},
+                {"currentGameState": 2},
                 {"currentLocation": null},
                 {"currentFocus": null},
                 {"currentPlayStage": null},
@@ -15,7 +15,7 @@
             "progress": {
                 "lastCheckpoint": null,
                 "endingsUnlocked": 5,
-                "endingsUnlockedIndexes": [],
+                "endingsUnlockedIndexes": [1, 4, 3],
                 "branchCodeArray": [
                     {"id": "SP_lend", "value1": null, "value2": 0, "value3": null},
                     {"id": "SP_fdLock", "value1": null, "value2": 0, "value3": null},

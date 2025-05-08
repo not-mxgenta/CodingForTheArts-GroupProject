@@ -166,13 +166,14 @@ let outsideStoryPoint = false;
 
 let playStageInteractCounter = 0;
 
-let pickingPlayerData = true;
+let pickingPlayerData = false;
 let playerDataChoice = null;
 let playerNameInput;
 let enteringNewPlayer = false;
 let selectingExistingPlayer = false;
 let existingPlayerHover = null;
 let currentPlayerData = null;
+let beginningMenu = true;
 
 //variables for Quinn's Walking Animation
 let SPR_quinnWalkAnimArray = [];
@@ -1958,17 +1959,32 @@ function mouseClicked() {
     if (existingPlayerHover != null) {
       if (existingPlayerHover < 11) {
         currentPlayerData = existingPlayerHover - 1
-        selectingExistingPlayer = false
         loadSelectedPlayerData()
+        fadingInit = true
+        fadingForward = true
+
+        if (intermediateGameState == null) {
+          intermediateGameState = 1
+          postFadeDialogue = true
+          postFadeDialogueIndex = 4
+        }
+        if (intermediateLocation == null && intermediateGameState == 2) {
+          intermediateLocation = 1
+          intermediateFocus = 1
+          currentPlayStage = 1
+          postFadeDialogue = true
+          postFadeDialogueIndex = 0
+        }
+
       } else {
         playerDataChoice = null
         selectingExistingPlayer = false
         pickingPlayerData = true
+
       }
     }
 
   } else if (currentGameState == 0 && -130 < newMouseX && newMouseX < 130 && 330 < newMouseY && newMouseY < 460) {
-    intermediateGameState = 1
     fadingInit = true
     fadingForward = true
 
@@ -2255,6 +2271,15 @@ function manageFade() {
     if (fadeHold == 12) {
       fadingForward = false
       fadeHold = 0
+
+      if (beginningMenu == true) {
+        pickingPlayerData = true
+        beginningMenu = false
+      } else if (selectingExistingPlayer == true) {
+        selectingExistingPlayer = false
+      } else if (enteringNewPlayer == true) {
+        enteringNewPlayer = false
+      }
       if (intermediateGameState != null) {
         currentGameState = intermediateGameState
         intermediateGameState = null
@@ -3187,6 +3212,8 @@ function enterNewPlayerName() {
   rect(0, 256/4, 1550, 1024)
   pop()
 
+  console.log('adding new players not complete yet, please restart')
+
 
 }
 
@@ -3335,6 +3362,27 @@ function selectExistingPlayerName() {
 
 function loadSelectedPlayerData() {
 
+  let loadedPlayer = playerData.players.find(player => player.playerID === currentPlayerData)
+
+  intermediateGameState = loadedPlayer.currentSessionData.find(data => data.currentGameState !== undefined).currentGameState
+  intermediateLocation = loadedPlayer.currentSessionData.find(data => data.currentLocation !== undefined).currentLocation
+  intermediateFocus = loadedPlayer.currentSessionData.find(data => data.currentFocus !== undefined).currentFocus
+
+  currentPlayStage = loadedPlayer.currentSessionData.find(data => data.currentPlayStage !== undefined).currentPlayStage
+
+  ITMarray = loadedPlayer.currentSessionData.find(data => data.ITMarray !== undefined).ITMarray
+
+  currentObjective = loadedPlayer.currentSessionData.find(data => data.currentObjective !== undefined).currentObjective
+
+  branchCodeArray = (loadedPlayer.progress.branchCodeArray).map(item => [item.id, item.value1, item.value2, item.value3])
+
+  endingsUnlocked = loadedPlayer.progress.endingsUnlocked
+
+  for (endingItem in loadedPlayer.progress.endingsUnlockedIndexes) {
+    branchDiagramUnlocks[(loadedPlayer.progress.endingsUnlockedIndexes)[endingItem]][1] = true
+  }
+
+
 }
 
 
@@ -3344,6 +3392,7 @@ function draw() {
   noCursor()
   
   frameRate(24)
+
 
   //Calculates new mouse coordinates based on center of screen instead of default top left corner, thus allowing coordinates to remain same regardless of window resizing - crucial when calculating mouse click position across different window sizes
   newMouseX = mouseX - (windowWidth/2)
@@ -3367,7 +3416,7 @@ function draw() {
   applyVHSdistortion()
 
 
-  if (currentGameState == 0) {
+  if (currentGameState == 0 && beginningMenu == true) {
 
     image(STALKlogo, 0, -40, 800, 800)
 
@@ -3384,6 +3433,13 @@ function draw() {
     textFont(VT323Font, 100)
     textAlign(CENTER, CENTER)
     text("PLAY", 0, 385)
+    pop()
+
+  } else if (currentGameState == 0) {
+    
+    push()
+    fill('black')
+    rect(0, 256/4, 1550, 1024)
     pop()
 
   } else if (currentGameState == 1) {
@@ -3582,10 +3638,6 @@ if (quinnMovable == true) {
   SPR_quinn.displayStaticSprite()
 }
 
-if (fadingInit == true) {
-  manageFade()
-}
-
 if (MIRdisplay == true) {
   bathroomMirrorInteract()
 }
@@ -3624,7 +3676,7 @@ if (minigame2Active == true) {
   lockGame2()
 }
 
-if (showHUD == true) {
+if (showHUD == true && fadingInit == false) {
   if (currentObjective != null && displayObjective == true) {
     objectiveBoxes[currentObjective].displayObjective()
   }
@@ -3641,6 +3693,10 @@ if (enteringNewPlayer == true) {
 }
 if (selectingExistingPlayer == true) {
   selectExistingPlayerName()
+}
+
+if (fadingInit == true) {
+  manageFade()
 }
 
 
@@ -3691,6 +3747,8 @@ stroke(150, 150, 150)
 rect(0, 256/4, 1550, 1024)
 
 pop()
+
+console.log(currentPlayStage)
 
   
 }
