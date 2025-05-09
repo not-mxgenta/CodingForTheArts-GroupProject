@@ -4,20 +4,28 @@ let currentGameState = 0;
 let currentLocation = 1;
 //even more specific, specifies which part of a location is the player's current focus i.e. left wall
 let currentFocus = 1;
-
+//when inside, what 'stage' of play - dictates objectives and interactivity options etc
 let currentPlayStage = 0;
-
+//menu vs actual game
 let playBegin = false;
 
+let pauseMenuOpen;
+
+//managing fade transition between scenes
 let fadeOpacity = 0;
 let fadeStage = 48;
 let fadingInit = true;
+//fading opacity zero to full or other way (forward = zero to full)
 let fadingForward = false;
+//pause at full opacity before resume fade in other direction
 let fadeHold = 0;
+//transition locations/focus when fade at full opacity (smoother transition e.g. through doors)
 let intermediateGameState = null;
 let intermediateLocation = null;
 let intermediateFocus = null;
+//faster fades inside (fades more frequent, long fades become tedious)
 let fadeSpeed = 1;
+//dialogue to display when fade ends (if at all) e.g. when returning home, fade into entrance then dialogue prompt to put dinner on
 let postFadeDialogue = false;
 let postFadeDialogueIndex = null;
 
@@ -25,6 +33,7 @@ let postFadeDialogueIndex = null;
 let newMouseX;
 let newMouseY;
 
+//variables used to make mouse unstable when using sleeping pills
 let driftX = 0;
 let driftY = 0;
 let instabilityX = 0;
@@ -66,32 +75,30 @@ let OBJsizeY;
 //Image asset used for each tile (self-explanatory?)
 let tileImage;
 
-
+//dialogue + interactivity variables
 let interactID = 0;
-
+//showing dialogue?
 let displayingDialogue = false;
-
+//does the dialogue have a choice or just click to close
 let displayingChoice = false;
-
 let currentChoices = [];
-
+//containing all instances of dialogue box class
 let interactDialogueBoxes = [];
-
 let storyDialogueBoxes = [];
-
+//input not available when dialogue is mid-typing (prevents skipping dialogue before finished)
 let inputBlocked = false;
-
+//segment of dialogue to type on screen (for typing animation)
 let currentDialogue = '';
-
 let charTyped = 0;
-
+//retro scan lines on dialogue and objective boxes
 let scanLineY = 0;
-
+//which dialogue to show in dialogue box
 let dialogueToDisplay = 0;
+//if finish of dialogue should immediately prompt second dialogue
 let followUpDialogue = [null, null];
-
+//prevents errors if interaction doesn't prompt dialogue (i.e. collecting item, cutscene with mirror, window etc.)
 let noInteractDialogue = false;
-
+//various branching choices format: [name, completion status, order completed, play stage completed at]
 let branchCodeArray = [
   ['SP_lend', null, 0, null],
   ['SP_fdLock', null, 0, null],
@@ -116,31 +123,40 @@ let branchCodeArray = [
   ['SP_weapon', null, 0, null]
 ]
 
+//stores how many actions have been completed to track when each story point branch is completed
 let actionOrder = 0;
 
+//whether displaying screen to choose rewind point
 let pickingRewind = false;
-
+//which point to rewind to
 let selectedRewindID = null;
 
+//where player is hiding/has hidden
 let SP_hidingArray = [];
-
+//initialise list of unlocked ending details
 let branchDiagramUnlocks = [];
 
+//animation showing unlock of new ending
 let ENDanimationFrames = [];
 let ENDanimationTick = 0;
 let ENDdisplayingUnlock = false;
 
+//how many endings have been unlocked
 let unlockCount = 0;
-
+//which ending has just been unlocked
 let currentUnlockEnd = null;
 
+//lock 1 minigame, position and direction of movement of each pin
 let lockPinPositions = [0, 0, 0, 0, 0];
 let lockPinDirections = [1, 1, 1, 1, 1];
-
+//position of player indicator in lock 1 minigame
 let lockCharacterPositionX = 113;
 let lockCharacterPositionY = -312;
+
+//arrow marker in lock 2 minigame
 let chainArrowPosition = 0
 
+//timer and other variables on lock minigames
 let minigameStartTime = 0;
 let minigame1Duration = 45000;
 let minigame1success = 0;
@@ -152,29 +168,36 @@ let minigame2ArrowDirection = 1
 let minigame2ArrowSpeed = 1;
 let minigame2FinishTime = 0;
 
+//list containing number of interactions with each object
 let interactionCounts = [];
 let holdInteractCount = 0;
-let alternativeInteractText = null;
 
+//if interaction objects have multiple dialogues linked (i.e. based on different choices/stages of the game)
+let alternativeInteractText = null;
+//story or interact dialogue
 let dialogueType = null;
 
+//interact text when outside, hover over head
 let outsideIntTextPositionX = 0;
 let outsideIntID = 0;
 
+//interacting with man outside in opening scene
 let outsideStoryPoint = false;
 
+//tracks interactions in specific play stage i.e. while waiting for food to cook, player progression based on how many interactions completed (food done after 8 interacts)
 let playStageInteractCounter = 0;
 
+//variables related to choosing to load player data or create new
 let pickingPlayerData = false;
 let playerDataChoice = null;
-let playerNameInput;
+let playerNameInput = "";
 let enteringNewPlayer = false;
 let selectingExistingPlayer = false;
 let existingPlayerHover = null;
 let currentPlayerData = null;
 let beginningMenu = true;
 
-//variables for Quinn's Walking Animation
+//variables for Quinn's Walking Animation + movement outside & background scroll
 let SPR_quinnWalkAnimArray = [];
 let currentQuinnWalkFrame = 0;
 let quinnMovable = false;
@@ -184,24 +207,32 @@ let quinnFacing = -1;
 let walkingXpos = 0;
 let BGscrollAmount = 0;
 
+//mirror cutscene, quinn animation (eyes)
 let MIRanimTick = 0;
 let MIRdisplay = false;
 
+//window cutscene
 let showingWindowInteract = false;
 
+//whether fade animation is player going to sleep
 let goingToSleep = false;
 
+//collecting items animation
 let ITMcollectAnimTick = 0;
 let ITMcollectedType = null;
-
+//items collected
 let ITMarray = [];
 
-// ===== JSON DIALOGUE SYSTEM: Add variable to store loaded JSON data =====
+//json containing dialogue
 let dialogueData;
+//jason containing previous player data
+let playerData;
+
 
 let cutScenes = [false, false]
 let appearStage = 0
 let appearBlend = 1
+
 
 let objectiveArray = ['walk home', 'cook dinner', 'wait for food', 'get dinner', 'eat dinner', 'get ready for bed', 'go to bed', 'investigate noise', 'HIDE!', 'ESCAPE!', 'unlock, QUICK!'];
 let currentObjective = null;
@@ -300,7 +331,6 @@ let BGoutside1 = [
   [14, 8, 2]
 ]
 
-
 //potential positions and orientations for navigation arrows
 let navPosMap1 = [
   [0, 0, 1, 0, 0],
@@ -314,7 +344,6 @@ let navPosMap1 = [
   [0, 0, 0, 0, 0],
   [0, 0, -1, 0, 0]
 ]
-
 
 //Used for background tiles of any given scene
 class BGtileClass {
@@ -430,11 +459,13 @@ class objectiveBoxClass {
     pop()
 
     push()
+    textWrap(WORD)
+    textLeading(40)
     fill('white')
     textFont(VT323Font, 50)
     textAlign(CENTER, CENTER)
     text("OBJECTIVE:", 0, -55)
-    text(this.objective, 0, 10)
+    text(this.objective, 0, 25, 280)
     pop()
 
     pop()
@@ -1620,7 +1651,7 @@ function checkMouseHover() {
           }
         } else if (currentLocation == 2 && currentFocus == 2) {
           if (-80 < newMouseX && newMouseX < 310 && 90 < newMouseY && newMouseY < 190) {
-            if ((currentPlayStage == 2 || currentPlayStage == 4 || currentPlayStage == 6) && interactionCounts[13] == 0) {
+            if (currentPlayStage == 6 && interactionCounts[13] == 0) {
               interactID = 14
             }
           } else if (-80 < newMouseX && newMouseX < 310 && 200 < newMouseY && newMouseY < 330) {
@@ -1628,7 +1659,7 @@ function checkMouseHover() {
               interactID = 15
             }
           } else if (-65 < newMouseX && newMouseX < 95 && -120 < newMouseY && newMouseY < 30) {
-            if ((currentPlayStage == 2 || currentPlayStage == 4 || currentPlayStage == 6) && interactionCounts[15] == 0) {
+            if (currentPlayStage == 6 && interactionCounts[15] == 0) {
               interactID = 16
             }
           } else if (370 < newMouseX && newMouseX < 630 && -120 < newMouseY && newMouseY < 380) {
@@ -1840,14 +1871,16 @@ function choiceMade(optionChosen) {
         branchCodeArray[11][1] = 'horror'
         fadingInit = true
         fadingForward = true
+        goingToSleep = true
         currentPlayStage = 6
         postFadeDialogue = true
-        postFadeDialogueIndex = 14
+        postFadeDialogueIndex = 15
       } else {
         manageActionOrder(11)
         branchCodeArray[11][1] = 'romcom'
         fadingInit = true
         fadingForward = true
+        goingToSleep = true
         currentPlayStage = 6
         postFadeDialogue = true
         postFadeDialogueIndex = 15
@@ -1920,6 +1953,8 @@ function choiceMade(optionChosen) {
         fadingForward = true
         goingToSleep = true
         playStageInteractCounter = 0
+        postFadeDialogue = true
+        postFadeDialogueIndex = 16
 
       }
     } else if (dialogueToDisplay == 62) {
@@ -1975,6 +2010,9 @@ function mouseClicked() {
 
         if (intermediateGameState == null) {
           intermediateGameState = 1
+          intermediateLocation = 1
+          intermediateFocus = 1
+          currentPlayStage = 0
           postFadeDialogue = true
           postFadeDialogueIndex = 4
         }
@@ -1985,6 +2023,26 @@ function mouseClicked() {
           postFadeDialogue = true
           postFadeDialogueIndex = 0
         }
+        if (currentObjective == null) {
+          if (currentPlayStage == 1) {
+            currentObjective = 1
+          } else if (currentPlayStage == 2) {
+            currentObjective = 2
+          } else if (currentPlayStage == 2.5) {
+            currentObjective = 3
+          } else if (currentPlayStage == 3) {
+            currentObjective = 4
+          } else if (currentPlayStage == 4) {
+            currentObjective = 5
+          } else if (currentPlayStage == 5) {
+            currentObjective = 6
+          } else if (currentPlayStage == 6) {
+            currentObjective = 7
+          }
+          if (currentObjective != null) {
+            displayObjective = true
+          }
+        }
 
       } else {
         playerDataChoice = null
@@ -1992,6 +2050,19 @@ function mouseClicked() {
         pickingPlayerData = true
 
       }
+    }
+
+  } else if (enteringNewPlayer == true) {
+    if (newMouseX > -130 && newMouseX < 130 && newMouseY > 110 && newMouseY < 210) {
+      fadingInit = true
+      fadingForward = true
+      intermediateGameState = 1
+      intermediateLocation = 1
+      intermediateFocus = 1
+      currentPlayStage = 0
+      postFadeDialogue = true
+      postFadeDialogueIndex = 4
+      saveNewPlayerData()
     }
 
   } else if (currentGameState == 0 && -130 < newMouseX && newMouseX < 130 && 330 < newMouseY && newMouseY < 460) {
@@ -2172,16 +2243,14 @@ function manageObjectiveShown() {
   } else if (dialogueToDisplay == 14 && dialogueType == 'story') {
     displayObjective = true
     currentObjective = 5
-  } else if (dialogueToDisplay == 15 && dialogueType == 'story') {
+  } else if (dialogueToDisplay == 33 && dialogueType == 'interact') {
     displayObjective = true
-    currentObjective = 5
-  } else if (dialogueToDisplay == 18 && dialogueType == 'story') {
+    currentObjective = 7
     currentPlayStage = 6
-    fadingForward = true
-    fadingInit = true
-    postFadeDialogue = true
-    postFadeDialogueIndex = 16
-  } else if (dialogueToDisplay == 16 && dialogueType == 'story') {
+  } else if (dialogueToDisplay == 20 && dialogueType == 'story' && currentPlayStage == 5) {
+    displayObjective = true
+    currentObjective = 6
+  } else if ((dialogueToDisplay == 16 || dialogueToDisplay == 15 || dialogueToDisplay == 14) && dialogueType == 'story') {
     displayObjective = true
     currentObjective = 7
   }
@@ -2233,6 +2302,10 @@ function displayFollowUpDialogue() {
 
   if (dialogueToDisplay == 19 && dialogueType == 'story') {
     followUpDialogue = [20, 'story']
+  } else if (dialogueToDisplay == 15 && dialogueType == 'interact') {
+    followUpDialogue = [68, 'interact']
+  } else if (dialogueToDisplay == 68 && dialogueType == 'interact') {
+    followUpDialogue = [70, 'interact']
   }
 
 }
@@ -2516,6 +2589,10 @@ function groggyMouse() {
 function gameEnd(endTrigger) {
 
   let newEnding = null;
+
+  if (endTrigger == 'lock1' || endTrigger == 'lock2') {
+    newEnding = 6
+  }
 
   if (branchDiagramUnlocks[newEnding][1] == false) {
     ENDdisplayingUnlock = true
@@ -3205,7 +3282,7 @@ if (minigame2Progress == 5) {
 function checkEscape() {
 
   if (keyIsDown(27)) {
-    //pause menu stuff
+    pauseMenuOpen = true
   }
 
 }
@@ -3273,9 +3350,55 @@ function enterNewPlayerName() {
   rect(0, 256/4, 1550, 1024)
   pop()
 
-  console.log('adding new players not complete yet, please restart')
+  push()
+  fill('white')
+  strokeWeight(0)
+  rect(0, -20, (45 * playerNameInput.length), 105)
+  fill('black')
+  rect(0, -20, (45 * playerNameInput.length) - 5, 100)
+  pop()
 
+  push()
+  fill('white')
+  textFont(VT323Font, 100)
+  textAlign(CENTER, CENTER)
+  text(playerNameInput, 0, -40)
+  textSize(80)
+  text('Enter player name:', 0, -150)
+  if (playerNameInput.length == 12) {
+    fill('red')
+    textSize(40)
+    text('max characters reached', 0, 75)
+  }
+  pop()
 
+  push()
+  fill('white')
+  strokeWeight(0)
+  rect(0, 160, 256, 100)
+  fill('black')
+  rect(0, 160, 250, 95)
+  pop()
+
+  push()
+  fill('white')
+  textFont(VT323Font, 75)
+  textAlign(CENTER, CENTER)
+  text("submit", 0, 150)
+  pop()
+
+}
+
+function keyPressed() {
+  if (enteringNewPlayer == true) {
+    if (keyCode == BACKSPACE) {
+      playerNameInput = playerNameInput.slice(0, (playerNameInput.length)-1)
+    } else if (keyCode == 32) {
+      return false;
+    } else if (key.length == 1 && (playerNameInput.length < 12)) {
+      playerNameInput += key
+    }
+  }
 }
 
 function selectExistingPlayerName() {
@@ -3432,6 +3555,17 @@ function loadSelectedPlayerData() {
   currentPlayStage = loadedPlayer.currentSessionData.find(data => data.currentPlayStage !== undefined).currentPlayStage
 
   ITMarray = loadedPlayer.currentSessionData.find(data => data.ITMarray !== undefined).ITMarray
+  interactionCounts = loadedPlayer.currentSessionData.find(data => data.interactionCounts !== undefined).interactionCounts
+
+  if (ITMarray == null) {
+    ITMarray = []
+  }
+  if (interactionCounts == null) {
+    interactionCounts = []
+    for (let addArrayCount = 0; addArrayCount < 42; addArrayCount ++) {
+      interactionCounts.push(0)
+    }
+  }
 
   currentObjective = loadedPlayer.currentSessionData.find(data => data.currentObjective !== undefined).currentObjective
 
@@ -3446,6 +3580,68 @@ function loadSelectedPlayerData() {
 
 }
 
+function saveNewPlayerData() {
+
+  let previousPlayerID = 0;
+  let previousPlayer = null
+
+  if (playerData.players.length == 0) {
+    previousPlayerID = 0
+  } else {
+    previousPlayer = playerData.players[((playerData.players.length) - 1)]
+    previousPlayerID = previousPlayer.playerID 
+  }
+
+
+  let newPlayerData = {
+    "name": playerNameInput,
+    "playerID": (previousPlayerID + 1),
+    "currentSessionData": [
+        {"currentGameState": 1},
+        {"currentLocation": null},
+        {"currentFocus": null},
+        {"currentPlayStage": null},
+        {"playStageInteractCounter": null},
+        {"ITMarray": null},
+        {"currentObjective": null},
+        {"interactionCounts": null}
+    ],
+    "progress": {
+        "lastCheckpoint": null,
+        "endingsUnlocked": 0,
+        "endingsUnlockedIndexes": [],
+        "branchCodeArray": [
+            {"id": "SP_lend", "value1": null, "value2": 0, "value3": null},
+            {"id": "SP_fdLock", "value1": null, "value2": 0, "value3": null},
+            {"id": "SP_fdChain", "value1": null, "value2": 0, "value3": null},
+            {"id": "SP_shoes", "value1": null, "value2": 0, "value3": null},
+            {"id": "SP_satchel", "value1": null, "value2": 0, "value3": null},
+            {"id": "SP_hallDrawer", "value1": null, "value2": 0, "value3": null},
+            {"id": "SP_phone", "value1": null, "value2": 0, "value3": null},
+            {"id": "SP_lrWindow", "value1": null, "value2": 0, "value3": null},
+            {"id": "SP_lrUpperDrawer", "value1": null, "value2": 0, "value3": null},
+            {"id": "SP_lrLowerDrawer", "value1": null, "value2": 0, "value3": null},
+            {"id": "SP_radio", "value1": null, "value2": 0, "value3": null},
+            {"id": "SP_TV", "value1": null, "value2": 0, "value3": null},
+            {"id": "SP_diningChair", "value1": null, "value2": 0, "value3": null},
+            {"id": "SP_kitchenSink", "value1": null, "value2": 0, "value3": null},
+            {"id": "SP_bath", "value1": null, "value2": 0, "value3": null},
+            {"id": "SP_bathroomCabinet", "value1": null, "value2": 0, "value3": null},
+            {"id": "SP_showerCurtain", "value1": null, "value2": 0, "value3": null},
+            {"id": "SP_bedroomWindow", "value1": null, "value2": 0, "value3": null},
+            {"id": "SP_book", "value1": null, "value2": 0, "value3": null},
+            {"id": "SP_bedroomCabinet", "value1": null, "value2": 0, "value3": null},
+            {"id": "SP_weapon", "value1": null, "value2": 0, "value3": null}
+        ]
+    }
+  }
+
+  playerData.players.push(newPlayerData)
+
+  saveJSON(playerData, "playerData.json")
+  playerData = loadJSON("playerData.json")
+  console.log(playerData)
+}
 
 
 function draw() {
@@ -3475,15 +3671,6 @@ function draw() {
   drawFlicker()
   frameJitter()
   applyVHSdistortion()
-
-  if (followUpDialogue[0] != null && displayingDialogue == false) {
-
-    displayingDialogue = true
-    dialogueToDisplay = followUpDialogue[0]
-    dialogueType = followUpDialogue[1]
-    followUpDialogue = [null, null]
-
-  }
 
 
   if (currentGameState == 0 && beginningMenu == true) {
@@ -3697,7 +3884,10 @@ function draw() {
       quinnMovable = false
     }
 
-    showHUD = true
+    if (followUpDialogue[0] == null) {
+      showHUD = true
+    }
+
 
 
   }
@@ -3718,22 +3908,24 @@ if (ITMcollectedType != null) {
   ITMcollected(ITMcollectedType)
 }
 
-if (playStageInteractCounter > 8 && currentPlayStage == 2 && displayingDialogue == false) {
+if (playStageInteractCounter > 8 && currentPlayStage == 2 && displayingDialogue == false && followUpDialogue[0] == null && MIRdisplay == false && showingWindowInteract == false) {
   currentPlayStage = 2.5
   playStageInteractCounter = 0
   displayingDialogue = true
   dialogueToDisplay = 3
   dialogueType = 'story'
-} else if (playStageInteractCounter > 8 && currentPlayStage == 4 && displayingDialogue == false) {
+} else if (playStageInteractCounter > 8 && currentPlayStage == 4 && displayingDialogue == false && followUpDialogue[0] == null && MIRdisplay == false && showingWindowInteract == false) {
   currentPlayStage = 5
   playStageInteractCounter = 0
   displayingDialogue = true
   dialogueToDisplay = 1
   dialogueType = 'story'
-} else if (currentPlayStage == 6 && branchCodeArray[10][1] != true && displayingDialogue == false) {
-
+} else if (currentPlayStage == 6 && branchCodeArray[10][1] == true && displayingDialogue == false) {
+  currentPlayStage = 7
+  displayingDialogue = true
+  dialogueToDisplay = 21
+  dialogueType = 'story'
 }
-
 
 
 if (ENDdisplayingUnlock == true) {
@@ -3797,6 +3989,15 @@ if (useGroggyMouse == true) {
   pop()
 }
 
+if (followUpDialogue[0] != null && displayingDialogue == false) {
+
+  displayingDialogue = true
+  dialogueToDisplay = followUpDialogue[0]
+  dialogueType = followUpDialogue[1]
+  followUpDialogue = [null, null]
+
+}
+
 push()
 translate(0, 256/4)
 //semi-transparent VHS-style overlay
@@ -3819,6 +4020,8 @@ stroke(150, 150, 150)
 rect(0, 256/4, 1550, 1024)
 
 pop()
+
+
 
 
   

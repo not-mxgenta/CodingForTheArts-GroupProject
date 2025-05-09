@@ -134,7 +134,7 @@
     },
     {
       "id": 22,
-      "text": "Put it in the oven, and set the timer. Easy-peezy ;)",
+      "text": "Put it in the oven, and set the timer. Easy-peezy ;) Now, I have some time to kill while it cooks.",
       "choices": null,
       "hover": "oven"
     },
@@ -411,13 +411,19 @@
     },
     {
       "id": 68,
-      "text": "Reports are coming in that a dangerous convict has escaped from the nearby county detention center. Police urge everyone to lock all doors and be extra cautious until he is apprehended.",
+      "text": "Reports are coming in that a dangerous convict has escaped from the nearby county detention center.",
       "choices": null,
       "hover": null
     },
     {
       "id": 69,
       "text": null,
+      "choices": null,
+      "hover": null
+    },
+    {
+      "id": 70,
+      "text": "Police urge everyone to lock all doors and be extra cautious until he is apprehended.",
       "choices": null,
       "hover": null
     }
@@ -437,7 +443,7 @@
     {
       "id": 2,
       "text": "I have some time to kill while dinner is cooking.",
-      "choices": ["stay in the kitchen", "look in the hall"]
+      "choices": null
     },
     {
       "id": 3,
@@ -496,17 +502,17 @@
     },
     {
       "id": 14,
-      "text": "-huh!? Oh, I fell asleep on the couch, damn. Bloody horror movie must have woken me up.",
+      "text": "-huh!? Oh, I fell asleep on the couch, damn. Bloody horror movie must have woken me up. Wait... no, I hear something else.",
       "choices": null
     },
     {
       "id": 15,
-      "text": "-huh!? I fell asleep on the couch, damn. Wonder what woke me up...",
+      "text": "-huh!? I fell asleep on the couch, damn. What is that noise? It must've been what woke me up...",
       "choices": null
     },
     {
       "id": 16,
-      "text": "-huh!? Something woke me up, but I have no idea what...",
+      "text": "-huh!? What is that noise? It must've been what woke me up...",
       "choices": null
     },
     {
@@ -528,7 +534,23 @@
       "id": 20,
       "text": "Oh my god, I'm so stupid. It's just a tree. I really gotta go to sleep soon.",
       "choices": null
+    },
+    {
+      "id": 21,
+      "text": "Oh, wow... that's not good.",
+      "choices": null
+    },
+    {
+      "id": 22,
+      "text": "What was that noise... oh, god - it can't be...",
+      "choices": null
+    },
+    {
+      "id": 23,
+      "text": "I... shit, I could hide, or run, try and call for help? Whatever I do, I have to act quick!",
+      "choices": null
     }
     
   ]
 }
+

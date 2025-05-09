@@ -5,17 +5,18 @@
             "playerID": 0,
             "currentSessionData": [
                 {"currentGameState": 2},
-                {"currentLocation": 2},
-                {"currentFocus": 1},
-                {"currentPlayStage": 4},
+                {"currentLocation": null},
+                {"currentFocus": null},
+                {"currentPlayStage": null},
                 {"playStageInteractCounter": null},
                 {"ITMarray": null},
-                {"currentObjective": null}
+                {"currentObjective": null},
+                {"interactionCounts": null}
             ],
             "progress": {
                 "lastCheckpoint": null,
-                "endingsUnlocked": 5,
-                "endingsUnlockedIndexes": [1, 4, 3],
+                "endingsUnlocked": 0,
+                "endingsUnlockedIndexes": [],
                 "branchCodeArray": [
                     {"id": "SP_lend", "value1": null, "value2": 0, "value3": null},
                     {"id": "SP_fdLock", "value1": null, "value2": 0, "value3": null},
