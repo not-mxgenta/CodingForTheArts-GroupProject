@@ -3545,39 +3545,40 @@ function selectExistingPlayerName() {
 }
 
 function loadSelectedPlayerData() {
+    fetch('http://localhost:3000/getPlayers')
+        .then(response => response.json())
+        .then(data => {
+            playerData = data; // Update playerData with fetched data
 
-  let loadedPlayer = playerData.players.find(player => player.playerID === currentPlayerData)
+            let loadedPlayer = playerData.players.find(player => player.playerID === currentPlayerData);
 
-  intermediateGameState = loadedPlayer.currentSessionData.find(data => data.currentGameState !== undefined).currentGameState
-  intermediateLocation = loadedPlayer.currentSessionData.find(data => data.currentLocation !== undefined).currentLocation
-  intermediateFocus = loadedPlayer.currentSessionData.find(data => data.currentFocus !== undefined).currentFocus
+            if (!loadedPlayer) {
+                console.error("Player not found!");
+                return;
+            }
 
-  currentPlayStage = loadedPlayer.currentSessionData.find(data => data.currentPlayStage !== undefined).currentPlayStage
+            // Safely accessing player session data
+            intermediateGameState = loadedPlayer.currentSessionData.find(data => data.currentGameState !== undefined)?.currentGameState || 0;
+            intermediateLocation = loadedPlayer.currentSessionData.find(data => data.currentLocation !== undefined)?.currentLocation || null;
+            intermediateFocus = loadedPlayer.currentSessionData.find(data => data.currentFocus !== undefined)?.currentFocus || null;
+            currentPlayStage = loadedPlayer.currentSessionData.find(data => data.currentPlayStage !== undefined)?.currentPlayStage || null;
 
-  ITMarray = loadedPlayer.currentSessionData.find(data => data.ITMarray !== undefined).ITMarray
-  interactionCounts = loadedPlayer.currentSessionData.find(data => data.interactionCounts !== undefined).interactionCounts
+            ITMarray = loadedPlayer.currentSessionData.find(data => data.ITMarray !== undefined)?.ITMarray || [];
+            interactionCounts = loadedPlayer.currentSessionData.find(data => data.interactionCounts !== undefined)?.interactionCounts || Array(42).fill(0);
 
-  if (ITMarray == null) {
-    ITMarray = []
-  }
-  if (interactionCounts == null) {
-    interactionCounts = []
-    for (let addArrayCount = 0; addArrayCount < 42; addArrayCount ++) {
-      interactionCounts.push(0)
-    }
-  }
+            currentObjective = loadedPlayer.currentSessionData.find(data => data.currentObjective !== undefined)?.currentObjective || null;
 
-  currentObjective = loadedPlayer.currentSessionData.find(data => data.currentObjective !== undefined).currentObjective
+            branchCodeArray = loadedPlayer.progress.branchCodeArray.map(item => [item.id, item.value1, item.value2, item.value3]);
 
-  branchCodeArray = (loadedPlayer.progress.branchCodeArray).map(item => [item.id, item.value1, item.value2, item.value3])
+            endingsUnlocked = loadedPlayer.progress.endingsUnlocked;
 
-  endingsUnlocked = loadedPlayer.progress.endingsUnlocked
+            loadedPlayer.progress.endingsUnlockedIndexes.forEach((endingItem) => {
+                branchDiagramUnlocks[endingItem][1] = true;
+            });
 
-  for (endingItem in loadedPlayer.progress.endingsUnlockedIndexes) {
-    branchDiagramUnlocks[(loadedPlayer.progress.endingsUnlockedIndexes)[endingItem]][1] = true
-  }
-
-
+            console.log("Player data loaded successfully!");
+        })
+        .catch(error => console.error("Error loading player data:", error));
 }
 
 function saveNewPlayerData() {
@@ -3636,11 +3637,14 @@ function saveNewPlayerData() {
     }
   }
 
-  playerData.players.push(newPlayerData)
-
-  saveJSON(playerData, "playerData.json")
-  playerData = loadJSON("playerData.json")
-  console.log(playerData)
+  fetch('http://localhost:3000/addPlayer', { 
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newPlayerData) 
+  })
+  .then(response => response.json())
+  .then(data => console.log(data.message))
+  .catch(error => console.error("Error saving player:", error));
 }
 
 
