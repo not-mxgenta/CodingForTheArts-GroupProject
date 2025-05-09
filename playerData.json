@@ -5,9 +5,9 @@
             "playerID": 0,
             "currentSessionData": [
                 {"currentGameState": 2},
-                {"currentLocation": null},
-                {"currentFocus": null},
-                {"currentPlayStage": null},
+                {"currentLocation": 2},
+                {"currentFocus": 1},
+                {"currentPlayStage": 4},
                 {"playStageInteractCounter": null},
                 {"ITMarray": null},
                 {"currentObjective": null}

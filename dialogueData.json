@@ -516,7 +516,17 @@
     },
     {
       "id": 18,
-      "text": "*honk shoo*...                 *honk shoo*...          *honk-*",
+      "text": "---",
+      "choices": null
+    },
+    {
+      "id": 19,
+      "text": "Holy -",
+      "choices": null
+    },
+    {
+      "id": 20,
+      "text": "Oh my god, I'm so stupid. It's just a tree. I really gotta go to sleep soon.",
       "choices": null
     }
     

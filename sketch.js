@@ -158,7 +158,6 @@ let alternativeInteractText = null;
 
 let dialogueType = null;
 
-
 let outsideIntTextPositionX = 0;
 let outsideIntID = 0;
 
@@ -187,6 +186,10 @@ let BGscrollAmount = 0;
 
 let MIRanimTick = 0;
 let MIRdisplay = false;
+
+let showingWindowInteract = false;
+
+let goingToSleep = false;
 
 let ITMcollectAnimTick = 0;
 let ITMcollectedType = null;
@@ -340,6 +343,10 @@ class dialogueBoxClass {
   }
 
   displayDialogue () {
+
+    if (dialogueToDisplay == 33) {
+      translate(0, 0, 1)
+    }
 
     push()
     translate(0, 465)
@@ -544,6 +551,7 @@ function preload() {
   OBJlivingroom1 = loadImage("assets/OBJsheet_LivingRoom1.png")
   OBJlivingroom2 = loadImage("assets/OBJsheet_LivingRoom2.png")
   OBJlivingroom3 = loadImage("assets/OBJsheet_LivingRoom3.png")
+  WINbackgroundMain = loadImage("assets/WIN_background.png")
 
   //icons
   ICONnavigation = loadImage("assets/ICON_NavigationArrow.png")
@@ -552,6 +560,9 @@ function preload() {
   BLANKtile = loadImage("assets/BLANKtile.png")
   MIRleft = loadImage("assets/MIR_left.png")
   MIRright = loadImage("assets/MIR_right.png")
+  WINforeground = loadImage("assets/WIN_zoom.png")
+  WINbackgroundFrame1 = loadImage("assets/WIN_zoomframe1.png")
+  WINbackgroundFrame2 = loadImage("assets/WIN_zoomframe2.png")
 
 
   //JSONs
@@ -1308,6 +1319,7 @@ function placeObjectsInside () {
     }
   } else if (currentLocation == 2) {
     if (currentFocus == 1) {
+      image(WINbackgroundMain, 0, -51)
       currentObjectArrangement = OBJlivingroom3
     } else if (currentFocus == 2) {
       currentObjectArrangement = OBJlivingroom1
@@ -1602,7 +1614,7 @@ function checkMouseHover() {
           }
         } else if (currentLocation == 2 && currentFocus == 1) {
           if (-311 < newMouseX && newMouseX < 311 && -340 < newMouseY && newMouseY < 75) {
-            if ((currentPlayStage == 2 || currentPlayStage == 4 || currentPlayStage == 6) && interactionCounts[12] == 0) {
+            if ((currentPlayStage == 4 || currentPlayStage == 6) && interactionCounts[12] == 0) {
               interactID = 13
             }
           }
@@ -1739,8 +1751,9 @@ function checkMouseHover() {
           }
         } else if (currentLocation == 5 && currentFocus == 1) {
           if (140 < newMouseX && newMouseX < 630 && 190 < newMouseY && newMouseY < 330) {
-            if (currentPlayStage == 5) {
+            if (currentPlayStage == 5 || currentPlayStage == 4) {
               interactID = 34
+              alternativeInteractText = 51
             }
           } else if (190 < newMouseX && newMouseX < 600 && 330 < newMouseY && newMouseY < 380) {
             if ((currentPlayStage == 4 || currentPlayStage == 5) && interactionCounts[34] == 0) {
@@ -1905,9 +1918,7 @@ function choiceMade(optionChosen) {
       if (optionChosen == 1) {
         fadingInit = true
         fadingForward = true
-        currentPlayStage = 5
-        postFadeDialogue = true
-        postFadeDialogueIndex = 18
+        goingToSleep = true
         playStageInteractCounter = 0
 
       }
@@ -2040,6 +2051,16 @@ function mouseClicked() {
           manageActionOrder(18)
           branchCodeArray[20][1] = true
         }
+
+        if (dialogueToDisplay == 20 && dialogueType == 'story') {
+          showingWindowInteract = false
+          if (currentPlayStage == 4) {
+            currentPlayStage = 5
+            currentObjective = 6
+          }
+        }
+
+        displayFollowUpDialogue()
   
       } else {
         if (-740 < newMouseX && newMouseX < -670 && -80 < newMouseY && newMouseY < 10) {
@@ -2177,6 +2198,11 @@ function checkNoInteractDialogue() {
     noInteractDialogue = true
   } else if (interactID == 13) {
     noInteractDialogue = true
+    livingRoomWindowInteract()
+    showingWindowInteract = true
+    displayingDialogue = true
+    dialogueToDisplay = 19
+    dialogueType = 'story'
   } else if (interactID == 14) {
     noInteractDialogue = true
   } else if (interactID == 15) {
@@ -2203,6 +2229,14 @@ function checkNoInteractDialogue() {
   }
 }
 
+function displayFollowUpDialogue() {
+
+  if (dialogueToDisplay == 19 && dialogueType == 'story') {
+    followUpDialogue = [20, 'story']
+  }
+
+}
+
 function bathroomMirrorInteract() {
 
   push()
@@ -2226,6 +2260,26 @@ function bathroomMirrorInteract() {
 
   image(MIRleft, -256, 0)
   image(MIRright, 384, 0)
+
+  pop()
+
+}
+
+function livingRoomWindowInteract() {
+
+  push()
+
+  fill('black')
+  rect(0, 256/4, 1550, 1024)
+
+  if (dialogueToDisplay == 19 && dialogueType == 'story') {
+    image(WINbackgroundFrame1, 0, 0)
+  } else if (dialogueToDisplay == 20 && dialogueType == 'story') {
+    image(WINbackgroundFrame2, 0, 0)
+  }
+  
+
+  image(WINforeground, 0, 0)
 
   pop()
 
@@ -2302,7 +2356,15 @@ function manageFade() {
         useGroggyMouse = true
       }
     } else {
-      fadeHold += fadeSpeed
+      if (goingToSleep == true) {
+        displayingDialogue = true
+        dialogueToDisplay = 33
+        dialogueType = 'interact'
+        goingToSleep = false
+      } else if (displayingDialogue == false) {
+        fadeHold += fadeSpeed
+      }
+      
     }
   }
 
@@ -3414,6 +3476,15 @@ function draw() {
   frameJitter()
   applyVHSdistortion()
 
+  if (followUpDialogue[0] != null && displayingDialogue == false) {
+
+    displayingDialogue = true
+    dialogueToDisplay = followUpDialogue[0]
+    dialogueType = followUpDialogue[1]
+    followUpDialogue = [null, null]
+
+  }
+
 
   if (currentGameState == 0 && beginningMenu == true) {
 
@@ -3542,6 +3613,12 @@ function draw() {
   }
 
 
+  if (MIRdisplay == true) {
+    bathroomMirrorInteract()
+  } else if (showingWindowInteract == true) {
+    livingRoomWindowInteract()
+  }
+
   push()
 
   if (scanLineY > 197) {
@@ -3635,10 +3712,6 @@ if (quinnMovable == true) {
   checkKeyPress()
 } else if (currentGameState == 1 && cutScenes[1] == false) {
   SPR_quinn.displayStaticSprite()
-}
-
-if (MIRdisplay == true) {
-  bathroomMirrorInteract()
 }
 
 if (ITMcollectedType != null) {
@@ -3747,7 +3820,6 @@ rect(0, 256/4, 1550, 1024)
 
 pop()
 
-console.log(currentPlayStage)
 
   
 }
