@@ -549,7 +549,18 @@
       "id": 23,
       "text": "I... shit, I could hide, or run, try and call for help? Whatever I do, I have to act quick!",
       "choices": null
+    },
+    {
+      "id": 24,
+      "text": "Oh god, he's in the hallway, and he's coming this way! What do I do?",
+      "choices": null
+    },
+    {
+      "id": 25,
+      "text": "Oh god, he's in the hallway, and he's coming this way! What do I do?",
+      "choices": ["use walkie-talkies", "hide"]
     }
+    
     
   ]
 }

@@ -234,12 +234,14 @@ let appearStage = 0
 let appearBlend = 1
 
 
-let objectiveArray = ['walk home', 'cook dinner', 'wait for food', 'get dinner', 'eat dinner', 'get ready for bed', 'go to bed', 'investigate noise', 'HIDE!', 'ESCAPE!', 'unlock, QUICK!'];
+let objectiveArray = ['walk home', 'cook dinner', 'wait for food', 'get dinner', 'eat dinner', 'get ready for bed', 'go to bed', 'investigate noise', 'HIDE!', 'ESCAPE!', 'unlock, QUICK!', 'investigate ANOTHER noise'];
 let currentObjective = null;
 let objectiveBoxes = [];
 let displayObjective = false;
 
 let showHUD = false;
+
+let firstChasePrompt = false;
 
 //Graphics maps for each environment, dictating placement of tiles for background
 //Oriented weirdly for some reason? Wasn't harming anyone so just left it lol
@@ -530,6 +532,9 @@ function preload() {
 
   //font
   VT323Font = loadFont("assets/fonts/VT323-Regular.ttf")
+
+  //sound
+  SNDbrokenGlass = loadSound("assets/sound/broken-glass.mp3")
 
   //background tiles (outside)
   OSfloor1 = loadImage("assets/OSFloor1.png")
@@ -1629,7 +1634,7 @@ function checkMouseHover() {
             }
           } else if (100 < newMouseX && newMouseX < 330 && -80 < newMouseY && newMouseY < 80) {
             if (currentPlayStage == 2 || currentPlayStage == 4 || currentPlayStage == 6 || currentPlayStage == 7) {
-              if (currentPlayStage < 6 && interactionCounts[11] == 0) {
+              if (currentPlayStage == 6 && interactionCounts[11] == 0) {
                 interactID = 12
               } else if (currentPlayStage > 5) {
                 if (interactionCounts[11] == 0) {
@@ -1967,6 +1972,13 @@ function choiceMade(optionChosen) {
       }
     }
   } else {
+    if (dialogueToDisplay == 25) {
+      if (optionChosen == 1) {
+        //walkie talkie minigame
+      } else {
+        //hiding minigame
+      }
+    }
     if (cutScenes[1] == true) {
       if (optionChosen == 1) {
         manageActionOrder(18)
@@ -2131,6 +2143,14 @@ function mouseClicked() {
           }
         }
 
+        if (dialogueToDisplay == 70 && dialogueType == 'interact') {
+          branchCodeArray[10][1] = true
+        }
+
+        if (dialogueToDisplay == 53 && dialogueType == 'interact') {
+          gameEnd('phone')
+        }
+
         displayFollowUpDialogue()
   
       } else {
@@ -2155,10 +2175,27 @@ function mouseClicked() {
             intermediateLocation = 3
             intermediateFocus = 2
           } else if (interactID == 17 && alternativeInteractText == null) {
-            fadingInit = true
-            fadingForward = true
-            intermediateLocation = 1
-            intermediateFocus = 2
+            if (currentPlayStage == 7 && firstChasePrompt == false) {
+              
+              if (ITMarray.filter(item => item === 'phone').length == 2) {
+                displayingDialogue = true
+                dialogueType = 'story'
+                dialogueToDisplay = 25
+                firstChasePrompt = true
+              } else {
+                displayingDialogue = true
+                dialogueType = 'story'
+                dialogueToDisplay = 24
+                firstChasePrompt = true
+              }
+            } else {
+
+              fadingInit = true
+              fadingForward = true
+              intermediateLocation = 1
+              intermediateFocus = 2
+
+            }
           } else if (interactID == 18 && alternativeInteractText == null) {
             fadingInit = true
             fadingForward = true
@@ -2253,6 +2290,10 @@ function manageObjectiveShown() {
   } else if ((dialogueToDisplay == 16 || dialogueToDisplay == 15 || dialogueToDisplay == 14) && dialogueType == 'story') {
     displayObjective = true
     currentObjective = 7
+  } else if (dialogueToDisplay == 21 && dialogueType == 'story') {
+    displayObjective = true
+    currentObjective = 11
+    glassBreak()
   }
   if (currentObjective != null) {
     displayObjective = true
@@ -2306,6 +2347,14 @@ function displayFollowUpDialogue() {
     followUpDialogue = [68, 'interact']
   } else if (dialogueToDisplay == 68 && dialogueType == 'interact') {
     followUpDialogue = [70, 'interact']
+  } else if (dialogueToDisplay == 22 && dialogueType == 'story') {
+    followUpDialogue = [23, 'story']
+  } else if (dialogueToDisplay == 37 && dialogueType == 'interact') {
+    followUpDialogue = [52, 'interact']
+  } else if (dialogueToDisplay == 44 && dialogueType == 'interact') {
+    followUpDialogue = [48, 'interact']
+  } else if (dialogueToDisplay == 48 && dialogueType == 'interact') {
+    followUpDialogue = [53, 'interact']
   }
 
 }
@@ -2494,6 +2543,7 @@ function drawEndingAnimation(endingUnlocked) {
   if (ENDanimationTick == 148) {
     ENDanimationTick = 0
     ENDdisplayingUnlock = false
+    pickingRewind = true
     pickRewind()
 
   } else {
@@ -2590,8 +2640,30 @@ function gameEnd(endTrigger) {
 
   let newEnding = null;
 
-  if (endTrigger == 'lock1' || endTrigger == 'lock2') {
+  if (branchCodeArray[20][1] == true && (endTrigger == 'sneeze' || endTrigger == 'wardrobe' || endTrigger == 'shower' || endTrigger == 'phone' || endTrigger == 'radio')) {
+    newEnding = 0
+  } else if (branchCodeArray[15][1] == true) {
+    newEnding = 8
+  } else if (endTrigger == 'lock1' || endTrigger == 'lock2') {
     newEnding = 6
+  } else if (endTrigger == 'sneeze') {
+    newEnding = 3
+  } else if (endTrigger == 'wardrobe') {
+    newEnding = 1
+  } else if (endTrigger == 'shower') {
+    newEnding = 2
+  } else if (endTrigger == 'money') {
+    newEnding = 4
+  } else if (endTrigger == 'phone') {
+    newEnding = 5
+  } else if (endTrigger == 'shoes') {
+    newEnding = 7
+  } else if (endTrigger == 'escaped') {
+    newEnding = 9
+  } else if (endTrigger == 'radio') {
+    newEnding = 10
+  } else if (endTrigger == 'sleepy') {
+    newEnding = 11
   }
 
   if (branchDiagramUnlocks[newEnding][1] == false) {
@@ -2599,6 +2671,7 @@ function gameEnd(endTrigger) {
     currentUnlockEnd = newEnding
   } else {
     pickRewind()
+    pickingRewind = true
   }
 
 }
@@ -3137,7 +3210,7 @@ function lockGame1() {
 
   if (lockCharacterPositionY > 270 && timeRemaining > 0) {
     minigame1success = true
-    branchCodeArray[1][1] = true
+    branchCodeArray[1][1] = false
   } else if (timeRemaining <=0) {
     minigame1success = false
     gameEnd('lock1')
@@ -3647,6 +3720,21 @@ function saveNewPlayerData() {
   .catch(error => console.error("Error saving player:", error));
 }
 
+function glassBreak() {
+
+  SNDbrokenGlass.play()
+  SNDbrokenGlass.stop(2)
+  SNDbrokenGlass.onended(breakIn)
+
+}
+
+function breakIn() {
+
+  displayingDialogue = true
+  dialogueToDisplay = 22
+  dialogueType = 'story'
+}
+
 
 function draw() {
   background('black')
@@ -3951,6 +4039,11 @@ if (showHUD == true && fadingInit == false) {
   if (currentGameState == 2) {
     miniMap()
   }
+}
+
+if (pickingRewind == true) {
+  showHUD = false
+  pickRewind()
 }
 
 if (pickingPlayerData == true) {
