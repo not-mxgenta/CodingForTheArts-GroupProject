@@ -725,7 +725,6 @@ function setup() {
 
 }
 
-
 //Update if window is resized
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
