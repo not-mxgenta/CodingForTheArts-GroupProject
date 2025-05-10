@@ -181,6 +181,9 @@ let RADwalkieLocations = [3, 5]
 let RADkillerMove = []
 let RADplayerMove = []
 
+let displayingMinigameInstructions = false;
+let hoveringMinigameInstructionButton = false;
+
 //list containing number of interactions with each object
 let interactionCounts = [];
 let holdInteractCount = 0;
@@ -2124,7 +2127,15 @@ function mouseClicked() {
     checkMinigameClick()
 
   } else if (minigame3Active == true) {
-    checkRadioGameMovement()
+    if (displayingMinigameInstructions == true) {
+      displayingMinigameInstructions = false
+    } else {
+      if (hoveringMinigameInstructionButton == true) {
+        displayingMinigameInstructions = true
+      } else {
+        checkRadioGameMovement()
+      }
+    }
 
   } else if (ITMcollectedType != null) {
     ITMarray.push(ITMcollectedType)
@@ -3902,7 +3913,7 @@ function radioGame() {
   image(MGchainPointer, -505, -180, 200, 200)
   pop()
   textWrap(WORD)
-  text("I can speak into my walkie talkie, and the sound will play through the other radio and, hopefully, lure the killer to wherever that is, then I have my chance to move!", -410, 50, 225)
+  text("I can speak into my walkie talkie, and the sound will play through the other radio and, hopefully, lure the killer to wherever that is, then I have my chance to move! I can try and get to the front door, then I can escape through there.", -410, 50, 300)
   pop()
   
 
@@ -4017,10 +4028,56 @@ function radioGame() {
   // rect(bathX, bathY, 20, 20)
   // rect(bedroomX, bedroomY, 20, 20)
 
+  if (newMouseX > -470 && newMouseX < -370 && newMouseY > 300 && newMouseY < 400) {
+    hoveringMinigameInstructionButton = true
+  } else {
+    hoveringMinigameInstructionButton = false
+  }
+
+  push()
+  translate(0, -35)
+  if (hoveringMinigameInstructionButton == true) {
+    fill('red')
+  } else {
+    fill('white')
+  }
+  ellipse(-625, 390, 110, 110)
+  fill('black')
+  ellipse(-625, 390, 100, 100)
+  fill('white')
+  textFont(VT323Font, 120)
+  textAlign(CENTER, CENTER)
+  text('i', -625, 375)
+  pop()
+
 
   pop()
 
   pop()
+
+  if (displayingMinigameInstructions == true) {
+
+    push()
+    fill('black')
+    rect(0, 256/4, 1550, 1024)
+    fill('white')
+    rect(0, 0, 1000, 750)
+    fill('black')
+    rect(0, 0, 985, 740)
+    fill('white')
+    textFont(VT323Font, 40)
+    textAlign(CENTER, CENTER)
+    textWrap(WORD)
+    text("Each turn you may choose where to move yourself, and where to activate the walkie talkie in order to lure the intruder. You can skip either of these actions, but you run the risk of the intruder moving on his own while searching for you. Your aim is to reach the hallway so you can escape through the front door. However, if the intruder moves into or through the same room as you, you will be caught and it's game over... unless there is a hiding spot available, where you can wait for the killer to move on. There are two hiding spots in the bedroom, and one in the bathroom.", 0, 0, 900)
+    textSize(30)
+    text("click anywhere to close...", 0, 325)
+    textSize(70)
+    text("instructions", 0, -325)
+    pop()
+
+  }
+
+
 
 
 }
