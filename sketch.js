@@ -3079,15 +3079,18 @@ function rewindPlay(selectedRewindPoint) {
     }
   } else if (selectedRewindPoint == 2) {
 
-    //hiding places etc
+    minigame4Active = true
+    pregameInstructions4 = true
 
   } else if (selectedRewindPoint == 3) {
 
-    branchCodeIndex = 14
+    minigame4Active = true
+    pregameInstructions4 = true
 
   } else if (selectedRewindPoint == 4) {
 
-    //hiding places etc
+    minigame4Active = true
+    pregameInstructions4 = true
 
   } else if (selectedRewindPoint == 5) {
 
@@ -3115,7 +3118,15 @@ function rewindPlay(selectedRewindPoint) {
 
   } else if (selectedRewindPoint == 11) {
 
-    //walkie talkies
+    if (ITMarray.filter(item => item === 'phone').length == 2) {
+
+      rewindActionState = 7
+
+    } else {
+
+      rewindActionState = 4
+
+    }
 
   } else if (selectedRewindPoint == 12) {
 
@@ -3123,8 +3134,11 @@ function rewindPlay(selectedRewindPoint) {
 
   }
 
-  rewindActionNumber = branchCodeArray[branchCodeIndex][2]
-  rewindActionState = branchCodeArray[branchCodeIndex][3]
+  if (branchCodeIndex != null) {
+    rewindActionNumber = branchCodeArray[branchCodeIndex][2]
+    rewindActionState = branchCodeArray[branchCodeIndex][3]
+  }
+
 
 }
 
