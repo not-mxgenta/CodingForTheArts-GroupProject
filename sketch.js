@@ -190,6 +190,9 @@ let playInProgress = false;
 let displayingMinigameInstructions = false;
 let hoveringMinigameInstructionButton = false;
 
+let hidingResult = false;
+let hidingTransition = false;
+
 //list containing number of interactions with each object
 let interactionCounts = [];
 let holdInteractCount = 0;
@@ -2139,6 +2142,11 @@ function mouseClicked() {
     rewindPlay(selectedRewindID)
     pickingRewind = false
 
+  } else if (hidingResult == true) {
+    fadingForward = false
+    fadingInit = true
+    hidingTransition = true
+
   } else if (minigame2Active == true && minigame2Progress != 4) {
     checkMinigameClick()
 
@@ -2538,6 +2546,10 @@ function manageFade() {
       } else {
         postFadeDialogueIndex = null;
       }
+      if (hidingTransition == true) {
+        gameEnd(SP_hidingArray[(SP_hidingArray.length) - 1])
+        hidingTransition = false
+      }
     }
   } else if (fadingForward == null) {
     if (fadeHold == 12) {
@@ -2766,7 +2778,7 @@ function gameEnd(endTrigger) {
     newEnding = 9
   } else if (endTrigger == 'radio') {
     newEnding = 10
-  } else if (endTrigger == 'sleepy') {
+  } else if (endTrigger == 'bed') {
     newEnding = 11
   }
 
@@ -4323,17 +4335,34 @@ function hidingMinigame() {
     if (timeElapsed >= 45000) {
       minigame4Active = false
     } else if (minigame4radius >= maxRadius || minigame4radius <= minRadius) {
-      hidingFound(SP_hidingArray[(SP_hidingArray.length) - 1])
+      hidingFound()
+      hidingResult = true
     }
   }
 
 
 }
 
+function hidingFound() {
 
-function hidingFound(hidingPlace) {
+  let hidingPlace = SP_hidingArray[(SP_hidingArray.length) - 1]
+  let resultText = ''
 
+  if (hidingPlace == 'wardrobe') {
+    resultText = 'Always hated being in the closet anyway.'
+  } else if (hidingPlace == 'shower') {
+    resultText = 'Slippery place, that shower.'
+  } else if (hidingPlace == 'bed') {
+    resultText = 'It was so dusty under there, no wonder I sneezed. Shame I had to do it so loudly, and when the intruder was... right there.'
+  }
 
+  push()
+  fill('white')
+  textFont(VT323Font, 75)
+  textAlign(CENTER, CENTER)
+  textWrap(WORD)
+  text(resultText, 0, 0, 1000)
+  pop()
 
 }
 
@@ -4649,6 +4678,10 @@ if (minigame3Active == true) {
 
 if (minigame4Active == true) {
   hidingMinigame()
+}
+
+if (hidingResult == true) {
+  hidingFound()
 }
 
 if (pickingRewind == true) {
