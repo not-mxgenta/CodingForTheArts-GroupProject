@@ -168,6 +168,19 @@ let minigame2ArrowDirection = 1
 let minigame2ArrowSpeed = 1;
 let minigame2FinishTime = 0;
 
+let minigame3Active = false;
+let minigame3init = true;
+let RADkillerLocation = 0;
+let RADplayerLocation = 0;
+let RADanimFrames = [];
+let intermediateWalkieGameActive = false;
+let RADanimTick = 0;
+let RADhoveredRoom = 0;
+let RADchoosingLocation = 'player';
+let RADwalkieLocations = [3, 5]
+let RADkillerMove = []
+let RADplayerMove = []
+
 //list containing number of interactions with each object
 let interactionCounts = [];
 let holdInteractCount = 0;
@@ -700,6 +713,18 @@ function preload() {
   MGlockBG = loadImage("assets/minigames/MG_lockBackground.png")
   MGlockHolder = loadImage("assets/minigames/MG_lockHolder.png")
   MGlockPin = loadImage("assets/minigames/MG_lockPin.png")
+  MGmap0 = loadImage("assets/minigames/RAD_map0.png")
+  MGmap1 = loadImage("assets/minigames/RAD_map1.png")
+  MGmap2 = loadImage("assets/minigames/RAD_map2.png")
+  MGmap3 = loadImage("assets/minigames/RAD_map3.png")
+  MGmap4 = loadImage("assets/minigames/RAD_map4.png")
+  MGmap5 = loadImage("assets/minigames/RAD_map5.png")
+  MGradAnim1 = loadImage("assets/minigames/RAD_frame1.png")
+  MGradAnim2 = loadImage("assets/minigames/RAD_frame2.png")
+  MGradAnim3 = loadImage("assets/minigames/RAD_frame3.png")
+  MGradAnim4 = loadImage("assets/minigames/RAD_frame4.png")
+  MGradAnim5 = loadImage("assets/minigames/RAD_frame5.png")
+  MGradAnim6 = loadImage("assets/minigames/RAD_frame6.png")
 
 
   //ending animation unlock frames
@@ -769,6 +794,8 @@ function setup() {
   ["eepy", false, ENDeepy, ENDeepyGS],
   ["Stalk the Stalker", false, ENDstalk, ENDstalkGS]
   ]
+
+  RADanimFrames = [MGradAnim1, MGradAnim2, MGradAnim3, MGradAnim4, MGradAnim5, MGradAnim6, MGradAnim1]
 
 }
 
@@ -1974,7 +2001,11 @@ function choiceMade(optionChosen) {
   } else {
     if (dialogueToDisplay == 25) {
       if (optionChosen == 1) {
-        //walkie talkie minigame
+        fadingInit = true
+        fadingForward = true
+        intermediateWalkieGameActive = true
+        postFadeDialogue = true
+        postFadeDialogueIndex = 26
       } else {
         //hiding minigame
       }
@@ -2091,6 +2122,9 @@ function mouseClicked() {
 
   } else if (minigame2Active == true && minigame2Progress != 4) {
     checkMinigameClick()
+
+  } else if (minigame3Active == true) {
+    checkRadioGameMovement()
 
   } else if (ITMcollectedType != null) {
     ITMarray.push(ITMcollectedType)
@@ -2476,6 +2510,13 @@ function manageFade() {
       }
       if (branchCodeArray[15][1] == true) {
         useGroggyMouse = true
+      }
+      if (intermediateWalkieGameActive == true && minigame3Active == false) {
+        minigame3Active = true
+        intermediateWalkieGameActive = false
+      } else if (intermediateWalkieGameActive == true && minigame3Active == true) {
+        minigame3Active = false
+        intermediateWalkieGameActive = false
       }
     } else {
       if (goingToSleep == true) {
@@ -3735,12 +3776,351 @@ function breakIn() {
   dialogueType = 'story'
 }
 
+function radioGame() {
+
+  push()
+  fill('black')
+  rect(0, 256/4, 1550, 1024)
+  pop()
+
+  push ()
+
+  translate(200, 0)
+  imageMode(CENTER)
+
+  push()
+  
+  scale(1.5, 1.5)
+
+  let imageMapToUse = MGmap0
+  let INSTRUCTtext = null
+  let ROOMtext = null
+
+  let killerRadarX = 0
+  let killerRadarY = 0
+
+  let playerRadarX = 0
+  let playerRadarY = 0
+
+  let walkieRadarX = 0
+  let walkieRadarY = 0
+
+  let killerLocationImage = RADanimFrames[0]
+
+  let playerMouseX = newMouseX - 200
+
+  if (minigame3init == true) {
+    RADkillerLocation = 2
+    RADplayerLocation = 3
+    RADwalkieLocations[1] = 5
+    minigame3init = false
+  }
+
+  if (playerMouseX > -360 && playerMouseX < -90 && newMouseY > -360 && newMouseY < -120) {
+    RADhoveredRoom = 1
+  } else if (playerMouseX > -80 && playerMouseX < 50 && newMouseY > -360 && newMouseY < 70) {
+    RADhoveredRoom = 2
+  } else if (playerMouseX > 70 && playerMouseX < 380 && newMouseY > -280 && newMouseY < 70) {
+    RADhoveredRoom = 3
+  } else if (playerMouseX > -260 && playerMouseX < -100 && newMouseY > -100 && newMouseY < 20) {
+    RADhoveredRoom = 4
+  } else if ((playerMouseX > -260 && playerMouseX < -100 && newMouseY > 50 && newMouseY < 280) || (playerMouseX > -99 && playerMouseX < 260 && newMouseY > 100 && newMouseY < 280)) {
+    RADhoveredRoom = 5
+  } else {
+    RADhoveredRoom = 0
+  }
+
+  if (RADchoosingLocation == 'killer') {
+    if (RADhoveredRoom != 0 && (RADwalkieLocations[0] == RADhoveredRoom || RADwalkieLocations[1] == RADhoveredRoom)) {
+    //RadhoveredRoom stays the same
+    } else {
+      RADhoveredRoom = 0
+    }
+  }
+
+  
+
+  if (RADhoveredRoom == 0) {
+    imageMapToUse = MGmap0
+    ROOMtext = ''
+  } else if (RADhoveredRoom == 1) {
+    imageMapToUse = MGmap1
+    ROOMtext = 'kitchen'
+  } else if (RADhoveredRoom == 2) {
+    imageMapToUse = MGmap2
+    ROOMtext = 'hallway'
+  } else if (RADhoveredRoom == 3) {
+    imageMapToUse = MGmap3
+    ROOMtext = 'living room'
+  } else if (RADhoveredRoom == 4) {
+    imageMapToUse = MGmap4
+    ROOMtext = 'bathroom'
+  } else if (RADhoveredRoom == 5) {
+    imageMapToUse = MGmap5
+    ROOMtext = 'bedroom'
+  }
+
+
+  if (RADchoosingLocation == 'killer') {
+    INSTRUCTtext = 'Where should I lure the killer to?'
+  } else if (RADchoosingLocation == 'player') {
+    INSTRUCTtext = 'Where should I go?'
+  } else {
+    INSTRUCTtext = ''
+  }
+  
+
+  
+  image(imageMapToUse, 0, 0)
+
+  push()
+  fill('white')
+  textFont(VT323Font, 35)
+  textAlign(CENTER, CENTER)
+  text(INSTRUCTtext, 0, 250)
+  fill('red')
+  textFont(VT323Font, 30)
+  text(ROOMtext, 0, 280)
+  pop()
+
+  push()
+  fill('white')
+  textFont(VT323Font, 35)
+  textAlign(CENTER, CENTER)
+  text('legend:', -475, -250)
+  textFont(VT323Font, 25)
+  text("killer's location", -400, -208)
+  image(RADanimFrames[1], -510, -200, 256, 256)
+  text("quinn + walkie #1", -402, -168)
+  push()
+  tint(233, 145, 243)
+  image(MGchainPointer, -505, -220, 200, 200)
+  pop()
+  text("walkie #2", -440, -128)
+  push()
+  tint(145, 168, 243)
+  image(MGchainPointer, -505, -180, 200, 200)
+  pop()
+  textWrap(WORD)
+  text("I can speak into my walkie talkie, and the sound will play through the other radio and, hopefully, lure the killer to wherever that is, then I have my chance to move!", -410, 50, 225)
+  pop()
+  
+
+
+  let kitchenX = -225
+  let kitchenY = -240
+  let hallX = -15
+  let hallY = -145
+  let livingX = 225
+  let livingY = -105
+  let bathX = -180
+  let bathY = -40
+  let bedroomX = -15
+  let bedroomY = 190
+
+  if (RADkillerLocation == 1) {
+    killerRadarX = kitchenX
+    killerRadarY = kitchenY
+  } else if (RADkillerLocation == 2) {
+    killerRadarX = hallX
+    killerRadarY = hallY
+  } else if (RADkillerLocation == 3) {
+    killerRadarX = livingX
+    killerRadarY = livingY
+  } else if (RADkillerLocation == 4) {
+    killerRadarX = bathX
+    killerRadarY = bathY
+  } else if (RADkillerLocation == 5) {
+    killerRadarX = bedroomX
+    killerRadarY = bedroomY
+  }
+
+  if (RADplayerLocation == 1) {
+    playerRadarX = kitchenX
+    playerRadarY = kitchenY
+  } else if (RADplayerLocation == 2) {
+    playerRadarX = hallX
+    playerRadarY = hallY
+  } else if (RADplayerLocation == 3) {
+    playerRadarX = livingX
+    playerRadarY = livingY
+  } else if (RADplayerLocation == 4) {
+    playerRadarX = bathX
+    playerRadarY = bathY
+  } else if (RADplayerLocation == 5) {
+    playerRadarX = bedroomX
+    playerRadarY = bedroomY
+  }
+
+  RADwalkieLocations[0] = RADplayerLocation
+
+  if (RADwalkieLocations[1] == 1) {
+    walkieRadarX = kitchenX
+    walkieRadarY = kitchenY
+  } else if (RADwalkieLocations[1] == 2) {
+    walkieRadarX = hallX
+    walkieRadarY = hallY
+  } else if (RADwalkieLocations[1] == 3) {
+    walkieRadarX = livingX
+    walkieRadarY = livingY
+  } else if (RADwalkieLocations[1] == 4) {
+    walkieRadarX = bathX
+    walkieRadarY = bathY
+  } else if (RADwalkieLocations[1] == 5) {
+    walkieRadarX = bedroomX
+    walkieRadarY = bedroomY
+  }
+
+  if (RADanimTick < 5) {
+    killerLocationImage = RADanimFrames[0]
+  } else if (RADanimTick < 10) {
+    killerLocationImage = RADanimFrames[1]
+  } else if (RADanimTick < 15) {
+    killerLocationImage = RADanimFrames[2]
+  } else if (RADanimTick < 20) {
+    killerLocationImage = RADanimFrames[3]
+  } else if (RADanimTick < 25) {
+    killerLocationImage = RADanimFrames[4]
+  } else if (RADanimTick < 30) {
+    killerLocationImage = RADanimFrames[5]
+  } else {
+    killerLocationImage = null
+  }
+
+  if (RADanimTick <= 50) {
+    RADanimTick ++
+  } else {
+    RADanimTick = 0
+  }
+
+  pop()
+
+  push()
+
+  if (killerLocationImage != null) {
+    image(killerLocationImage, killerRadarX, killerRadarY, 450, 450)
+  }
+
+  push()
+  tint(233, 145, 243)
+  image(MGchainPointer, playerRadarX - 20, playerRadarY - 100, 300, 300)
+  pop()
+
+  push()
+  tint(145, 168, 243)
+  image(MGchainPointer, walkieRadarX + 20, walkieRadarY - 100, 300, 300)
+  pop()
+
+  // rect(kitchenX, kitchenY, 20, 20)
+  // rect(hallX, hallY, 20, 20)
+  // rect(livingX, livingY, 20, 20)
+  // rect(bathX, bathY, 20, 20)
+  // rect(bedroomX, bedroomY, 20, 20)
+
+
+  pop()
+
+  pop()
+
+
+}
+
+function checkRadioGameMovement() {
+
+  if (RADchoosingLocation == 'killer') {
+    
+    if (RADhoveredRoom != RADkillerLocation && RADhoveredRoom != 0) {
+      RADkillerMove = [RADkillerLocation, RADhoveredRoom]
+      checkRadioGameResult(RADkillerMove)
+    }
+  } else {
+    
+    if (RADhoveredRoom != RADplayerLocation && RADhoveredRoom != 0) {
+      RADplayerMove = [RADplayerLocation, RADhoveredRoom]
+      checkRadioGameResult(RADplayerMove)
+    }
+  }
+
+}
+
+function checkRadioGameResult(RADmovingArray) {
+
+  let RADsuccessfulMove = true
+  
+  let RADmoveToCheck = RADmovingArray
+  let RADmoveToCheckAgainst = 0
+  
+  if (RADchoosingLocation == 'player') {
+    RADmoveToCheckAgainst = RADkillerLocation
+  } else {
+    RADmoveToCheckAgainst = RADplayerLocation
+  }
+
+  if (RADmoveToCheckAgainst == 1) {
+    if (RADmoveToCheck[1] == 1) {
+      RADsuccessfulMove = false
+    }
+  } else if (RADmoveToCheckAgainst == 2) {
+    if (RADmoveToCheck[1] == 2) {
+      RADsuccessfulMove = false
+    } else if ((RADmoveToCheck[0] == 3 || RADmoveToCheck[0] == 5) && (RADmoveToCheck[1] == 1 || RADmoveToCheck[1] == 4)) {
+      RADsuccessfulMove = false
+    } else if ((RADmoveToCheck[1] == 3 || RADmoveToCheck[1] == 5) && (RADmoveToCheck[0] == 1 || RADmoveToCheck[0] == 4)) {
+      RADsuccessfulMove = false
+    }
+  } else if (RADmoveToCheckAgainst == 3) {
+    if (RADmoveToCheck[1] == 3) {
+      RADsuccessfulMove = false
+    } else if ((RADmoveToCheck[0] == 5) && (RADmoveToCheck[1] == 1 || RADmoveToCheck[1] == 2 || RADmoveToCheck[1] == 4)) {
+      RADsuccessfulMove = false
+    } else if ((RADmoveToCheck[1] == 5) && (RADmoveToCheck[0] == 1 || RADmoveToCheck[0] == 2 || RADmoveToCheck[0] == 4)) {
+      RADsuccessfulMove = false
+    }
+  } else if (RADmoveToCheckAgainst == 4) {
+    if (RADmoveToCheck[1] == 4) {
+      RADsuccessfulMove = false
+    }
+  } else if (RADmoveToCheckAgainst == 5) {
+    if (RADmoveToCheck[1] == 5) {
+      RADsuccessfulMove = false
+    }
+  }
+  
+
+
+  if (RADchoosingLocation == 'player' && RADsuccessfulMove == true) {
+    if (RADmoveToCheck[1] == 2) {
+      RADplayerLocation = RADmoveToCheck[1]
+      intermediateWalkieGameActive = true
+      fadingInit = true
+      fadingForward = true
+      intermediateLocation = 1
+      intermediateFocus = 1
+    } else {
+      RADchoosingLocation = 'killer'
+      RADplayerLocation = RADmoveToCheck[1]
+    }
+  } else if (RADchoosingLocation == 'killer' && RADsuccessfulMove == true) {
+    RADchoosingLocation = 'player'
+    RADkillerLocation = RADmoveToCheck[1]
+  } else if (RADmoveToCheck[1] == 5 || RADmoveToCheck[1] == 4) {
+    //hiding minigame
+    console.log('hiding mini')
+  } else {
+    gameEnd('radio')
+    console.log('game over')
+  }
+
+}
+
 
 function draw() {
   background('black')
   noCursor()
   
   frameRate(24)
+
+  minigame3Active = true
 
 
   //Calculates new mouse coordinates based on center of screen instead of default top left corner, thus allowing coordinates to remain same regardless of window resizing - crucial when calculating mouse click position across different window sizes
@@ -4039,6 +4419,10 @@ if (showHUD == true && fadingInit == false) {
   if (currentGameState == 2) {
     miniMap()
   }
+}
+
+if (minigame3Active == true) {
+  radioGame()
 }
 
 if (pickingRewind == true) {

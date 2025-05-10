@@ -559,6 +559,11 @@
       "id": 25,
       "text": "Oh god, he's in the hallway, and he's coming this way! What do I do?",
       "choices": ["use walkie-talkies", "hide"]
+    },
+    {
+      "id": 26,
+      "text": "Ok, I can use the walkie-talkies to lure him to different rooms so I can move around safely.",
+      "choices": null
     }
     
     
