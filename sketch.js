@@ -181,6 +181,12 @@ let RADwalkieLocations = [3, 5]
 let RADkillerMove = []
 let RADplayerMove = []
 
+let minigame4Active = false;
+let minigame4Failed = false;
+let minigame4radius = 500;
+let pregameInstructions4 = true;
+let playInProgress = false;
+
 let displayingMinigameInstructions = false;
 let hoveringMinigameInstructionButton = false;
 
@@ -2012,6 +2018,16 @@ function choiceMade(optionChosen) {
       } else {
         //hiding minigame
       }
+    } else if (dialogueToDisplay == 27) {
+      if (optionChosen == 1) {
+        SP_hidingArray.push('wardrobe')
+        minigame4Active = true
+        pregameInstructions4 = true
+      } else {
+        SP_hidingArray.push('bed')
+        minigame4Active = true
+        pregameInstructions4 = true
+      }
     }
     if (cutScenes[1] == true) {
       if (optionChosen == 1) {
@@ -2126,8 +2142,44 @@ function mouseClicked() {
   } else if (minigame2Active == true && minigame2Progress != 4) {
     checkMinigameClick()
 
+  } else if (minigame4Active == true) {
+    
+    if (pregameInstructions4 == true) {
+      pregameInstructions4 = false
+      playInProgress = true
+      minigameStartTime = millis()
+    } else {
+      if (playInProgress == true) {
+        minigame4radius += 50
+      } else {
+        minigame4Active = false
+      }
+    }
+
   } else if (minigame3Active == true) {
-    if (displayingMinigameInstructions == true) {
+    if (inputBlocked == false) {
+      if (displayingDialogue == true) {
+        if (displayingChoice == true) {
+          if (170 < newMouseX && newMouseX < 600 && 370 < newMouseY && newMouseY < 420) {
+            choiceMade(1)
+            displayingDialogue = false
+            displayingChoice = false
+          } else if (170 < newMouseX && newMouseX < 600 && 490 < newMouseY && newMouseY < 540) {
+            choiceMade(2)
+            displayingDialogue = false
+            displayingChoice = false
+          }
+          manageObjectiveShown()
+        } else {
+          displayingDialogue = false
+        }
+        if (dialogueToDisplay == 28) {
+          SP_hidingArray.push('shower')
+          minigame4Active = true
+          pregameInstructions4 = true
+        }
+      }
+    } else if (displayingMinigameInstructions == true) {
       displayingMinigameInstructions = false
     } else {
       if (hoveringMinigameInstructionButton == true) {
@@ -4160,13 +4212,128 @@ function checkRadioGameResult(RADmovingArray) {
   } else if (RADchoosingLocation == 'killer' && RADsuccessfulMove == true) {
     RADchoosingLocation = 'player'
     RADkillerLocation = RADmoveToCheck[1]
-  } else if (RADmoveToCheck[1] == 5 || RADmoveToCheck[1] == 4) {
-    //hiding minigame
-    console.log('hiding mini')
+  } else if (RADmoveToCheck[1] == 5 || RADmoveToCheck[1] == 4 || RADmoveToCheckAgainst == 5 || RADmoveToCheckAgainst == 4) {
+    push()
+    fill('black')
+    rect(0, 256/4, 1550, 1024)
+    pop()
+    if (RADmoveToCheck[1] == 5 || RADmoveToCheckAgainst == 5) {
+      displayingDialogue = true
+      dialogueToDisplay = 27
+      dialogueType = 'story'
+    } else if (RADmoveToCheck[1] == 4 || RADmoveToCheckAgainst == 4) {
+      displayingDialogue = true
+      dialogueToDisplay = 28
+      dialogueType = 'story'
+    }
   } else {
     gameEnd('radio')
-    console.log('game over')
   }
+
+}
+
+function hidingMinigame() {
+
+  let maxRadius = 590
+  let minRadius = 350
+
+  let timeRemaining = 0;
+  let timeElapsed = 0;
+
+  push()
+  fill('black')
+  rect(0, 256/4, 1550, 1024)
+  pop()
+
+  push()
+  fill('white')
+  ellipse(0, 0, 600, 600)
+  fill('black')
+  ellipse(0, 0, 590, 590)
+  pop()
+
+  push()
+  fill('red')
+  ellipse(0, 0, minigame4radius, minigame4radius)
+  pop()
+
+  push()
+  fill('white')
+  ellipse(0, 0, 350, 350)
+  fill('black')
+  ellipse(0, 0, 340, 340)
+  pop()
+
+  if (pregameInstructions4 == true) {
+    push()
+    fill('black')
+    rect(0, 256/4, 1550, 1024)
+    pop()
+
+    push()
+    fill('white')
+    textFont(VT323Font, 70)
+    textAlign(CENTER, CENTER)
+    textWrap(WORD)
+    text("Ok, I can hide in here until the intruder moves on. But I HAVE to stay still, otherwise he might find me!", 0, -175, 750)
+    fill('red')
+    textSize(50)
+    text("Click to keep the red circle in the boundaries (it will decrease in radius over time, click to increase the radius and keep it within the outlining circles). If it dips outside either boundary, you 'move'.", 0, 250, 800)
+    fill('white')
+    textSize(35)
+    text("click anywhere to continue...", 0, 490, 800)
+    pop()
+
+  } else {
+
+    timeElapsed = millis() - minigameStartTime
+    timeRemaining = max(0, (minigame1Duration - timeElapsed) / 1000)
+
+    let timerTextColour = 'white'
+
+    if (timeRemaining <= 11 && ((Math.floor(timeRemaining)) % 2) == 0) {
+      timerTextColour = 'red'
+    } else{
+      timerTextColour = 'white'
+    }
+
+
+    push()
+    fill(timerTextColour)
+    textFont(VT323Font, 70)
+    textAlign(CENTER, CENTER)
+    text(`${timeRemaining.toFixed(1)}s`, 0, 0)
+    pop()
+
+  }
+  
+  if (minigame4radius > minRadius && pregameInstructions4 == false) {
+    if (timeElapsed < 10000) {
+      minigame4radius -= 2
+    } else if (timeElapsed < 20000) {
+      minigame4radius -= 4
+    } else if (timeElapsed < 30000) {
+      minigame4radius -= 6
+    } else {
+      minigame4radius -= 8
+    }
+  }
+
+  if (pregameInstructions4 == false) {
+    if (timeElapsed >= 45000) {
+      minigame4Active = false
+    } else if (minigame4radius >= maxRadius || minigame4radius <= minRadius) {
+      hidingFound(SP_hidingArray[(SP_hidingArray.length) - 1])
+    }
+  }
+
+
+}
+
+
+function hidingFound(hidingPlace) {
+
+
 
 }
 
@@ -4176,8 +4343,6 @@ function draw() {
   noCursor()
   
   frameRate(24)
-
-  minigame3Active = true
 
 
   //Calculates new mouse coordinates based on center of screen instead of default top left corner, thus allowing coordinates to remain same regardless of window resizing - crucial when calculating mouse click position across different window sizes
@@ -4482,6 +4647,10 @@ if (minigame3Active == true) {
   radioGame()
 }
 
+if (minigame4Active == true) {
+  hidingMinigame()
+}
+
 if (pickingRewind == true) {
   showHUD = false
   pickRewind()
@@ -4540,7 +4709,7 @@ push()
 translate(0, 256/4)
 //semi-transparent VHS-style overlay
 tint(255, 100);
-image(VHSoverlay, 0, 0, 1550, 1024);
+image(VHSoverlay, 0, 0, 1560, 1034);
 pop()
 
 push()
@@ -4559,8 +4728,4 @@ rect(0, 256/4, 1550, 1024)
 
 pop()
 
-
-
-
-  
 }

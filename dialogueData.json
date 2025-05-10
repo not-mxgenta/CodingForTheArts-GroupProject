@@ -564,6 +564,16 @@
       "id": 26,
       "text": "Ok, I can use the walkie-talkies to lure him to different rooms so I can move around safely.",
       "choices": null
+    },
+    {
+      "id": 27,
+      "text": "Alright, I can hide in the wardrobe, or under the bed...",
+      "choices": ["wardrobe", "bed"]
+    },
+    {
+      "id": 28,
+      "text": "I've got to hide in the shower, quick!",
+      "choices": null
     }
     
     
