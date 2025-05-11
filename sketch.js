@@ -616,6 +616,10 @@ function preload() {
   OBJlivingroom2 = loadImage("assets/OBJsheet_LivingRoom2.png")
   OBJlivingroom3 = loadImage("assets/OBJsheet_LivingRoom3.png")
   WINbackgroundMain = loadImage("assets/WIN_background.png")
+  OBJbedroomWindowClosed = loadImage("assets/OBJ_BedroomWindowClosed.png")
+  OBJbedroomWindowOpen = loadImage("assets/OBJ_BedroomWindowOpen.png")
+  OBJbedroomWindowOutside = loadImage("assets/OBJ_BedroomWindowOutside.png")
+  OBJbedroomOverlay = loadImage("assets/OBJsheet_BedroomReplacement.png")
 
   //icons
   ICONnavigation = loadImage("assets/ICON_NavigationArrow.png")
@@ -1429,6 +1433,28 @@ function placeObjectsInside () {
   }
 
   image(currentObjectArrangement, 0, 0, 1280, 768)
+
+  if (currentLocation == 5 && currentFocus == 1) {
+    image(BGbedroomLower, -256, 256)
+    image(BGbedroomLower, -512, 256)
+    image(BGbedroomMiddle, 256, 0)
+    image(BGbedroomMiddle, 0, 0)
+    image(BGbedroomMiddle, -256, 0)
+    image(BGbedroomMiddle, -512, 0)
+    image(BGbedroomUpper, 256, -256)
+    image(BGbedroomUpper, 0, -256)
+    image(BGbedroomUpper, -256, -256)
+    image(BGbedroomUpper, -512, -256)
+    image(OBJbedroomOverlay, -300, 0)
+
+    image(OBJbedroomWindowOutside, 300, -100)
+
+    if (branchCodeArray[17][1] == true) {
+      image(OBJbedroomWindowOpen, 300, -100)
+    } else {
+      image(OBJbedroomWindowClosed, 300, -100)
+    }
+  }
 }
 
 function leftNavClicked() {
@@ -1840,7 +1866,7 @@ function checkMouseHover() {
               interactID = 35
               alternativeInteractText = 62
             }
-          } else if (-115 < newMouseX && newMouseX < 360 && -160 < newMouseY && newMouseY < 60) {
+          } else if (210 < newMouseX && newMouseX < 370 && -210 < newMouseY && newMouseY < 0) {
             if ((3 < currentPlayStage < 7) && branchCodeArray[17][1] == null) {
               interactID = 36
             }
@@ -4915,6 +4941,5 @@ rect(0, 256/4, 1550, 1024)
 
 pop()
 
-console.log(currentObjective, currentPlayStage, currentGameState)
 
 }
