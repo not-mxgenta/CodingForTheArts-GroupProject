@@ -45,6 +45,26 @@ app.get('/getPlayers', (req, res) => {
     res.json(gameData); // Send the player data back
 });
 
+app.post('/savePlayer', (req, res) => {
+    let gameData = loadGameData();
+    let updatedPlayer = req.body;
+
+    let playerIndex = gameData.players.findIndex(player => player.playerID === updatedPlayer.playerID);
+
+    if (playerIndex !== -1) {
+        gameData.players[playerIndex] = { 
+            ...gameData.players[playerIndex], 
+            ...updatedPlayer, 
+            playerID: gameData.players[playerIndex].playerID 
+        };
+        fs.writeFileSync('playerData.json', JSON.stringify(gameData, null, 2));
+        res.json({ message: "Player data saved!", player: gameData.players[playerIndex] });
+    } else {
+        console.error("Player not found! Tried saving:", updatedPlayer);
+        res.status(404).json({ message: "Player not found!" });
+    }
+});
+
 // Save new player
 app.post('/addPlayer', (req, res) => {
     let gameData = loadGameData(); 

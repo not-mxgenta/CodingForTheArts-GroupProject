@@ -10,6 +10,9 @@ let currentPlayStage = 0;
 let playBegin = false;
 
 let pauseMenuOpen;
+let pauseMenuHover = null;
+
+let quittingGame = false;
 
 //managing fade transition between scenes
 let fadeOpacity = 0;
@@ -42,7 +45,7 @@ let useGroggyMouse = false;
 
 //tracking whether nav buttons are hovered
 let leftNavHovered = false;
-let rightNavHovered = true;
+let rightNavHovered = false;
 
 //defining the tile map
 //2D arrays containing each instance of the Tile Class we create
@@ -250,7 +253,7 @@ let ITMarray = [];
 
 //json containing dialogue
 let dialogueData;
-//jason containing previous player data
+//json containing previous player data
 let playerData;
 
 
@@ -2133,6 +2136,15 @@ function mouseClicked() {
   } else if (currentGameState == 0 && -130 < newMouseX && newMouseX < 130 && 330 < newMouseY && newMouseY < 460) {
     fadingInit = true
     fadingForward = true
+  } else if (pauseMenuOpen == true) {
+    if (pauseMenuHover == 1) {
+      pauseMenuOpen = false
+    } else if (pauseMenuHover == 2) {
+      savePlayerData()
+    } else if (pauseMenuHover == 3) {
+      quittingGame = true
+      savePlayerData()
+    }
 
   } else if (MIRdisplay == true) {
     MIRdisplay = false
@@ -3748,40 +3760,71 @@ function selectExistingPlayerName() {
 }
 
 function loadSelectedPlayerData() {
-    fetch('http://localhost:3000/getPlayers')
-        .then(response => response.json())
-        .then(data => {
-            playerData = data; // Update playerData with fetched data
+    // fetch('http://localhost:3000/getPlayers')
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         playerData = data; // Update playerData with fetched data
 
-            let loadedPlayer = playerData.players.find(player => player.playerID === currentPlayerData);
+    //         let loadedPlayer = playerData.players.find(player => player.playerID === currentPlayerData);
 
-            if (!loadedPlayer) {
-                console.error("Player not found!");
-                return;
-            }
+    //         if (!loadedPlayer) {
+    //             console.error("Player not found!");
+    //             return;
+    //         }
 
-            // Safely accessing player session data
-            intermediateGameState = loadedPlayer.currentSessionData.find(data => data.currentGameState !== undefined)?.currentGameState || 0;
-            intermediateLocation = loadedPlayer.currentSessionData.find(data => data.currentLocation !== undefined)?.currentLocation || null;
-            intermediateFocus = loadedPlayer.currentSessionData.find(data => data.currentFocus !== undefined)?.currentFocus || null;
-            currentPlayStage = loadedPlayer.currentSessionData.find(data => data.currentPlayStage !== undefined)?.currentPlayStage || null;
+    //         // Safely accessing player session data
+    //         intermediateGameState = loadedPlayer.currentSessionData.find(data => data.currentGameState !== undefined)?.currentGameState || 0;
+    //         intermediateLocation = loadedPlayer.currentSessionData.find(data => data.currentLocation !== undefined)?.currentLocation || null;
+    //         intermediateFocus = loadedPlayer.currentSessionData.find(data => data.currentFocus !== undefined)?.currentFocus || null;
+    //         currentPlayStage = loadedPlayer.currentSessionData.find(data => data.currentPlayStage !== undefined)?.currentPlayStage || null;
 
-            ITMarray = loadedPlayer.currentSessionData.find(data => data.ITMarray !== undefined)?.ITMarray || [];
-            interactionCounts = loadedPlayer.currentSessionData.find(data => data.interactionCounts !== undefined)?.interactionCounts || Array(42).fill(0);
+    //         ITMarray = loadedPlayer.currentSessionData.find(data => data.ITMarray !== undefined)?.ITMarray || [];
+    //         interactionCounts = loadedPlayer.currentSessionData.find(data => data.interactionCounts !== undefined)?.interactionCounts || Array(42).fill(0);
 
-            currentObjective = loadedPlayer.currentSessionData.find(data => data.currentObjective !== undefined)?.currentObjective || null;
+    //         currentObjective = loadedPlayer.currentSessionData.find(data => data.currentObjective !== undefined)?.currentObjective || null;
 
-            branchCodeArray = loadedPlayer.progress.branchCodeArray.map(item => [item.id, item.value1, item.value2, item.value3]);
+    //         branchCodeArray = loadedPlayer.progress.branchCodeArray.map(item => [item.id, item.value1, item.value2, item.value3]);
 
-            endingsUnlocked = loadedPlayer.progress.endingsUnlocked;
+    //         endingsUnlocked = loadedPlayer.progress.endingsUnlocked;
 
-            loadedPlayer.progress.endingsUnlockedIndexes.forEach((endingItem) => {
-                branchDiagramUnlocks[endingItem][1] = true;
-            });
+    //         loadedPlayer.progress.endingsUnlockedIndexes.forEach((endingItem) => {
+    //             branchDiagramUnlocks[endingItem][1] = true;
+    //         });
 
-            console.log("Player data loaded successfully!");
-        })
-        .catch(error => console.error("Error loading player data:", error));
+    //         console.log("Player data loaded successfully!");
+    //     })
+    //     .catch(error => console.error("Error loading player data:", error));
+
+  let loadedPlayer = playerData.players.find(player => player.playerID === currentPlayerData)
+
+  intermediateGameState = loadedPlayer.currentSessionData.find(data => data.currentGameState !== undefined).currentGameState
+  intermediateLocation = loadedPlayer.currentSessionData.find(data => data.currentLocation !== undefined).currentLocation
+  intermediateFocus = loadedPlayer.currentSessionData.find(data => data.currentFocus !== undefined).currentFocus
+
+  currentPlayStage = loadedPlayer.currentSessionData.find(data => data.currentPlayStage !== undefined).currentPlayStage
+
+  ITMarray = loadedPlayer.currentSessionData.find(data => data.ITMarray !== undefined).ITMarray
+  interactionCounts = loadedPlayer.currentSessionData.find(data => data.interactionCounts !== undefined).interactionCounts
+
+  if (ITMarray == null) {
+    ITMarray = []
+  }
+  if (interactionCounts == null) {
+    interactionCounts = []
+    for (let addArrayCount = 0; addArrayCount < 42; addArrayCount ++) {
+      interactionCounts.push(0)
+    }
+  }
+
+  currentObjective = loadedPlayer.currentSessionData.find(data => data.currentObjective !== undefined).currentObjective
+
+  branchCodeArray = (loadedPlayer.progress.branchCodeArray).map(item => [item.id, item.value1, item.value2, item.value3])
+
+  endingsUnlocked = loadedPlayer.progress.endingsUnlocked
+
+  for (endingItem in loadedPlayer.progress.endingsUnlockedIndexes) {
+    branchDiagramUnlocks[(loadedPlayer.progress.endingsUnlockedIndexes)[endingItem]][1] = true
+  }
 }
 
 function saveNewPlayerData() {
@@ -3794,12 +3837,13 @@ function saveNewPlayerData() {
   } else {
     previousPlayer = playerData.players[((playerData.players.length) - 1)]
     previousPlayerID = previousPlayer.playerID 
+    currentPlayerData = previousPlayerID - 1
   }
 
 
   let newPlayerData = {
     "name": playerNameInput,
-    "playerID": (previousPlayerID + 1),
+    "playerID": currentPlayerData,
     "currentSessionData": [
         {"currentGameState": 1},
         {"currentLocation": null},
@@ -3848,6 +3892,85 @@ function saveNewPlayerData() {
   .then(response => response.json())
   .then(data => console.log(data.message))
   .catch(error => console.error("Error saving player:", error));
+}
+
+function savePlayerData() {
+  
+  let endingsUnlockedIndexes = []
+
+  for (ending in branchDiagramUnlocks) {
+    if (branchDiagramUnlocks[ending][1] == true) {
+      endingsUnlockedIndexes.push(ending)
+    }
+  }
+
+  let playerToSaveAs = playerData.players.find(player => player.playerID === currentPlayerData)
+  let playerNameToSave = playerToSaveAs.name
+
+  let newData = {
+    "name": playerNameToSave,
+    "playerID": currentPlayerData,
+    "currentSessionData": [
+        {"currentGameState": currentGameState},
+        {"currentLocation": currentLocation},
+        {"currentFocus": currentFocus},
+        {"currentPlayStage": currentPlayStage},
+        {"playStageInteractCounter": playStageInteractCounter},
+        {"ITMarray": ITMarray},
+        {"currentObjective": currentObjective},
+        {"interactionCounts": interactionCounts}
+    ],
+    "progress": {
+        "lastCheckpoint": null,
+        "endingsUnlocked": endingsUnlocked,
+        "endingsUnlockedIndexes": endingsUnlockedIndexes,
+        "branchCodeArray": branchCodeArray
+        //     {"id": "SP_lend", "value1": null, "value2": 0, "value3": null},
+        //     {"id": "SP_fdLock", "value1": null, "value2": 0, "value3": null},
+        //     {"id": "SP_fdChain", "value1": null, "value2": 0, "value3": null},
+        //     {"id": "SP_shoes", "value1": null, "value2": 0, "value3": null},
+        //     {"id": "SP_satchel", "value1": null, "value2": 0, "value3": null},
+        //     {"id": "SP_hallDrawer", "value1": null, "value2": 0, "value3": null},
+        //     {"id": "SP_phone", "value1": null, "value2": 0, "value3": null},
+        //     {"id": "SP_lrWindow", "value1": null, "value2": 0, "value3": null},
+        //     {"id": "SP_lrUpperDrawer", "value1": null, "value2": 0, "value3": null},
+        //     {"id": "SP_lrLowerDrawer", "value1": null, "value2": 0, "value3": null},
+        //     {"id": "SP_radio", "value1": null, "value2": 0, "value3": null},
+        //     {"id": "SP_TV", "value1": null, "value2": 0, "value3": null},
+        //     {"id": "SP_diningChair", "value1": null, "value2": 0, "value3": null},
+        //     {"id": "SP_kitchenSink", "value1": null, "value2": 0, "value3": null},
+        //     {"id": "SP_bath", "value1": null, "value2": 0, "value3": null},
+        //     {"id": "SP_bathroomCabinet", "value1": null, "value2": 0, "value3": null},
+        //     {"id": "SP_showerCurtain", "value1": null, "value2": 0, "value3": null},
+        //     {"id": "SP_bedroomWindow", "value1": null, "value2": 0, "value3": null},
+        //     {"id": "SP_book", "value1": null, "value2": 0, "value3": null},
+        //     {"id": "SP_bedroomCabinet", "value1": null, "value2": 0, "value3": null},
+        //     {"id": "SP_weapon", "value1": null, "value2": 0, "value3": null}
+        // ]
+    }
+  }
+  
+  fetch('http://localhost:3000/savePlayer', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ id: currentPlayerData, ...newData })
+  })
+  .then(response => response.json())
+  .then(data => {
+      console.log("Save status:", data.message);
+  })
+  .catch(error => {
+      console.error("Error saving player data:", error);
+  });
+
+  if (quittingGame == true) {
+    window.location.reload()
+  } else {
+    pauseMenuOpen = false
+  }
+
 }
 
 function glassBreak() {
@@ -4726,6 +4849,65 @@ text(newMouseX, newMouseX+50, newMouseY)
 text(newMouseY, newMouseX+50, newMouseY + 30)
 text(interactID, newMouseX+50, newMouseY + 60)
 
+if (followUpDialogue[0] != null && displayingDialogue == false) {
+
+  displayingDialogue = true
+  dialogueToDisplay = followUpDialogue[0]
+  dialogueType = followUpDialogue[1]
+  followUpDialogue = [null, null]
+
+}
+
+if (pauseMenuOpen == true) {
+
+  let hoverButton1Colour = 'white'
+  let hoverButton2Colour = 'white'
+  let hoverButton3Colour = 'white'
+
+  push()
+  fill('black')
+  rect(0, 256/4, 1550, 1024)
+  pop()
+
+
+  if (newMouseX > -95 && newMouseX < 95) {
+    if (newMouseY > -240 && newMouseY < -140) {
+      hoverButton1Colour = 'red'
+      pauseMenuHover = 1
+    } else if (newMouseY > -50 && newMouseY < 50) {
+      hoverButton2Colour = 'red'
+      pauseMenuHover = 2
+    } else if (newMouseY > 140 && newMouseY < 240) {
+      hoverButton3Colour = 'red'
+      pauseMenuHover = 3
+    }
+  }
+
+  push()
+  fill(hoverButton1Colour)
+  rect(0, -190, 200, 100)
+  fill('black')
+  rect(0, -190, 190, 90)
+  fill(hoverButton2Colour)
+  rect(0, 0, 200, 100)
+  fill('black')
+  rect(0, 0, 190, 90)
+  fill(hoverButton3Colour)
+  rect(0, 190, 200, 100)
+  fill('black')
+  rect(0, 190, 190, 90)
+  pop()
+
+  push()
+  fill('white')
+  textFont(VT323Font, 80)
+  textAlign(CENTER, CENTER)
+  text("play", 0, -205)
+  text("save", 0, -15)
+  text("quit", 0, 175)
+  pop()
+}
+
 if (quinnMovable == false) { 
 push()
 fill('white')
@@ -4741,15 +4923,6 @@ if (useGroggyMouse == true) {
   groggyOverlay.play()
   groggyOverlay.loop()
   pop()
-}
-
-if (followUpDialogue[0] != null && displayingDialogue == false) {
-
-  displayingDialogue = true
-  dialogueToDisplay = followUpDialogue[0]
-  dialogueType = followUpDialogue[1]
-  followUpDialogue = [null, null]
-
 }
 
 push()
