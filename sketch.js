@@ -3705,6 +3705,7 @@ function selectExistingPlayerName() {
     
   }
 
+
   if (playerDisplayStyle == 1) {
     if (newMouseX > -320 && newMouseX < 320) {
       if (newMouseY > -420 && newMouseY < -300 && (existingPlayerNames.length) >= 1) {
@@ -3752,6 +3753,8 @@ function selectExistingPlayerName() {
       }
     }
   }
+
+  console.log(existingPlayerHover)
 
   if (newMouseX > -150 && newMouseX < 150 && newMouseY > 360 && newMouseY < 430) {
     existingPlayerHover = 11
@@ -3804,7 +3807,7 @@ function saveNewPlayerData() {
   } else {
     previousPlayer = playerData.players[((playerData.players.length) - 1)]
     previousPlayerID = previousPlayer.playerID 
-    currentPlayerData = previousPlayerID - 1
+    currentPlayerData = previousPlayerID + 1
   }
 
 
@@ -3859,6 +3862,19 @@ function saveNewPlayerData() {
   .then(response => response.json())
   .then(data => console.log(data.message))
   .catch(error => console.error("Error saving player:", error));
+
+  reloadPlayerDataJSON()
+}
+
+function reloadPlayerDataJSON() {
+  fetch('http://localhost:3000/getPlayers')
+      .then(response => response.json())
+      .then(data => {
+          playerData = data; // Update playerData with fetched data
+          console.log("Player data reloaded successfully!");
+      })
+      .catch(error => console.error("Error reloading player data:", error));
+
 }
 
 function savePlayerData() {
@@ -3914,6 +3930,7 @@ function savePlayerData() {
     window.location.reload()
   } else {
     pauseMenuOpen = false
+    reloadPlayerDataJSON()
   }
 
 }
