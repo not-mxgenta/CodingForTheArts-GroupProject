@@ -2087,9 +2087,12 @@ function mouseClicked() {
         if (intermediateLocation == null && intermediateGameState == 2) {
           intermediateLocation = 1
           intermediateFocus = 1
-          currentPlayStage = 1
+          currentPlayStage = 0
           postFadeDialogue = true
           postFadeDialogueIndex = 0
+        }
+        if (currentPlayStage == null) {
+          currentPlayStage = 0
         }
         if (currentObjective == null) {
           if (currentPlayStage == 1) {
@@ -3106,7 +3109,7 @@ function rewindPlay(selectedRewindPoint) {
 
   } else if (selectedRewindPoint == 5) {
 
-    //lend money stuff
+    branchCodeIndex = 0
 
   } else if (selectedRewindPoint == 6) {
 
@@ -3142,7 +3145,7 @@ function rewindPlay(selectedRewindPoint) {
 
   } else if (selectedRewindPoint == 12) {
 
-    //sleepyyyy
+    branchCodeIndex = 12
 
   }
 
@@ -3497,7 +3500,9 @@ if (minigame2Progress == 5) {
 function checkEscape() {
 
   if (keyIsDown(27)) {
-    pauseMenuOpen = true
+    if (currentGameState > 0 && displayingDialogue == false && pickingRewind == false && ENDdisplayingUnlock == false && minigame2Active == false && minigame3Active == false && minigame4Active == false && minigame1success != null) {
+      pauseMenuOpen = true
+    }
   }
 
 }
@@ -4909,5 +4914,7 @@ stroke(150, 150, 150)
 rect(0, 256/4, 1550, 1024)
 
 pop()
+
+console.log(currentObjective, currentPlayStage, currentGameState)
 
 }
