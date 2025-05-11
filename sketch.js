@@ -3760,40 +3760,7 @@ function selectExistingPlayerName() {
 }
 
 function loadSelectedPlayerData() {
-    // fetch('http://localhost:3000/getPlayers')
-    //     .then(response => response.json())
-    //     .then(data => {
-    //         playerData = data; // Update playerData with fetched data
 
-    //         let loadedPlayer = playerData.players.find(player => player.playerID === currentPlayerData);
-
-    //         if (!loadedPlayer) {
-    //             console.error("Player not found!");
-    //             return;
-    //         }
-
-    //         // Safely accessing player session data
-    //         intermediateGameState = loadedPlayer.currentSessionData.find(data => data.currentGameState !== undefined)?.currentGameState || 0;
-    //         intermediateLocation = loadedPlayer.currentSessionData.find(data => data.currentLocation !== undefined)?.currentLocation || null;
-    //         intermediateFocus = loadedPlayer.currentSessionData.find(data => data.currentFocus !== undefined)?.currentFocus || null;
-    //         currentPlayStage = loadedPlayer.currentSessionData.find(data => data.currentPlayStage !== undefined)?.currentPlayStage || null;
-
-    //         ITMarray = loadedPlayer.currentSessionData.find(data => data.ITMarray !== undefined)?.ITMarray || [];
-    //         interactionCounts = loadedPlayer.currentSessionData.find(data => data.interactionCounts !== undefined)?.interactionCounts || Array(42).fill(0);
-
-    //         currentObjective = loadedPlayer.currentSessionData.find(data => data.currentObjective !== undefined)?.currentObjective || null;
-
-    //         branchCodeArray = loadedPlayer.progress.branchCodeArray.map(item => [item.id, item.value1, item.value2, item.value3]);
-
-    //         endingsUnlocked = loadedPlayer.progress.endingsUnlocked;
-
-    //         loadedPlayer.progress.endingsUnlockedIndexes.forEach((endingItem) => {
-    //             branchDiagramUnlocks[endingItem][1] = true;
-    //         });
-
-    //         console.log("Player data loaded successfully!");
-    //     })
-    //     .catch(error => console.error("Error loading player data:", error));
 
   let loadedPlayer = playerData.players.find(player => player.playerID === currentPlayerData)
 
@@ -3820,7 +3787,7 @@ function loadSelectedPlayerData() {
 
   branchCodeArray = (loadedPlayer.progress.branchCodeArray).map(item => [item.id, item.value1, item.value2, item.value3])
 
-  endingsUnlocked = loadedPlayer.progress.endingsUnlocked
+  unlockCount = loadedPlayer.progress.endingsUnlocked
 
   for (endingItem in loadedPlayer.progress.endingsUnlockedIndexes) {
     branchDiagramUnlocks[(loadedPlayer.progress.endingsUnlockedIndexes)[endingItem]][1] = true
@@ -3922,31 +3889,9 @@ function savePlayerData() {
     ],
     "progress": {
         "lastCheckpoint": null,
-        "endingsUnlocked": endingsUnlocked,
+        "endingsUnlocked": unlockCount,
         "endingsUnlockedIndexes": endingsUnlockedIndexes,
         "branchCodeArray": branchCodeArray
-        //     {"id": "SP_lend", "value1": null, "value2": 0, "value3": null},
-        //     {"id": "SP_fdLock", "value1": null, "value2": 0, "value3": null},
-        //     {"id": "SP_fdChain", "value1": null, "value2": 0, "value3": null},
-        //     {"id": "SP_shoes", "value1": null, "value2": 0, "value3": null},
-        //     {"id": "SP_satchel", "value1": null, "value2": 0, "value3": null},
-        //     {"id": "SP_hallDrawer", "value1": null, "value2": 0, "value3": null},
-        //     {"id": "SP_phone", "value1": null, "value2": 0, "value3": null},
-        //     {"id": "SP_lrWindow", "value1": null, "value2": 0, "value3": null},
-        //     {"id": "SP_lrUpperDrawer", "value1": null, "value2": 0, "value3": null},
-        //     {"id": "SP_lrLowerDrawer", "value1": null, "value2": 0, "value3": null},
-        //     {"id": "SP_radio", "value1": null, "value2": 0, "value3": null},
-        //     {"id": "SP_TV", "value1": null, "value2": 0, "value3": null},
-        //     {"id": "SP_diningChair", "value1": null, "value2": 0, "value3": null},
-        //     {"id": "SP_kitchenSink", "value1": null, "value2": 0, "value3": null},
-        //     {"id": "SP_bath", "value1": null, "value2": 0, "value3": null},
-        //     {"id": "SP_bathroomCabinet", "value1": null, "value2": 0, "value3": null},
-        //     {"id": "SP_showerCurtain", "value1": null, "value2": 0, "value3": null},
-        //     {"id": "SP_bedroomWindow", "value1": null, "value2": 0, "value3": null},
-        //     {"id": "SP_book", "value1": null, "value2": 0, "value3": null},
-        //     {"id": "SP_bedroomCabinet", "value1": null, "value2": 0, "value3": null},
-        //     {"id": "SP_weapon", "value1": null, "value2": 0, "value3": null}
-        // ]
     }
   }
   
