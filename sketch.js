@@ -2366,6 +2366,10 @@ function mouseClicked() {
           eepySleepy = true
         }
 
+        if (dialogueToDisplay == 70 && dialogueType == 'interact' && SNDradio.isPlaying() == true) {
+          SNDradio.stop()
+        }
+
         displayFollowUpDialogue()
   
       } else {
@@ -2767,6 +2771,9 @@ function getKilledFool(newEnding) {
 
 
   } else {
+
+    killerJumpscare = false
+    SNDjumpscare.stop()
 
     if (branchDiagramUnlocks[endingPicked][1] == false) {
       ENDdisplayingUnlock = true
@@ -5242,6 +5249,11 @@ if (selectingExistingPlayer == true) {
 
 if (fadingInit == true) {
   manageFade()
+}
+
+if (dialogueToDisplay == 15 && dialogueType == 'interact' && SNDradio.isPlaying() == false) {
+  SNDradio.loop()
+  SNDradio.play()
 }
 
 
