@@ -1491,6 +1491,14 @@ function placeObjectsInside () {
 }
 
 function leftNavClicked() {
+  // check if we are in the chace sequence and killer is in hall
+  if (currentPlayStage == 7 && RADkillerLocation ==2) {
+    // if trying to navigate to hall, prevent it
+    if (currentLocation != 1 && (currentLocation == 2 || currentLocation == 3 || currentLocation == 4 || currentLocation == 5)) {
+      return;
+    }
+  }
+
   if (currentLocation == 1) {
     if (currentFocus == 1) {
       currentFocus = 3
@@ -1533,6 +1541,14 @@ function leftNavClicked() {
 }
 
 function rightNavClicked() {
+  // check if were in the chase sequence and killer is in hall
+  if (currentPlayStage == 7 && RADkillerLocation == 2) {
+    // if trying to navigate to hall, prevent it...
+    if (currentLocation != 1 && (currentLocation == 2 || currentLocation == 3 || currentLocation == 4 || currentLocation == 5)) {
+      return;
+    }
+  }
+
   if (currentLocation == 1) {
     if (currentFocus == 1) {
       currentFocus = 2
@@ -2079,6 +2095,17 @@ function choiceMade(optionChosen) {
       if (optionChosen == 1) {
         SP_hidingArray.push('wardrobe')
       }
+    } else if (dialogueToDisplay == 48) {
+      if (optionChosen == 1) {
+        // try again
+        manageActionOrder(6)
+        branchCodeArray[6][1] = true
+      } else {
+        // give up
+        manageActionOrder(6)
+        branchCodeArray[6][1] = false
+        displayingDialogue = false
+      }
     }
   } else {
     if (dialogueToDisplay == 25) {
@@ -2546,13 +2573,15 @@ function checkNoInteractDialogue() {
   } else if (alternativeInteractText == 69) {
     noInteractDialogue = true
     gameEnd('escaped')
+  } else if (interactID == 8 && dialogueToDisplay == 28) {
+    // allow bathroom door interaction during hiding sequence
+    noInteractDialogue = false
   } else {
     noInteractDialogue = false
   }
 }
 
 function displayFollowUpDialogue() {
-
   if (dialogueToDisplay == 19 && dialogueType == 'story') {
     followUpDialogue = [20, 'story']
   } else if (dialogueToDisplay == 15 && dialogueType == 'interact') {
@@ -2564,9 +2593,12 @@ function displayFollowUpDialogue() {
   } else if (dialogueToDisplay == 44 && dialogueType == 'interact') {
     followUpDialogue = [48, 'interact']
   } else if (dialogueToDisplay == 48 && dialogueType == 'interact') {
-    followUpDialogue = [53, 'interact']
+    if (branchCodeArray[6][1] == true) {
+      // only show death sequence if player chose to try again
+      followUpDialogue = [53, 'interact']
+    }
+    // if player gave up, no follow up dialogue
   }
-
 }
 
 function bathroomMirrorInteract() {
@@ -2931,6 +2963,10 @@ function groggyMouse() {
 }
 
 function gameEnd(endTrigger) {
+  // stop chase music if its playing
+  if (SNDchaseSong.isPlaying()) {
+    SNDchaseSong.stop();
+  }
 
   let newEnding = null;
 
@@ -3403,14 +3439,14 @@ function tryAgain() {
   //pause at full opacity before resume fade in other direction
   fadeHold = 0;
   //transition locations/focus when fade at full opacity (smoother transition e.g. through doors)
-  intermediateGameState = null;
-  intermediateLocation = null;
-  intermediateFocus = null;
+  intermediateGameState = 1;
+  intermediateLocation = 1;
+  intermediateFocus = 1;
   //faster fades inside (fades more frequent, long fades become tedious)
   fadeSpeed = 1;
   //dialogue to display when fade ends (if at all) e.g. when returning home, fade into entrance then dialogue prompt to put dinner on
-  postFadeDialogue = false;
-  postFadeDialogueIndex = null;
+  postFadeDialogue = true;
+  postFadeDialogueIndex = 4;
 
   useGroggyMouse = false;
 
