@@ -270,6 +270,9 @@ let displayObjective = false;
 let showHUD = false;
 
 let firstChasePrompt = false;
+let dustyBed = false;
+let slipperShower = false;
+let occupiedWardrobe = false;
 
 //Graphics maps for each environment, dictating placement of tiles for background
 //Oriented weirdly for some reason? Wasn't harming anyone so just left it lol
@@ -562,7 +565,14 @@ function preload() {
   VT323Font = loadFont("assets/fonts/VT323-Regular.ttf")
 
   //sound
-  SNDbrokenGlass = loadSound("assets/sound/broken-glass.mp3")
+  SNDbrokenGlass = loadSound("assets/Sound/broken-glass.mp3")
+  SNDchaseSong = loadSound("assets/Sound/chase-song.mp3")
+  SNDdoorOpen = loadSound("assets/Sound/door-interact.mp3")
+  SNDdoorLock = loadSound("assets/Sound/door-lock.mp3")
+  SNDinside = loadSound("assets/Sound/inside-house.mp3")
+  SNDoutside = loadSound("assets/Sound/outside-house.mp3")
+  SNDradio = loadSound("assets/Sound/radio-noise.mp3")
+  SNDsurprise = loadSound("assets/Sound/surprise-sound-effect.mp3")
 
   //background tiles (outside)
   OSfloor1 = loadImage("assets/OSFloor1.png")
@@ -1149,6 +1159,9 @@ function outdoorsStoryPointTrigger() {
     appearBlend = 1
     cutScenes[1] = true
 
+    SNDsurprise.setVolume(0.8)
+    SNDsurprise.play()
+
   } else {
 
     push()
@@ -1650,9 +1663,11 @@ function checkMouseHover() {
               }
             }
           } else if (-340 < newMouseX && newMouseX < -210 && -160 < newMouseY && newMouseY < 190) {
+            //removed
             if ((currentPlayStage == 2 || currentPlayStage == 4 || currentPlayStage == 6) && interactionCounts[3] == 0) {
               interactID = 5
             }
+            interactID = 0
           }
         } else if (currentLocation == 1 && currentFocus == 2) {
           if (-580 < newMouseX && newMouseX < -320 && -112 < newMouseY && newMouseY < 380) {
@@ -1697,9 +1712,11 @@ function checkMouseHover() {
               alternativeInteractText = 59
             }
           } else if (140 < newMouseX && newMouseX < 300 && 120 < newMouseY && newMouseY < 200) {
+            //removed
             if ((currentPlayStage == 2 || currentPlayStage == 4 || currentPlayStage == 6) && interactionCounts[10] == 0) {
               interactID = 11
             }
+            interactID = 0
           } else if (100 < newMouseX && newMouseX < 330 && -80 < newMouseY && newMouseY < 80) {
             if (currentPlayStage == 2 || currentPlayStage == 4 || currentPlayStage == 6 || currentPlayStage == 7) {
               if (currentPlayStage == 6 && interactionCounts[11] == 0) {
@@ -1723,10 +1740,12 @@ function checkMouseHover() {
             }
           }
         } else if (currentLocation == 2 && currentFocus == 2) {
+          //removed
           if (-80 < newMouseX && newMouseX < 310 && 90 < newMouseY && newMouseY < 190) {
             if (currentPlayStage == 6 && interactionCounts[13] == 0) {
               interactID = 14
             }
+            interactID = 0
           } else if (-80 < newMouseX && newMouseX < 310 && 200 < newMouseY && newMouseY < 330) {
             if ((currentPlayStage == 2 || currentPlayStage == 4 || currentPlayStage == 6) && interactionCounts[14] == 0) {
               interactID = 15
@@ -1842,9 +1861,11 @@ function checkMouseHover() {
               alternativeInteractText = 50
             }
           } else if (140 < newMouseX && newMouseX < 370 && -80 < newMouseY && newMouseY < 175) {
+            //removed
             if ((currentPlayStage > 5) && interactionCounts[31] == 0) {
               interactID = 32
             }
+            interactID = 0
           } else if (-340 < newMouseX && newMouseX < -165 && 120 < newMouseY && newMouseY < 330) {
             if ((currentPlayStage == 2 || currentPlayStage == 4) && interactionCounts[32] == 0) {
               interactID = 33
@@ -2007,6 +2028,7 @@ function choiceMade(optionChosen) {
       if (optionChosen == 1) {
         manageActionOrder(18)
         branchCodeArray[18][1] = true
+        followUpDialogue = [52, 'interact']
       }
     } else if (dialogueToDisplay == 48) {
       if (optionChosen == 1) {
@@ -2042,6 +2064,13 @@ function choiceMade(optionChosen) {
   } else {
     if (dialogueToDisplay == 25) {
       if (optionChosen == 1) {
+        if (currentLocation == 4) {
+          RADkillerLocation = 2
+          RADplayerLocation = 4
+        } else {
+          RADkillerLocation = 2
+          RADplayerLocation = 5
+        }
         fadingInit = true
         fadingForward = true
         intermediateWalkieGameActive = true
@@ -2060,6 +2089,19 @@ function choiceMade(optionChosen) {
         minigame4Active = true
         pregameInstructions4 = true
       }
+    } else if (dialogueToDisplay == 29) {
+      if (optionChosen == 1) {
+        intermediateLocation = 4
+        intermediateFocus = 1
+      } else {
+        intermediateLocation = 2
+        intermediateFocus = 3
+      }
+      fadingInit = true
+      fadingForward = true
+      SNDchaseSong.loop()
+      SNDchaseSong.play()
+
     }
     if (cutScenes[1] == true) {
       if (optionChosen == 1) {
@@ -2178,9 +2220,10 @@ function mouseClicked() {
   } else if (MIRdisplay == true) {
     MIRdisplay = false
 
-  } else if (pickingRewind == true && selectedRewindID != null) {
+  } else if (pickingRewind == true && selectedRewindID == 13) {
     
-    rewindPlay(selectedRewindID)
+    tryAgain()
+    // rewindPlay(selectedRewindID)
     pickingRewind = false
 
   } else if (hidingResult == true) {
@@ -2321,27 +2364,12 @@ function mouseClicked() {
             intermediateLocation = 3
             intermediateFocus = 2
           } else if (interactID == 17 && alternativeInteractText == null) {
-            if (currentPlayStage == 7 && firstChasePrompt == false) {
-              
-              if (ITMarray.filter(item => item === 'phone').length == 2) {
-                displayingDialogue = true
-                dialogueType = 'story'
-                dialogueToDisplay = 25
-                firstChasePrompt = true
-              } else {
-                displayingDialogue = true
-                dialogueType = 'story'
-                dialogueToDisplay = 24
-                firstChasePrompt = true
-              }
-            } else {
 
               fadingInit = true
               fadingForward = true
               intermediateLocation = 1
               intermediateFocus = 2
 
-            }
           } else if (interactID == 18 && alternativeInteractText == null) {
             fadingInit = true
             fadingForward = true
@@ -2495,8 +2523,6 @@ function displayFollowUpDialogue() {
     followUpDialogue = [70, 'interact']
   } else if (dialogueToDisplay == 22 && dialogueType == 'story') {
     followUpDialogue = [23, 'story']
-  } else if (dialogueToDisplay == 37 && dialogueType == 'interact') {
-    followUpDialogue = [52, 'interact']
   } else if (dialogueToDisplay == 44 && dialogueType == 'interact') {
     followUpDialogue = [48, 'interact']
   } else if (dialogueToDisplay == 48 && dialogueType == 'interact') {
@@ -2591,7 +2617,25 @@ function manageFade() {
         gameEnd(SP_hidingArray[(SP_hidingArray.length) - 1])
         hidingTransition = false
       }
+
+      if (currentLocation == 1 && currentPlayStage == 7 && firstChasePrompt == false) {
+      
+        displayingDialogue = true
+        dialogueToDisplay = 29
+        dialogueType = 'story'
+        firstChasePrompt = true
+        SNDsurprise.setVolume(0.8)
+        SNDsurprise.play()
+
+      } else if (dialogueToDisplay == 29) {
+        if (ITMarray.filter(item => item === 'phone').length == 2) {
+          followUpDialogue = [25, 'story']
+        } else {
+          followUpDialogue = [24, 'story']
+        }
+      }
     }
+
   } else if (fadingForward == null) {
     if (fadeHold == 12) {
       fadingForward = false
@@ -3099,88 +3143,319 @@ function pickRewind() {
     pop()
   }
 
+  push()
+  fill('white')
+  rect(0, 490, 510, 125)
+  fill('black')
+  rect(0, 490, 500, 115)
+  fill('white')
+  textFont(VT323Font, 35)
+  textAlign(CENTER, CENTER)
+  text("It didn't have to end like this...", 0, 460)
+  textSize(70)
+  text("try again", 0, 500)
+  pop()
+
+  if (newMouseX > -250 && newMouseX < 250 && newMouseY > 430 && newMouseY < 540) {
+    selectedRewindID = 13
+  }
 
 }
 
-function rewindPlay(selectedRewindPoint) {
+//scrapped for time constraints :(
+// function rewindPlay(selectedRewindPoint) {
   
-  let rewindActionNumber = null;
-  let rewindActionState = null;
-  let branchCodeIndex = null;
+//   let rewindActionNumber = null;
+//   let rewindActionState = null;
+//   let branchCodeIndex = null;
 
-  if (selectedRewindPoint == 1) {
-    if (branchCodeArray[13][1] == false) {
+//   if (selectedRewindPoint == 1) {
+//     if (branchCodeArray[13][1] == false) {
 
-      branchCodeIndex = 13
+//       branchCodeIndex = 13
 
-    } else {
+//     } else {
 
-      branchCodeIndex = 20
+//       branchCodeIndex = 20
 
-    }
-  } else if (selectedRewindPoint == 2) {
+//     }
+//   } else if (selectedRewindPoint == 2) {
 
-    minigame4Active = true
-    pregameInstructions4 = true
+//     minigame4Active = true
+//     pregameInstructions4 = true
 
-  } else if (selectedRewindPoint == 3) {
+//   } else if (selectedRewindPoint == 3) {
 
-    minigame4Active = true
-    pregameInstructions4 = true
+//     minigame4Active = true
+//     pregameInstructions4 = true
 
-  } else if (selectedRewindPoint == 4) {
+//   } else if (selectedRewindPoint == 4) {
 
-    minigame4Active = true
-    pregameInstructions4 = true
+//     minigame4Active = true
+//     pregameInstructions4 = true
 
-  } else if (selectedRewindPoint == 5) {
+//   } else if (selectedRewindPoint == 5) {
 
-    branchCodeIndex = 0
+//     branchCodeIndex = 0
 
-  } else if (selectedRewindPoint == 6) {
+//   } else if (selectedRewindPoint == 6) {
 
-    branchCodeIndex = 6
+//     branchCodeIndex = 6
 
-  } else if (selectedRewindPoint == 7) {
+//   } else if (selectedRewindPoint == 7) {
 
-    //door locks
+//     if (branchCodeArray[1][1] == true) {
+//       branchCodeIndex = 1
+//     } else {
+//       branchCodeIndex = 2
+//     }
 
-  } else if (selectedRewindPoint == 8) {
+//   } else if (selectedRewindPoint == 8) {
 
-    branchCodeIndex = 3
+//     branchCodeIndex = 3
 
-  } else if (selectedRewindPoint == 9) {
+//   } else if (selectedRewindPoint == 9) {
 
-    branchCodeIndex = 15
+//     branchCodeIndex = 15
 
-  } else if (selectedRewindPoint == 10) {
+//   } else if (selectedRewindPoint == 10) {
 
-    //win
+//     branchCodeIndex = 0
 
-  } else if (selectedRewindPoint == 11) {
+//   } else if (selectedRewindPoint == 11) {
 
-    if (ITMarray.filter(item => item === 'phone').length == 2) {
+//     if (ITMarray.filter(item => item === 'phone').length == 2) {
 
-      rewindActionState = 7
+//       rewindActionState = 7
 
-    } else {
+//     } else {
 
-      rewindActionState = 4
+//       rewindActionState = 4
 
-    }
+//     }
 
-  } else if (selectedRewindPoint == 12) {
+//   } else if (selectedRewindPoint == 12) {
 
-    branchCodeIndex = 12
+//     branchCodeIndex = 12
 
-  }
+//   }
 
-  if (branchCodeIndex != null) {
-    rewindActionNumber = branchCodeArray[branchCodeIndex][2]
-    rewindActionState = branchCodeArray[branchCodeIndex][3]
-  }
+//   if (branchCodeIndex != null) {
+//     rewindActionNumber = branchCodeArray[branchCodeIndex][2]
+//     rewindActionState = branchCodeArray[branchCodeIndex][3]
+//   }
+
+//   if (rewindActionNumber != null) {
+//     for (branchCode in branchCodeArray) {
+//       if (branchCodeArray[branchCode][2] >= rewindActionNumber) {
+//         branchCodeArray[branchCode][1] = null
+
+//       }
+//     }
+//   }
 
 
+// }
+
+function tryAgain() {
+
+//dictating which 'stage' of the game we are in, changes the background tilemaps and any events
+currentGameState = 0;
+//more specific, works within each game state i.e. may be in state 2 (inside), dictates whether in location 0 (bathroom) or location 1 (bedroom) etc.
+currentLocation = 1;
+//even more specific, specifies which part of a location is the player's current focus i.e. left wall
+currentFocus = 1;
+//when inside, what 'stage' of play - dictates objectives and interactivity options etc
+currentPlayStage = 0;
+
+pauseMenuHover = null;
+
+quittingGame = false;
+
+//managing fade transition between scenes
+fadeOpacity = 0;
+fadeStage = 48;
+fadingInit = true;
+//fading opacity zero to full or other way (forward = zero to full)
+fadingForward = false;
+//pause at full opacity before resume fade in other direction
+fadeHold = 0;
+//transition locations/focus when fade at full opacity (smoother transition e.g. through doors)
+intermediateGameState = null;
+intermediateLocation = null;
+intermediateFocus = null;
+//faster fades inside (fades more frequent, long fades become tedious)
+fadeSpeed = 1;
+//dialogue to display when fade ends (if at all) e.g. when returning home, fade into entrance then dialogue prompt to put dinner on
+postFadeDialogue = false;
+postFadeDialogueIndex = null;
+
+useGroggyMouse = false;
+
+
+//dialogue + interactivity variables
+interactID = 0;
+//showing dialogue?
+displayingDialogue = false;
+//does the dialogue have a choice or just click to close
+displayingChoice = false;
+currentChoices = [];
+//input not available when dialogue is mid-typing (prevents skipping dialogue before finished)
+inputBlocked = false;
+//which dialogue to show in dialogue box
+dialogueToDisplay = 0;
+//if finish of dialogue should immediately prompt second dialogue
+followUpDialogue = [null, null];
+//prevents errors if interaction doesn't prompt dialogue (i.e. collecting item, cutscene with mirror, window etc.)
+noInteractDialogue = false;
+//various branching choices format: [name, completion status, order completed, play stage completed at]
+branchCodeArray = [
+  ['SP_lend', null, 0, null],
+  ['SP_fdLock', null, 0, null],
+  ['SP_fdChain', null, 0,  null],
+  ['SP_shoes', null, 0, null],
+  ['SP_satchel', null, 0, null],
+  ['SP_hallDrawer', null, 0, null],
+  ['SP_phone', null, 0, null],
+  ['SP_lrWindow', null, 0, null],
+  ['SP_lrUpperDrawer', null, 0, null],
+  ['SP_lrLowerDrawer', null, 0, null],
+  ['SP_radio', null, 0, null],
+  ['SP_TV', null, 0, null],
+  ['SP_diningChair', null, 0, null],
+  ['SP_kitchenSink', null, 0, null],
+  ['SP_bath', null, 0, null],
+  ['SP_bathroomCabinet', null, 0, null],
+  ['SP_showerCurtain', null, 0, null],
+  ['SP_bedroomWindow', null, 0, null],
+  ['SP_book', null, 0, null],
+  ['SP_bedroomCabinet', null, 0, null],
+  ['SP_weapon', null, 0, null]
+]
+
+//stores how many actions have been completed to track when each story point branch is completed
+actionOrder = 0;
+
+//whether displaying screen to choose rewind point
+pickingRewind = false;
+//which point to rewind to
+selectedRewindID = null;
+
+//where player is hiding/has hidden
+SP_hidingArray = [];
+
+ENDanimationTick = 0;
+ENDdisplayingUnlock = false;
+
+//which ending has just been unlocked
+currentUnlockEnd = null;
+
+//lock 1 minigame, position and direction of movement of each pin
+lockPinPositions = [0, 0, 0, 0, 0];
+lockPinDirections = [1, 1, 1, 1, 1];
+//position of player indicator in lock 1 minigame
+lockCharacterPositionX = 113;
+lockCharacterPositionY = -312;
+
+//arrow marker in lock 2 minigame
+chainArrowPosition = 0
+
+//timer and other variables on lock minigames
+ minigameStartTime = 0;
+ minigame1Duration = 45000;
+ minigame1success = 0;
+ minigame2Duration = 45000;
+ minigame2success = 0;
+ minigame2Progress = 0;
+ minigame2Active = false;
+ minigame2ArrowDirection = 1
+ minigame2ArrowSpeed = 1;
+ minigame2FinishTime = 0;
+
+ minigame3Active = false;
+ minigame3init = true;
+ RADkillerLocation = 0;
+ RADplayerLocation = 0;
+ RADanimFrames = [];
+ intermediateWalkieGameActive = false;
+ RADanimTick = 0;
+ RADhoveredRoom = 0;
+ RADchoosingLocation = 'player';
+ RADwalkieLocations = [3, 5]
+ RADkillerMove = []
+ RADplayerMove = []
+
+ minigame4Active = false;
+ minigame4Failed = false;
+ minigame4radius = 500;
+ pregameInstructions4 = true;
+ playInProgress = false;
+
+ displayingMinigameInstructions = false;
+ hoveringMinigameInstructionButton = false;
+
+ hidingResult = false;
+ hidingTransition = false;
+
+//list containing number of interactions with each object
+ interactionCounts = [];
+ holdInteractCount = 0;
+
+//if interaction objects have multiple dialogues linked (i.e. based on different choices/stages of the game)
+ alternativeInteractText = null;
+//story or interact dialogue
+ dialogueType = null;
+
+//interact text when outside, hover over head
+ outsideIntTextPositionX = 0;
+ outsideIntID = 0;
+
+//interacting with man outside in opening scene
+ outsideStoryPoint = false;
+
+//tracks interactions in specific play stage i.e. while waiting for food to cook, player progression based on how many interactions completed (food done after 8 interacts)
+ playStageInteractCounter = 0;
+
+ currentQuinnWalkFrame = 0;
+ quinnMovable = false;
+ SPRrightAmount = 620;
+ SPRleftAmount = 0;
+ quinnFacing = -1;
+ walkingXpos = 0;
+ BGscrollAmount = 0;
+
+//mirror cutscene, quinn animation (eyes)
+ MIRanimTick = 0;
+ MIRdisplay = false;
+
+//window cutscene
+ showingWindowInteract = false;
+
+//whether fade animation is player going to sleep
+ goingToSleep = false;
+
+//collecting items animation
+ ITMcollectAnimTick = 0;
+ ITMcollectedType = null;
+//items collected
+ ITMarray = [];
+
+ cutScenes = [false, false]
+ appearStage = 0
+ appearBlend = 1
+
+
+ objectiveArray = ['walk home', 'cook dinner', 'wait for food', 'get dinner', 'eat dinner', 'get ready for bed', 'go to bed', 'investigate noise', 'HIDE!', 'ESCAPE!', 'unlock, QUICK!', 'investigate ANOTHER noise'];
+ currentObjective = null;
+ displayObjective = false;
+
+ showHUD = false;
+
+ firstChasePrompt = false;
+ dustyBed = false;
+ slipperShower = false;
+ occupiedWardrobe = false;
+  
 }
 
 function moveLockCharacter() {
@@ -3979,6 +4254,7 @@ function breakIn() {
   displayingDialogue = true
   dialogueToDisplay = 22
   dialogueType = 'story'
+
 }
 
 function radioGame() {
@@ -4496,12 +4772,27 @@ function hidingFound() {
 
 }
 
+function ambientSoundManager() {
+
+  if (currentGameState == 1 && SNDoutside.isPlaying() == false) {
+    SNDoutside.setVolume(0.8)
+    SNDoutside.play()
+  } else if (currentGameState == 2 && SNDinside.isPlaying() == false) {
+    SNDinside.loop()
+    SNDinside.play()
+  } else if (SNDchaseSong.isPlaying == true) {
+    SNDinside.stop()
+  }
+}
+
 
 function draw() {
   background('black')
   noCursor()
   
   frameRate(24)
+
+  ambientSoundManager()
 
 
   //Calculates new mouse coordinates based on center of screen instead of default top left corner, thus allowing coordinates to remain same regardless of window resizing - crucial when calculating mouse click position across different window sizes
@@ -4813,6 +5104,8 @@ if (minigame4Active == true) {
 if (hidingResult == true) {
   hidingFound()
 }
+
+pickingRewind = true
 
 if (pickingRewind == true) {
   showHUD = false

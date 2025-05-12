@@ -552,12 +552,12 @@
     },
     {
       "id": 24,
-      "text": "Oh god, he's in the hallway, and he's coming this way! What do I do?",
+      "text": "Oh god, now he's in the hallway, and he's coming this way! I have to hide!",
       "choices": null
     },
     {
       "id": 25,
-      "text": "Oh god, he's in the hallway, and he's coming this way! What do I do?",
+      "text": "Oh god, now he's in the hallway, and he's coming this way! What do I do?",
       "choices": ["use walkie-talkies", "hide"]
     },
     {
@@ -574,6 +574,11 @@
       "id": 28,
       "text": "I've got to hide in the shower, quick!",
       "choices": null
+    },
+    {
+      "id": 29,
+      "text": "Uh oh, he's coming this way! I've got to go, quickly!",
+      "choices": ["bathroom", "living room"]
     }
     
     
