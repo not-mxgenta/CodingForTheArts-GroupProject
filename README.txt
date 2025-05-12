@@ -1,16 +1,5 @@
 #README file
 
-This is the readme file for your project. You should use the template below to write your own readme file.
-You should delete all lowercase text below and replace it with your own writing. You should include all
-titles below (indicated by being all-caps) but you should remove the rest of the text and replace with
-your own. The lower-case text suggests how you might focus your response to each section, but is only
-a suggestion. The key thing is to ensure you conform to the demands of the assessment and marking criteria 
-uploaded to Moodle. You are welcome to include additional titles and text as you desire beyond these.
-
-A copy of this can be found on notion here: https://hughdeleuzer.notion.site/ReadMe-File-Template-190c92fdf1c680d3a3cfc06f349aff28?pvs=4
-
----------------------------------------------------------------------------------------------------------
-
 PROJECT NAME: STALK
 
 BY Scream Queens
@@ -18,8 +7,9 @@ MEMBERS:
 Emily Benn 2503081
 Freddie Thomas 2503851
 
-LINK TO GITHUB REPO: [insert link here]
-LINK TO GITHUB PAGES: [insert link here]
+LINK TO GITHUB REPO: https://github.com/not-mxgenta/CodingForTheArts-GroupProject.git
+LINK TO GITHUB PAGES: https://not-mxgenta.github.io/CodingForTheArts-GroupProject/
+
 
 OVERVIEW OF PROJECT
 
@@ -27,10 +17,27 @@ OVERVIEW OF PROJECT
 With a heavy focus on the themes of choice and consequence, the game encourages players to 'wind-back' time and experience the varying
 outcomes relating to different choices.
 
-Describe your project in a few sentences. What is it about? What are its key technical features? 
-What are its key themes, aesthetics, etc.
 
 INDIVIDUAL CONTRIBUTION
+
+2503081 - Emily //
+
+It's important to start this off by explaining that the divide of work for this project was originally meant to be very different.
+However, Freddie had other personal issues going on, which I will leave to him to explain, which left me to do much of the work, and will probably
+leave this contributions section looking somewhat uneven. I was happy to step up and take on the extra work to give Freddie time for his own situation,
+I am not complaining, but I do think I deserve a teeny-tiny bit of bragging rights about how much I managed.
+
+I came up with the initial idea for the game, which I then pitched to Freddie, who liked the idea and built on it from there. Whilst I focussed on my game
+for the game engines module, Freddie then took on much of the work developing the concept into an ACTUAL game plan. We then split the artwork as planned -
+I did anything seen INSIDE the house (bar the backgrounds of windows, and the window frame above the bed in the bedroom) such as wallpaper and furniture.
+I then began working on the code. I did almost the entirety of the code (due to Freddie having to step back at that point), aside from some of the JSON handling
+and some of the debugging at the end that I asked Freddie to take a look at.
+
+It goes without saying that the main challenge I faced was doing the majority of work for an already complicated 2 to 3 person project as a singular person.
+I'll admit I didn't make it easier on myself by getting a bit carried away with ambition. Although I am very pleased with the end result, there were aspects
+that had to be scrapped due to time constraints (which I will explain further in the segment dedicated to that).
+
+
 Each team members should write a detailed explanation of their individual contribution to the project.
 Be specific: 50% of your mark will be based on your individual contributions, so your marker needs to
 know exactly what you contributed. Explain your process and how you went about it. What research did
@@ -57,10 +64,20 @@ project? Again, think about how your artistic and/or aesthetic choices were info
 of the technical systems of the project.
 
 UNREALISED ASPECTS OF PROJECT
-Discuss here any aspects of the project you would have included if you had more time. Think about technical
-issues you had and how you might go about trying to fix them (or how you'd start the research process) if
-time and scope allowed. What other mechanics or ideas would you have implemented with more time? How would you
-have gone about implementing these?
 
-You may include more titles and text if you desire beyond the above titles if you want. Put them here at the bottom.
-You may, for instance, want to include a narrative section if story is particularly important to your project.
+I planned to include an aspect where, upon game over, you could 'rewind' to the specific choice that 'locked' you into 
+that fate, and try something different (similar to Casting of Frank Stone's Cutting Room Floor). However, time constraints meant that
+it was scrapped, although I left the beginnings of that code commented out if you want to have a look.
+
+I also admit the debugging was nowhere near as thorough as I would have liked, also due to time and general burnout as we got closer
+to the deadline. I don't deal at all well with warm weather and so was particularly struggling in the last week or so where I could
+have got a lot more done otherwise.
+
+The project would ideally also have had much more in depth sound design, with more interact effects, a typing noise when displaying dialogue etc.
+However, I am *rubbish* with sound-stuff, and, if he was available, would have liked to have left it to Freddie as I think he would have done
+a much better job.
+
+
+DEPENDENCIES
+
+To enable saving of player data across sessions I used node.js.

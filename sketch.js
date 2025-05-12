@@ -5388,20 +5388,36 @@ tint(255, 100);
 image(VHSoverlay, 0, 0, 1560, 1034);
 pop()
 
+// push()
+
+// resetMatrix()
+// fill(0, 0, 0, 0)
+// strokeWeight(30)
+// stroke(50, 50, 50)
+// rect(0, 256/4, 1550, 1024)
+// strokeWeight(20)
+// stroke(100, 100, 100)
+// rect(0, 256/4, 1550, 1024)
+// strokeWeight(10)
+// stroke(150, 150, 150)
+// rect(0, 256/4, 1550, 1024)
+
+// pop()
+
 push()
+fill('black')
+rect(-1175, 0, 800, windowHeight)
+rect(1175, 0, 800, windowHeight)
+rect(0, -712 + 64, windowWidth, 400)
+rect(0, 712 + 64, windowWidth, 400)
+pop()
 
-resetMatrix()
-fill(0, 0, 0, 0)
-strokeWeight(30)
-stroke(50, 50, 50)
-rect(0, 256/4, 1550, 1024)
-strokeWeight(20)
-stroke(100, 100, 100)
-rect(0, 256/4, 1550, 1024)
-strokeWeight(10)
-stroke(150, 150, 150)
-rect(0, 256/4, 1550, 1024)
-
+push()
+fill('white')
+rect(-780, 64, 10, 1024)
+rect(780, 64, 10, 1024)
+rect(0, -517 + 64, 1570, 10)
+rect(0, 517 + 64, 1570, 10)
 pop()
 
 
