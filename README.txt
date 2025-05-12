@@ -48,9 +48,9 @@ practical possibilities within the time and technical constraints is a key skill
 detailed and clear, and include *any* contribution you made to the project.
 
 THEMES
-Discuss the main themes of your PROJECT and how you approached communicating them through the project. 
-Remember: the module is called 'coding for the arts', so think about how you approached expressing 
-your ideas through the technical aspects of the project!
+
+Like many of my beloved story horror games, this game is HEAVILY themed around the consequences of seemingly small choices, and how drastically one decision
+can effect events going forward. 
 
 DESIGN
 Discuss the overall mechanical aspects of the project. Think about how it connects with your themes
@@ -59,9 +59,11 @@ understanding of the technical systems that you were taught in class (and partic
 the assessment brief).
 
 AESTHETIC DIMENSIONS
-As a group, how did you ensure parity between the aesthetic, technical and thematic demands of the
-project? Again, think about how your artistic and/or aesthetic choices were informed by your understanding
-of the technical systems of the project.
+
+In general we just communicated consistently, and if we were unsure about something i.e. what size the tiles were going to be etc
+we'd just, y'know. ask?
+
+Equally, we didn't encounter the issue much, as I did most of it and the only thing I needed to keep consistent with was the voices in my head.
 
 UNREALISED ASPECTS OF PROJECT
 
