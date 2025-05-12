@@ -43,7 +43,6 @@ STALK was developed using Visual Studio Code with the p5.js JavaScript library.
 The game combines both keyboard and mouse interactions to create a hybrid experience of exploration and decision-making.
 p5.js was used to handle rendering, interaction, and game logic.
 
-
 Credits
 
 Sound Effects & Music: Sourced from Pixabay.
@@ -57,7 +56,6 @@ To enable saving of player data across sessions we used node.js.
 Project for: Royal Holloway University of London
 Course: MA1805 Coding for the Arts
 Workshop Leader: Hugh Hammond
-
 
 
 INDIVIDUAL CONTRIBUTION
@@ -91,10 +89,10 @@ although this does seem a bit pointless given my absence for a chunk of the proj
 I contributed the initial idea for the game’s narrative, introducing Quinn as the protagonist and outlining the core story, which was then built upon by Emily's vision of a more dynamic, 
 branching narrative (similar to games like The Walking Dead or Detroit: Become Human).
 I worked on the outside environment, creating the street and sky tiles. Additionally, I drew a couple windows inside the house, with their backgrounds, including a tree silhouette, using Aseprite.
-I also contributed to the jumpscare animation, using online templates to perfect the shading of the figure.
+I also drew the jumpscare animation, using online templates to perfect the shading of the figure's skull.
 
 I then also gathered and organized the sound files required for the game.
-I contributed to the JSON coding and assisted with debugging minor issues, ensuring the code ran smoothly and without errors for final preparations for submission. 
+I contributed to the JSON coding and assisted with debugging minor issues, such as problems with collission and sound. This ensures the code ran smoothly and without errors for final preparations for submission. 
 This included reviewing the README and making sure everything was well-documented.
 
 Challenges:
@@ -105,7 +103,6 @@ I also had to quickly adapt to working within a limited timeframe, which require
 Solutions and Adjustments:
 I found that organizing the project through the Miro board and workflow checklist helped streamline the process for Emily and myself.
 Despite the challenges, I adjusted my approach by contributing more in terms of planning, organization, and supporting the art and sound design, which allowed Emily to focus on the code and gameplay mechanics.
-
 
 
 DESIGN
@@ -125,13 +122,12 @@ Mechanics:
 more details on the design can be and creation can be found on the Miro Board Link located at the top of the README.
 
 
-
 AESTHETIC DIMENSIONS
 
 We kept the communication flowing pretty smoothly throughout the project.
 If something was unclear—like what size the tiles were supposed to be—we'd just ask and figure it out.
 
-For the most part, the game development went like Freddie helping out wherever he could to make Emily's life a bit easier, since she had a lot on her plate already.
+For the most part, the game development went like Freddie helping out wherever he could to make Emily's life a bit easier, since they had alot on their plate already.
 
 
 
