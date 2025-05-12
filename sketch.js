@@ -277,6 +277,13 @@ let eepySleepy = false;
 
 let killerJumpscare = false;
 let jumpscareTick = 0;
+let jumpscareCounter = 0;
+
+let firstEncounter = true;
+
+let jumpScares = [];
+
+let endingPicked = null;
 
 
 //Graphics maps for each environment, dictating placement of tiles for background
@@ -578,6 +585,7 @@ function preload() {
   SNDoutside = loadSound("assets/Sound/outside-house.mp3")
   SNDradio = loadSound("assets/Sound/radio-noise.mp3")
   SNDsurprise = loadSound("assets/Sound/surprise-sound-effect.mp3")
+  SNDjumpscare = loadSound("assets/Sound/jumpscare.mp3")
 
   //background tiles (outside)
   OSfloor1 = loadImage("assets/OSFloor1.png")
@@ -760,6 +768,11 @@ function preload() {
   MGradAnim5 = loadImage("assets/minigames/RAD_frame5.png")
   MGradAnim6 = loadImage("assets/minigames/RAD_frame6.png")
 
+  //jumpscares
+  JSframe1 = loadImage("assets/Jumpscare/Jumpscare1.png")
+  JSframe2 = loadImage("assets/Jumpscare/Jumpscare2.png")
+  JSframe3 = loadImage("assets/Jumpscare/Jumpscare3.png")
+
 
   //ending animation unlock frames
 
@@ -830,6 +843,8 @@ function setup() {
   ]
 
   RADanimFrames = [MGradAnim1, MGradAnim2, MGradAnim3, MGradAnim4, MGradAnim5, MGradAnim6, MGradAnim1]
+
+  jumpScares = [JSframe1, JSframe2, JSframe3, JSframe2]
 
 }
 
@@ -2716,19 +2731,51 @@ function manageFade() {
 
 function getKilledFool(newEnding) {
 
-  let endingPicked = null;
+  if (SNDjumpscare.isPlaying() == false) {
+    SNDjumpscare.play()
+
+  }
+
+
+  push()
+  fill('black')
+  rect(0, 264/4, 1550, 1024)
 
   if (newEnding != null) {
     endingPicked = newEnding
   }
 
-  if (branchDiagramUnlocks[endingPicked][1] == false) {
-    ENDdisplayingUnlock = true
-    currentUnlockEnd = endingPicked
+  if (jumpscareCounter < 10) {
+
+    push()
+    let randomRotation = 0;
+    let randomZoom = 0;
+    randomZoom = random(0.9, 1.1)
+    randomRotation = random(-10, 10)
+    scale(randomZoom, randomZoom)
+    rotate(randomRotation)
+    image(jumpScares[jumpscareTick], 0, 0)
+
+    pop()
+
+    if (jumpscareTick < 3) {
+      jumpscareTick ++
+    } else {
+      jumpscareTick = 0
+      jumpscareCounter ++
+    }
+
+
   } else {
-    pickRewind()
-    pickingRewind = true
-  }
+
+    if (branchDiagramUnlocks[endingPicked][1] == false) {
+      ENDdisplayingUnlock = true
+      currentUnlockEnd = endingPicked
+    } else {
+      pickRewind()
+      pickingRewind = true
+    }
+  }  
 
 }
 
@@ -3524,6 +3571,8 @@ function tryAgain() {
   slipperShower = false;
   occupiedWardrobe = false;
   eepySleepy = false;
+
+  firstEncounter = true
     
 }
 
@@ -5009,6 +5058,8 @@ function draw() {
   }
 
   if (cutScenes[1] == true) {
+    outdoorsStoryPointTrigger()
+  } else if (firstEncounter == false) {
     outdoorsStoryPointTrigger()
   }
 
