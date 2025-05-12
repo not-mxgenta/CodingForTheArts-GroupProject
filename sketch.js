@@ -273,6 +273,11 @@ let firstChasePrompt = false;
 let dustyBed = false;
 let slipperShower = false;
 let occupiedWardrobe = false;
+let eepySleepy = false;
+
+let killerJumpscare = false;
+let jumpscareTick = 0;
+
 
 //Graphics maps for each environment, dictating placement of tiles for background
 //Oriented weirdly for some reason? Wasn't harming anyone so just left it lol
@@ -1968,7 +1973,7 @@ function choiceMade(optionChosen) {
         goingToSleep = true
         currentPlayStage = 6
         postFadeDialogue = true
-        postFadeDialogueIndex = 15
+        postFadeDialogueIndex = 14
       } else {
         manageActionOrder(11)
         branchCodeArray[11][1] = 'romcom'
@@ -2009,7 +2014,6 @@ function choiceMade(optionChosen) {
         fadingForward = true
         postFadeDialogue = true
         postFadeDialogueIndex = 17
-        currentPlayStage = 5
       } else {
         manageActionOrder(15)
         branchCodeArray[15][1] = false
@@ -2340,6 +2344,13 @@ function mouseClicked() {
           gameEnd('phone')
         }
 
+        if (dialogueToDisplay == 14 && dialogueType == 'story') {
+          fadingInit = true
+          fadingForward = true
+          goingToSleep = true
+          eepySleepy = true
+        }
+
         displayFollowUpDialogue()
   
       } else {
@@ -2353,43 +2364,51 @@ function mouseClicked() {
             fadingForward = true
             intermediateLocation = 2
             intermediateFocus = 2
+            SNDdoorOpen.play()
           } else if (interactID == 9 && alternativeInteractText == null) {
             fadingInit = true
             fadingForward = true
             intermediateLocation = 4
             intermediateFocus = 1
+            SNDdoorOpen.play()
           } else if (interactID == 10 && alternativeInteractText == null) {
             fadingInit = true
             fadingForward = true
             intermediateLocation = 3
             intermediateFocus = 2
+            SNDdoorOpen.play()
           } else if (interactID == 17 && alternativeInteractText == null) {
 
               fadingInit = true
               fadingForward = true
               intermediateLocation = 1
               intermediateFocus = 2
+              SNDdoorOpen.play()
 
           } else if (interactID == 18 && alternativeInteractText == null) {
             fadingInit = true
             fadingForward = true
             intermediateLocation = 5
             intermediateFocus = 3
+            SNDdoorOpen.play()
           } else if (interactID == 24 && alternativeInteractText == null) {
             fadingInit = true
             fadingForward = true
             intermediateLocation = 1
             intermediateFocus = 3
+            SNDdoorOpen.play()
           } else if (interactID == 30 && alternativeInteractText == null) {
             fadingInit = true
             fadingForward = true
             intermediateLocation = 1
             intermediateFocus = 3
+            SNDdoorOpen.play()
           } else if (interactID == 40 && alternativeInteractText == null) {
             fadingInit = true
             fadingForward = true
             intermediateLocation = 2
             intermediateFocus = 3
+            SNDdoorOpen.play()
           } else if (interactID != 0) {
 
             checkNoInteractDialogue()
@@ -2633,6 +2652,8 @@ function manageFade() {
         } else {
           followUpDialogue = [24, 'story']
         }
+      } else if (dialogueToDisplay == 33 && eepySleepy == true) {
+        gameEnd('bed')
       }
     }
 
@@ -2689,6 +2710,24 @@ function manageFade() {
       }
       
     }
+  }
+
+}
+
+function getKilledFool(newEnding) {
+
+  let endingPicked = null;
+
+  if (newEnding != null) {
+    endingPicked = newEnding
+  }
+
+  if (branchDiagramUnlocks[endingPicked][1] == false) {
+    ENDdisplayingUnlock = true
+    currentUnlockEnd = endingPicked
+  } else {
+    pickRewind()
+    pickingRewind = true
   }
 
 }
@@ -2843,36 +2882,62 @@ function gameEnd(endTrigger) {
 
   if (branchCodeArray[20][1] == true && (endTrigger == 'sneeze' || endTrigger == 'wardrobe' || endTrigger == 'shower' || endTrigger == 'phone' || endTrigger == 'radio')) {
     newEnding = 0
+    if (branchDiagramUnlocks[newEnding][1] == false) {
+      ENDdisplayingUnlock = true
+      currentUnlockEnd = newEnding
+    } else {
+      pickRewind()
+      pickingRewind = true
+    }
   } else if (branchCodeArray[15][1] == true) {
     newEnding = 8
+    getKilledFool(newEnding)
+    killerJumpscare = true
   } else if (endTrigger == 'lock1' || endTrigger == 'lock2') {
     newEnding = 6
+    getKilledFool(newEnding)
+    killerJumpscare = true
   } else if (endTrigger == 'sneeze') {
     newEnding = 3
+    getKilledFool(newEnding)
+    killerJumpscare = true
   } else if (endTrigger == 'wardrobe') {
     newEnding = 1
+    getKilledFool(newEnding)
+    killerJumpscare = true
   } else if (endTrigger == 'shower') {
     newEnding = 2
+    getKilledFool(newEnding)
+    killerJumpscare = true
   } else if (endTrigger == 'money') {
     newEnding = 4
+    getKilledFool(newEnding)
+    killerJumpscare = true
   } else if (endTrigger == 'phone') {
     newEnding = 5
+    getKilledFool(newEnding)
+    killerJumpscare = true
   } else if (endTrigger == 'shoes') {
     newEnding = 7
+    getKilledFool(newEnding)
+    killerJumpscare = true
   } else if (endTrigger == 'escaped') {
     newEnding = 9
+    if (branchDiagramUnlocks[newEnding][1] == false) {
+      ENDdisplayingUnlock = true
+      currentUnlockEnd = newEnding
+    } else {
+      pickRewind()
+      pickingRewind = true
+    }
   } else if (endTrigger == 'radio') {
     newEnding = 10
+    getKilledFool(newEnding)
+    killerJumpscare = true
   } else if (endTrigger == 'bed') {
     newEnding = 11
-  }
-
-  if (branchDiagramUnlocks[newEnding][1] == false) {
-    ENDdisplayingUnlock = true
-    currentUnlockEnd = newEnding
-  } else {
-    pickRewind()
-    pickingRewind = true
+    getKilledFool(newEnding)
+    killerJumpscare = true
   }
 
 }
@@ -3259,203 +3324,207 @@ function pickRewind() {
 
 function tryAgain() {
 
-//dictating which 'stage' of the game we are in, changes the background tilemaps and any events
-currentGameState = 0;
-//more specific, works within each game state i.e. may be in state 2 (inside), dictates whether in location 0 (bathroom) or location 1 (bedroom) etc.
-currentLocation = 1;
-//even more specific, specifies which part of a location is the player's current focus i.e. left wall
-currentFocus = 1;
-//when inside, what 'stage' of play - dictates objectives and interactivity options etc
-currentPlayStage = 0;
+  quittingGame = false
+  savePlayerData()
 
-pauseMenuHover = null;
+  //dictating which 'stage' of the game we are in, changes the background tilemaps and any events
+  currentGameState = 0;
+  //more specific, works within each game state i.e. may be in state 2 (inside), dictates whether in location 0 (bathroom) or location 1 (bedroom) etc.
+  currentLocation = 1;
+  //even more specific, specifies which part of a location is the player's current focus i.e. left wall
+  currentFocus = 1;
+  //when inside, what 'stage' of play - dictates objectives and interactivity options etc
+  currentPlayStage = 0;
 
-quittingGame = false;
+  pauseMenuHover = null;
 
-//managing fade transition between scenes
-fadeOpacity = 0;
-fadeStage = 48;
-fadingInit = true;
-//fading opacity zero to full or other way (forward = zero to full)
-fadingForward = false;
-//pause at full opacity before resume fade in other direction
-fadeHold = 0;
-//transition locations/focus when fade at full opacity (smoother transition e.g. through doors)
-intermediateGameState = null;
-intermediateLocation = null;
-intermediateFocus = null;
-//faster fades inside (fades more frequent, long fades become tedious)
-fadeSpeed = 1;
-//dialogue to display when fade ends (if at all) e.g. when returning home, fade into entrance then dialogue prompt to put dinner on
-postFadeDialogue = false;
-postFadeDialogueIndex = null;
+  quittingGame = false;
 
-useGroggyMouse = false;
+  //managing fade transition between scenes
+  fadeOpacity = 0;
+  fadeStage = 48;
+  fadingInit = true;
+  //fading opacity zero to full or other way (forward = zero to full)
+  fadingForward = false;
+  //pause at full opacity before resume fade in other direction
+  fadeHold = 0;
+  //transition locations/focus when fade at full opacity (smoother transition e.g. through doors)
+  intermediateGameState = null;
+  intermediateLocation = null;
+  intermediateFocus = null;
+  //faster fades inside (fades more frequent, long fades become tedious)
+  fadeSpeed = 1;
+  //dialogue to display when fade ends (if at all) e.g. when returning home, fade into entrance then dialogue prompt to put dinner on
+  postFadeDialogue = false;
+  postFadeDialogueIndex = null;
 
-
-//dialogue + interactivity variables
-interactID = 0;
-//showing dialogue?
-displayingDialogue = false;
-//does the dialogue have a choice or just click to close
-displayingChoice = false;
-currentChoices = [];
-//input not available when dialogue is mid-typing (prevents skipping dialogue before finished)
-inputBlocked = false;
-//which dialogue to show in dialogue box
-dialogueToDisplay = 0;
-//if finish of dialogue should immediately prompt second dialogue
-followUpDialogue = [null, null];
-//prevents errors if interaction doesn't prompt dialogue (i.e. collecting item, cutscene with mirror, window etc.)
-noInteractDialogue = false;
-//various branching choices format: [name, completion status, order completed, play stage completed at]
-branchCodeArray = [
-  ['SP_lend', null, 0, null],
-  ['SP_fdLock', null, 0, null],
-  ['SP_fdChain', null, 0,  null],
-  ['SP_shoes', null, 0, null],
-  ['SP_satchel', null, 0, null],
-  ['SP_hallDrawer', null, 0, null],
-  ['SP_phone', null, 0, null],
-  ['SP_lrWindow', null, 0, null],
-  ['SP_lrUpperDrawer', null, 0, null],
-  ['SP_lrLowerDrawer', null, 0, null],
-  ['SP_radio', null, 0, null],
-  ['SP_TV', null, 0, null],
-  ['SP_diningChair', null, 0, null],
-  ['SP_kitchenSink', null, 0, null],
-  ['SP_bath', null, 0, null],
-  ['SP_bathroomCabinet', null, 0, null],
-  ['SP_showerCurtain', null, 0, null],
-  ['SP_bedroomWindow', null, 0, null],
-  ['SP_book', null, 0, null],
-  ['SP_bedroomCabinet', null, 0, null],
-  ['SP_weapon', null, 0, null]
-]
-
-//stores how many actions have been completed to track when each story point branch is completed
-actionOrder = 0;
-
-//whether displaying screen to choose rewind point
-pickingRewind = false;
-//which point to rewind to
-selectedRewindID = null;
-
-//where player is hiding/has hidden
-SP_hidingArray = [];
-
-ENDanimationTick = 0;
-ENDdisplayingUnlock = false;
-
-//which ending has just been unlocked
-currentUnlockEnd = null;
-
-//lock 1 minigame, position and direction of movement of each pin
-lockPinPositions = [0, 0, 0, 0, 0];
-lockPinDirections = [1, 1, 1, 1, 1];
-//position of player indicator in lock 1 minigame
-lockCharacterPositionX = 113;
-lockCharacterPositionY = -312;
-
-//arrow marker in lock 2 minigame
-chainArrowPosition = 0
-
-//timer and other variables on lock minigames
- minigameStartTime = 0;
- minigame1Duration = 45000;
- minigame1success = 0;
- minigame2Duration = 45000;
- minigame2success = 0;
- minigame2Progress = 0;
- minigame2Active = false;
- minigame2ArrowDirection = 1
- minigame2ArrowSpeed = 1;
- minigame2FinishTime = 0;
-
- minigame3Active = false;
- minigame3init = true;
- RADkillerLocation = 0;
- RADplayerLocation = 0;
- RADanimFrames = [];
- intermediateWalkieGameActive = false;
- RADanimTick = 0;
- RADhoveredRoom = 0;
- RADchoosingLocation = 'player';
- RADwalkieLocations = [3, 5]
- RADkillerMove = []
- RADplayerMove = []
-
- minigame4Active = false;
- minigame4Failed = false;
- minigame4radius = 500;
- pregameInstructions4 = true;
- playInProgress = false;
-
- displayingMinigameInstructions = false;
- hoveringMinigameInstructionButton = false;
-
- hidingResult = false;
- hidingTransition = false;
-
-//list containing number of interactions with each object
- interactionCounts = [];
- holdInteractCount = 0;
-
-//if interaction objects have multiple dialogues linked (i.e. based on different choices/stages of the game)
- alternativeInteractText = null;
-//story or interact dialogue
- dialogueType = null;
-
-//interact text when outside, hover over head
- outsideIntTextPositionX = 0;
- outsideIntID = 0;
-
-//interacting with man outside in opening scene
- outsideStoryPoint = false;
-
-//tracks interactions in specific play stage i.e. while waiting for food to cook, player progression based on how many interactions completed (food done after 8 interacts)
- playStageInteractCounter = 0;
-
- currentQuinnWalkFrame = 0;
- quinnMovable = false;
- SPRrightAmount = 620;
- SPRleftAmount = 0;
- quinnFacing = -1;
- walkingXpos = 0;
- BGscrollAmount = 0;
-
-//mirror cutscene, quinn animation (eyes)
- MIRanimTick = 0;
- MIRdisplay = false;
-
-//window cutscene
- showingWindowInteract = false;
-
-//whether fade animation is player going to sleep
- goingToSleep = false;
-
-//collecting items animation
- ITMcollectAnimTick = 0;
- ITMcollectedType = null;
-//items collected
- ITMarray = [];
-
- cutScenes = [false, false]
- appearStage = 0
- appearBlend = 1
+  useGroggyMouse = false;
 
 
- objectiveArray = ['walk home', 'cook dinner', 'wait for food', 'get dinner', 'eat dinner', 'get ready for bed', 'go to bed', 'investigate noise', 'HIDE!', 'ESCAPE!', 'unlock, QUICK!', 'investigate ANOTHER noise'];
- currentObjective = null;
- displayObjective = false;
+  //dialogue + interactivity variables
+  interactID = 0;
+  //showing dialogue?
+  displayingDialogue = false;
+  //does the dialogue have a choice or just click to close
+  displayingChoice = false;
+  currentChoices = [];
+  //input not available when dialogue is mid-typing (prevents skipping dialogue before finished)
+  inputBlocked = false;
+  //which dialogue to show in dialogue box
+  dialogueToDisplay = 0;
+  //if finish of dialogue should immediately prompt second dialogue
+  followUpDialogue = [null, null];
+  //prevents errors if interaction doesn't prompt dialogue (i.e. collecting item, cutscene with mirror, window etc.)
+  noInteractDialogue = false;
+  //various branching choices format: [name, completion status, order completed, play stage completed at]
+  branchCodeArray = [
+    ['SP_lend', null, 0, null],
+    ['SP_fdLock', null, 0, null],
+    ['SP_fdChain', null, 0,  null],
+    ['SP_shoes', null, 0, null],
+    ['SP_satchel', null, 0, null],
+    ['SP_hallDrawer', null, 0, null],
+    ['SP_phone', null, 0, null],
+    ['SP_lrWindow', null, 0, null],
+    ['SP_lrUpperDrawer', null, 0, null],
+    ['SP_lrLowerDrawer', null, 0, null],
+    ['SP_radio', null, 0, null],
+    ['SP_TV', null, 0, null],
+    ['SP_diningChair', null, 0, null],
+    ['SP_kitchenSink', null, 0, null],
+    ['SP_bath', null, 0, null],
+    ['SP_bathroomCabinet', null, 0, null],
+    ['SP_showerCurtain', null, 0, null],
+    ['SP_bedroomWindow', null, 0, null],
+    ['SP_book', null, 0, null],
+    ['SP_bedroomCabinet', null, 0, null],
+    ['SP_weapon', null, 0, null]
+  ]
 
- showHUD = false;
+  //stores how many actions have been completed to track when each story point branch is completed
+  actionOrder = 0;
 
- firstChasePrompt = false;
- dustyBed = false;
- slipperShower = false;
- occupiedWardrobe = false;
-  
+  //whether displaying screen to choose rewind point
+  pickingRewind = false;
+  //which point to rewind to
+  selectedRewindID = null;
+
+  //where player is hiding/has hidden
+  SP_hidingArray = [];
+
+  ENDanimationTick = 0;
+  ENDdisplayingUnlock = false;
+
+  //which ending has just been unlocked
+  currentUnlockEnd = null;
+
+  //lock 1 minigame, position and direction of movement of each pin
+  lockPinPositions = [0, 0, 0, 0, 0];
+  lockPinDirections = [1, 1, 1, 1, 1];
+  //position of player indicator in lock 1 minigame
+  lockCharacterPositionX = 113;
+  lockCharacterPositionY = -312;
+
+  //arrow marker in lock 2 minigame
+  chainArrowPosition = 0
+
+  //timer and other variables on lock minigames
+  minigameStartTime = 0;
+  minigame1Duration = 45000;
+  minigame1success = 0;
+  minigame2Duration = 45000;
+  minigame2success = 0;
+  minigame2Progress = 0;
+  minigame2Active = false;
+  minigame2ArrowDirection = 1
+  minigame2ArrowSpeed = 1;
+  minigame2FinishTime = 0;
+
+  minigame3Active = false;
+  minigame3init = true;
+  RADkillerLocation = 0;
+  RADplayerLocation = 0;
+  RADanimFrames = [];
+  intermediateWalkieGameActive = false;
+  RADanimTick = 0;
+  RADhoveredRoom = 0;
+  RADchoosingLocation = 'player';
+  RADwalkieLocations = [3, 5]
+  RADkillerMove = []
+  RADplayerMove = []
+
+  minigame4Active = false;
+  minigame4Failed = false;
+  minigame4radius = 500;
+  pregameInstructions4 = true;
+  playInProgress = false;
+
+  displayingMinigameInstructions = false;
+  hoveringMinigameInstructionButton = false;
+
+  hidingResult = false;
+  hidingTransition = false;
+
+  //list containing number of interactions with each object
+  interactionCounts = [];
+  holdInteractCount = 0;
+
+  //if interaction objects have multiple dialogues linked (i.e. based on different choices/stages of the game)
+  alternativeInteractText = null;
+  //story or interact dialogue
+  dialogueType = null;
+
+  //interact text when outside, hover over head
+  outsideIntTextPositionX = 0;
+  outsideIntID = 0;
+
+  //interacting with man outside in opening scene
+  outsideStoryPoint = false;
+
+  //tracks interactions in specific play stage i.e. while waiting for food to cook, player progression based on how many interactions completed (food done after 8 interacts)
+  playStageInteractCounter = 0;
+
+  currentQuinnWalkFrame = 0;
+  quinnMovable = false;
+  SPRrightAmount = 620;
+  SPRleftAmount = 0;
+  quinnFacing = -1;
+  walkingXpos = 0;
+  BGscrollAmount = 0;
+
+  //mirror cutscene, quinn animation (eyes)
+  MIRanimTick = 0;
+  MIRdisplay = false;
+
+  //window cutscene
+  showingWindowInteract = false;
+
+  //whether fade animation is player going to sleep
+  goingToSleep = false;
+
+  //collecting items animation
+  ITMcollectAnimTick = 0;
+  ITMcollectedType = null;
+  //items collected
+  ITMarray = [];
+
+  cutScenes = [false, false]
+  appearStage = 0
+  appearBlend = 1
+
+
+  objectiveArray = ['walk home', 'cook dinner', 'wait for food', 'get dinner', 'eat dinner', 'get ready for bed', 'go to bed', 'investigate noise', 'HIDE!', 'ESCAPE!', 'unlock, QUICK!', 'investigate ANOTHER noise'];
+  currentObjective = null;
+  displayObjective = false;
+
+  showHUD = false;
+
+  firstChasePrompt = false;
+  dustyBed = false;
+  slipperShower = false;
+  occupiedWardrobe = false;
+  eepySleepy = false;
+    
 }
 
 function moveLockCharacter() {
@@ -4059,8 +4128,6 @@ function selectExistingPlayerName() {
       }
     }
   }
-
-  console.log(existingPlayerHover)
 
   if (newMouseX > -150 && newMouseX < 150 && newMouseY > 360 && newMouseY < 430) {
     existingPlayerHover = 11
@@ -4776,8 +4843,10 @@ function ambientSoundManager() {
 
   if (currentGameState == 1 && SNDoutside.isPlaying() == false) {
     SNDoutside.setVolume(0.8)
+    SNDoutside.loop()
     SNDoutside.play()
   } else if (currentGameState == 2 && SNDinside.isPlaying() == false) {
+    SNDoutside.stop()
     SNDinside.loop()
     SNDinside.play()
   } else if (SNDchaseSong.isPlaying == true) {
@@ -5105,8 +5174,6 @@ if (hidingResult == true) {
   hidingFound()
 }
 
-pickingRewind = true
-
 if (pickingRewind == true) {
   showHUD = false
   pickRewind()
@@ -5128,12 +5195,12 @@ if (fadingInit == true) {
 
 
 //track mouse coordinates on screen (useful for tracking click position later, remove when submitting final game)
-fill('white')
-textFont(VT323Font, 30)
-textAlign(CENTER, CENTER)
-text(newMouseX, newMouseX+50, newMouseY)
-text(newMouseY, newMouseX+50, newMouseY + 30)
-text(interactID, newMouseX+50, newMouseY + 60)
+// fill('white')
+// textFont(VT323Font, 30)
+// textAlign(CENTER, CENTER)
+// text(newMouseX, newMouseX+50, newMouseY)
+// text(newMouseY, newMouseX+50, newMouseY + 30)
+// text(interactID, newMouseX+50, newMouseY + 60)
 
 if (followUpDialogue[0] != null && displayingDialogue == false) {
 
@@ -5209,6 +5276,10 @@ if (useGroggyMouse == true) {
   groggyOverlay.play()
   groggyOverlay.loop()
   pop()
+}
+
+if (killerJumpscare == true) {
+  getKilledFool(null)
 }
 
 push()
