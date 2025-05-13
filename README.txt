@@ -145,4 +145,7 @@ The project would ideally also have had much more in depth sound design, with mo
 However, I am *rubbish* with sound-stuff, and, if he was available, would have liked to have left it to Freddie as I think he would have done
 a much better job.
 
+I also am just now realising that, due to a cut segment, one or two of the endings may not currently be achievable. If you are THAT invested in 100% finishing the game,
+let me know and I will add them back in at some point.
+
 // happy stalking //
